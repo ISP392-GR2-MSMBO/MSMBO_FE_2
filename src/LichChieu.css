@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
+
+.lich-chieu-page {
+    background: #000;
+    color: #eee;
+    padding: 40px 60px;
+    min-height: 100vh;
+    font-family: "Baloo 2", sans-serif;
+}
+
+
+
+/* --- Thanh chọn ngày --- */
+.lich-chieu-page .date-bar {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.lich-chieu-page .date-btn {
+    background: #1a1a1a;
+    color: #aaa;
+    border: 1px solid #333;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.lich-chieu-page .date-btn.active {
+    background: linear-gradient(135deg, #f1356d, #ff6699);
+    color: #fff;
+    border: none;
+    box-shadow: 0 0 12px rgba(241, 53, 109, 0.6);
+}
+
+.lich-chieu-page .date-btn:hover {
+    background: linear-gradient(135deg, #f1356d, #ff6699);
+    color: #fff;
+    border: none;
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(241, 53, 109, 0.6);
+}
+
+/* --- Danh sách phim --- */
+.lich-chieu-page .movie-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* --- Thẻ phim (layout dạng 2 cột) --- */
+.lich-chieu-page .movie-item {
+    display: grid;
+    grid-template-columns: 200px auto;
+    /* poster bên trái, info bên phải */
+    align-items: start;
+    /* căn thông tin lên đầu */
+    gap: 25px;
+    /* khoảng cách giữa poster và info */
+    padding: 15px 0;
+    border-radius: 10px;
+}
+
+
+/* --- Poster --- */
+.lich-chieu-page .poster {
+    width: 200px;
+    /* tăng chiều rộng */
+    height: 300px;
+    /* tăng chiều cao */
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+    /* bóng đẹp hơn */
+    margin-top: 0;
+    /* bỏ dịch xuống nếu muốn cân đối */
+}
+
+
+.lich-chieu-page .poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* --- Thông tin phim --- */
+.lich-chieu-page .info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+}
+
+.lich-chieu-page .info h3 {
+    color: #f1356d;
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+/* --- Tag thể loại --- */
+.lich-chieu-page .tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.lich-chieu-page .tag {
+    display: inline-block;
+    background: #222;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #66aaff;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.lich-chieu-page .tag:hover {
+    background: #f1356d;
+    color: #fff;
+    border-color: #f1356d;
+    transform: translateY(-2px);
+}
+
+/* --- Thông tin chi tiết --- */
+.lich-chieu-page p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+/* --- Suất chiếu --- */
+.lich-chieu-page .times {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.lich-chieu-page .time-btn {
+    background: transparent;
+    color: white;
+    border: 2px solid #007bff;
+    padding: 5px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.lich-chieu-page .time-btn:hover {
+    background: #f1356d;
+    color: black;
+}

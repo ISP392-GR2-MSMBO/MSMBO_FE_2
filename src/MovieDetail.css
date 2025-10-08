@@ -1,0 +1,317 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
+
+.movie-detail-page {
+    font-family: "Baloo 2", sans-serif;
+    color: #eee;
+    background: #000;
+}
+
+/* Trailer full width */
+.trailer-section iframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+}
+
+.detail-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+    padding: 30px 60px;
+    background: #111;
+    /* nền xám đen cho box */
+    position: relative;
+    border-radius: 10px;
+}
+
+
+.poster {
+    position: relative;
+    margin-top: -120px;
+    z-index: 2;
+}
+
+.poster img {
+    width: 280px;
+    border-radius: 12px;
+    box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.7);
+    transition: transform 0.3s ease;
+}
+
+.poster img:hover {
+    transform: scale(1.05);
+}
+
+.info {
+    flex: 1;
+    position: relative;
+    z-index: 3;
+}
+
+.info .title {
+    font-size: 38px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #f1356d;
+}
+
+
+.info p {
+    margin: 8px 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #ddd;
+}
+
+.info p strong {
+    font-weight: 600;
+    color: #fff;
+}
+
+/* ===== TAGS (Thể loại) ===== */
+.tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.tag {
+    display: inline-block;
+    background: #222;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #66aaff;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.tag:hover {
+    background: #f1356d;
+    color: #fff;
+    border-color: #f1356d;
+    transform: translateY(-2px);
+}
+
+/* Cast */
+.cast {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.cast .actor {
+    display: inline-block;
+    background: #222;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #66aaff;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.cast .actor:hover {
+    background: #f1356d;
+    color: #fff;
+    border-color: #f1356d;
+    transform: translateY(-2px);
+}
+
+/* Mô tả & Lịch chiếu */
+.description-section,
+.showtimes-section {
+    padding: 30px 60px;
+    background: #111;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+/* ======= LỊCH CHIẾU PHONG CÁCH GALAXY ======= */
+
+.showtime-section {
+    margin-top: 40px;
+    background: #0f0f0f;
+    border-radius: 14px;
+    padding: 30px 40px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+.showtime-section h2 {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #f1f1f1;
+    margin-bottom: 25px;
+    letter-spacing: 0.5px;
+}
+
+.showtime-section h2::before {
+    content: "🎟️";
+    font-size: 22px;
+    margin-right: 10px;
+}
+
+/* ====== TAB NGÀY CHIẾU ====== */
+.date-tabs {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.date-btn {
+    background: #1a1a1a;
+    color: #aaa;
+    border: 1px solid #333;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.date-btn.active {
+    background: linear-gradient(135deg, #f1356d, #ff6699);
+    color: #fff;
+    border: none;
+    box-shadow: 0 0 12px rgba(241, 53, 109, 0.6);
+}
+
+.date-btn:hover {
+    background: linear-gradient(135deg, #f1356d, #ff6699);
+    color: #fff;
+    border: none;
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(241, 53, 109, 0.6);
+}
+
+
+/* ====== NHÓM PHỤ ĐỀ / LỒNG TIẾNG ====== */
+.showtime-group {
+    margin-bottom: 25px;
+}
+
+
+.showtime-group .label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 17px;
+    color: #fff;
+    margin-bottom: 12px;
+}
+
+.label .dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+}
+
+/* Màu biểu tượng */
+.label.sub .dot {
+    background-color: #4effa3;
+}
+
+.label.dub .dot {
+    background-color: #a674ff;
+}
+
+/* ====== CÁC GIỜ CHIẾU ====== */
+.showtime-list {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-left: 25px;
+}
+
+.time-btn {
+    background: #111;
+    border: 1px solid #007bff;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.time-btn:hover {
+    background: linear-gradient(135deg, #f1356d, #ff6699);
+    border-color: #f1356d;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(241, 53, 109, 0.7);
+}
+
+
+/* ====== ĐƯỜNG GẠCH NGANG NGĂN CÁCH ====== */
+.showtime-divider {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #007bff, transparent);
+    margin: 20px 0 30px 0;
+    border-radius: 2px;
+    opacity: 0.7;
+}
+
+/* ======= MÔ TẢ PHIM ======= */
+.description-section {
+    padding: 30px 60px;
+    background: #0f0f0f;
+    margin-top: 20px;
+    border-radius: 14px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Tiêu đề mô tả */
+.description-section h2 {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #f1f1f1;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+}
+
+.description-section h2::before {
+    content: "📖";
+    font-size: 22px;
+    margin-right: 10px;
+}
+
+/* Nội dung mô tả phim */
+.description-section p {
+    font-size: 18px;
+    line-height: 1.9;
+    color: #f1f1f1;
+    margin-top: 10px;
+    text-align: justify;
+    text-indent: 25px;
+    letter-spacing: 0.3px;
+    word-spacing: 1px;
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 4px solid #007bff;
+    padding: 15px 20px;
+    border-radius: 8px;
+}
+
+.showtime-section {
+    margin-top: 20px;
+    background: #0f0f0f;
+    border-radius: 14px;
+    padding: 30px 60px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}

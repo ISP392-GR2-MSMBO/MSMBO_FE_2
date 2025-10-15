@@ -185,7 +185,7 @@ body {
 
 .buy-btn:hover {
   background: #f39c12;
-}
+}*/
 
 /* Mũi tên hiển thị chắc chắn */
 .slick-prev:before,
@@ -238,13 +238,7 @@ body {
 
 
 /* Các đoạn văn hoặc tiêu đề khác */
-h1,
-h2,
-h3,
-h4,
-p {
-  color: #fff;
-}
+
 
 
 .movie-info {
@@ -319,3 +313,5 @@ p {
   /* 👈 khi hover thì đổi sang vàng */
   cursor: pointer;
 }
+
+

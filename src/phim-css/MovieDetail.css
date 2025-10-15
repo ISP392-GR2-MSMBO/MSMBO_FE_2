@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
+
+.movie-detail-page {
+    font-family: "Baloo 2", sans-serif;
+    color: #eee;
+    /* chữ trắng nhạt cho nền đen */
+    background: #000;
+    /* nền đen */
+}
+
+/* Trailer full width */
+.trailer-section iframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+}
+
+/* Container 2 cột */
+.detail-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+    padding: 30px 60px;
+    background: #111;
+    /* nền xám đen cho box */
+    position: relative;
+    border-radius: 10px;
+}
+
+/* Poster */
+.poster {
+    position: relative;
+    margin-top: -120px;
+    z-index: 2;
+}
+
+.poster img {
+    width: 280px;
+    border-radius: 12px;
+    box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.7);
+    transition: transform 0.3s ease;
+}
+
+.poster img:hover {
+    transform: scale(1.05);
+}
+
+/* Info */
+.info {
+    flex: 1;
+    position: relative;
+    z-index: 3;
+}
+
+.info .title {
+    font-size: 38px;
+    /* tăng kích thước chữ */
+    font-weight: 900;
+    /* đậm hơn */
+    margin-bottom: 10px;
+    color: #f1356d;
+}
+
+
+.info p {
+    margin: 8px 0;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #ddd;
+}
+
+.info p strong {
+    font-weight: 600;
+    color: #fff;
+}
+
+/* ===== TAGS (Thể loại) ===== */
+.tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.tag {
+    display: inline-block;
+    background: #222;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #66aaff;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.tag:hover {
+    background: #f1356d;
+    color: #fff;
+    border-color: #f1356d;
+    transform: translateY(-2px);
+}
+
+/* Cast */
+.cast {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.cast .actor {
+    display: inline-block;
+    background: #222;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #66aaff;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.cast .actor:hover {
+    background: #f1356d;
+    color: #fff;
+    border-color: #f1356d;
+    transform: translateY(-2px);
+}
+
+/* Mô tả & Lịch chiếu */
+.description-section,
+.showtimes-section {
+    padding: 30px 60px;
+    background: #111;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.description-section h2,
+.showtimes-section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #66aaff;
+}

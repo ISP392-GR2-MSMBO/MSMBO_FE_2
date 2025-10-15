@@ -1,0 +1,75 @@
+.customer-container{
+    display: flex;
+    gap: 32px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px #444;
+    padding: 32px;
+    max-width: 1100px;
+    margin: 32px auto;
+}
+.customer-list{
+    flex: 1.2;
+    min-width: 350px
+}
+.customer-search-input{
+    width: 90%;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-bottom: 14px;
+}
+.customer-table{
+    width: 100%;
+    border-collapse: collapse;
+    background-color: rgb(67, 66, 66);
+}
+.customer-table th, .customer-table td {
+    padding: 10px, 8px;
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+    cursor: pointer;
+}
+.customer-table tr.selected{
+    background: rgb(188, 120, 17);
+}
+.customer-detail{
+    flex: 1.1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    color: #444;
+}
+.cs-customer {
+  font-size: 1.1em;
+  margin-bottom: 8px;
+}
+.cs-issue textarea,
+.cs-response textarea {
+  width: 100%;
+  min-height: 60px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 8px;
+  margin-top: 6px;
+  resize: vertical;
+}
+.cs-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+.cs-actions button {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  background: #eee;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.cs-actions button:hover {
+  background: #444;
+  color: #fff;
+}

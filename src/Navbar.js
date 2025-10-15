@@ -39,10 +39,11 @@ const Navbar = () => {
                             <Link to="/phim-sap-chieu">Sắp chiếu</Link>
                         </div>
                     </div>
-                    <Link to="/lich-chieu">Lịch chiếu</Link>
+                    <Link to="/lichchieu">Lịch chiếu</Link>
                     <Link to="/giave">Giá vé</Link>
                     <Link to="/uudai">Ưu đãi</Link>
-                    <Link to="/lien-he">Liên hệ</Link>
+                    <Link to="/lienhe">Liên hệ</Link>
+
 
 
                 </nav>

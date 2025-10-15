@@ -1,9 +1,9 @@
-import MovieList from "./MovieList";
+import MovieList from "./component-phim/MovieList";
 import useFetch from "./useFetch";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { ClipLoader } from "react-spinners";
+
 // ✅ Danh sách banner
 const banners = [
     {
@@ -20,6 +20,7 @@ const banners = [
     },
 ];
 
+// ✅ Mock data phim (hiện ở phần Phim nổi bật)
 const movies = [
     {
         id: 1,
@@ -34,7 +35,7 @@ const movies = [
         id: 2,
         title: "Your Name",
         genre: "Hoạt hình, Tình cảm, Phiêu lưu",
-        duration: 106,
+        duration: 106, // phút
         poster: "https://upload.wikimedia.org/wikipedia/vi/0/01/Poster_Your_Name_H%C3%A0n_Qu%E1%BB%91c_ch%C3%A0o_m%E1%BB%ABng_3_tri%E1%BB%87u_l%C6%B0%E1%BB%A3t_xem.jpg",
         trailer: "https://youtu.be/xU47nhruN-Q",
     },
@@ -89,9 +90,10 @@ const movies = [
 ];
 
 const Home = () => {
+    // ✅ Lấy dữ liệu từ API
+    const { error, isPending, data: blogs } = useFetch("http://localhost:8000/blogs");
 
-    const { isPending, data: blogs } = useFetch("http://localhost:8000/blogs");
-
+    // ✅ Cấu hình slider
     const settings = {
         dots: true,
         infinite: true,
@@ -126,15 +128,7 @@ const Home = () => {
             {/* 🎬 Tiêu đề */}
             <h2 className="section-title">Phim nổi bật</h2>
 
-            {isPending && (
-                <div className="fullscreen-spinner">
-                    <ClipLoader color="#ff0055" size={70} />
-                    <p>Đang tải dữ liệu...</p>
-                </div>
-            )}
-
-
-
+            {isPending && <div>Loading...</div>}
 
             {/* 🎬 Hiển thị danh sách phim */}
             <MovieList movies={blogs || movies} />

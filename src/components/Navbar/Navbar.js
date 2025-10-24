@@ -1,0 +1,276 @@
+import { Link, useHistory } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { movieApi } from "../../api/movieApi";
+import { useLocalStorage } from "../../hook/useLocalStorage"; // ✅ import hook
+import "../../index.css";
+
+const Navbar = () => {
+    const history = useHistory();
+    const [allMovies, setAllMovies] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filteredMovies, setFilteredMovies] = useState([]);
+    const [showResults, setShowResults] = useState(false);
+
+    // ✅ Dùng hook useLocalStorage để theo dõi trạng thái user
+    const [user, setUser] = useLocalStorage("user", null);
+
+    // ✅ Lấy danh sách phim đang chiếu
+    useEffect(() => {
+        const fetchMovies = async () => {
+            try {
+                const data = await movieApi.getNowShowing();
+                const approvedMovies = data.filter(
+                    (m) =>
+                        m &&
+                        m.approveStatus?.toUpperCase() === "APPROVE" &&
+                        m.deleted !== true
+                );
+                setAllMovies(approvedMovies);
+            } catch (err) {
+                console.error("❌ Lỗi khi tải danh sách phim:", err);
+            }
+        };
+        fetchMovies();
+    }, []);
+
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+
+        if (value.trim() === "") {
+            setFilteredMovies([]);
+            setShowResults(false);
+            return;
+        }
+
+        const results = allMovies.filter((movie) =>
+            movie.movieName.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredMovies(results);
+        setShowResults(true);
+    };
+
+    const handleSelectMovie = (movieName) => {
+        setSearchTerm("");
+        setShowResults(false);
+        history.push(`/movies/${encodeURIComponent(movieName)}`);
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter" && filteredMovies.length > 0) {
+            handleSelectMovie(filteredMovies[0].movieName);
+        }
+    };
+
+    const handleLogout = () => {
+        setUser(null); // ✅ Xóa luôn dữ liệu user trong localStorage
+        history.push("/");
+    };
+
+    const renderGreeting = () => {
+        if (!user) return null;
+
+        if (user.roleID === "MA" || user.roleID === "AD") {
+            return "Xin chào, Manager";
+        } else {
+            return `Xin chào, ${user.userName}`;
+        }
+    };
+
+    return (
+        <header className="navbar">
+            {/* Logo + Thanh tìm kiếm */}
+            <div
+                className="logo-bar"
+                style={{ display: "flex", alignItems: "center", padding: "10px 20px" }}
+            >
+                <div className="logo" style={{ flexShrink: 0 }}>
+                    <Link to="/">
+                        <img
+                            src="https://i.postimg.cc/3xggWX6s/Chill-Cinema-Logo-Design-Vibrant-Red-1-removebg-preview.png"
+                            alt="Chill Cinema Logo"
+                            style={{ maxWidth: "180px" }}
+                        />
+                    </Link>
+                </div>
+
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        flexGrow: 1,
+                        maxWidth: "400px",
+                        margin: "0 auto",
+                        position: "relative",
+                    }}
+                >
+                    <input
+                        type="text"
+                        placeholder="🔍 Tìm phim đang chiếu..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        onFocus={() => setShowResults(true)}
+                        onKeyDown={handleKeyDown}
+                        style={{
+                            color: "black",
+                            background: "white",
+                            border: "1px solid #e50914",
+                            borderRadius: "6px",
+                            padding: "6px 10px",
+                            flexGrow: 1,
+                            outline: "none",
+                        }}
+                    />
+                    <button
+                        onClick={() => {
+                            if (filteredMovies.length > 0) {
+                                handleSelectMovie(filteredMovies[0].movieName);
+                            }
+                        }}
+                        style={{
+                            padding: "6px 12px",
+                            borderRadius: "6px",
+                            border: "none",
+                            backgroundColor: "#e50914",
+                            color: "white",
+                            cursor: "pointer",
+                            marginLeft: "8px",
+                            flexShrink: 0,
+                        }}
+                    >
+                        Tìm
+                    </button>
+
+                    {/* Gợi ý phim */}
+                    {showResults && filteredMovies.length > 0 && (
+                        <ul
+                            className="search-results"
+                            style={{
+                                position: "absolute",
+                                top: "100%",
+                                left: 0,
+                                width: "calc(100% + 58px)",
+                                background: "#fff",
+                                border: "1px solid #ccc",
+                                borderTop: "none",
+                                zIndex: 10,
+                                maxHeight: "260px",
+                                overflowY: "auto",
+                                listStyle: "none",
+                                padding: 0,
+                                margin: 0,
+                                color: "black",
+                            }}
+                        >
+                            {filteredMovies.map((movie) => (
+                                <li
+                                    key={movie.movieID}
+                                    style={{
+                                        padding: "8px 12px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "10px",
+                                        cursor: "pointer",
+                                        borderBottom: "1px solid #eee",
+                                    }}
+                                    onClick={() => handleSelectMovie(movie.movieName)}
+                                    onMouseDown={(e) => e.preventDefault()}
+                                >
+                                    <img
+                                        src={movie.poster || "/default-poster.jpg"}
+                                        alt={movie.movieName}
+                                        style={{
+                                            width: "35px",
+                                            height: "50px",
+                                            objectFit: "cover",
+                                            borderRadius: "4px",
+                                        }}
+                                    />
+                                    <span>{movie.movieName}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+
+                    {showResults && filteredMovies.length === 0 && searchTerm.trim() !== "" && (
+                        <ul
+                            className="search-results"
+                            style={{
+                                position: "absolute",
+                                top: "100%",
+                                left: 0,
+                                width: "calc(100% + 58px)",
+                                background: "white",
+                                border: "1px solid #ccc",
+                                zIndex: 10,
+                                padding: "8px 12px",
+                                margin: 0,
+                                color: "black",
+                            }}
+                        >
+                            <li>Không tìm thấy phim phù hợp</li>
+                        </ul>
+                    )}
+                </div>
+
+                {/* Khu vực đăng nhập/đăng ký hoặc user info */}
+                <div className="top-bar">
+                    <div className="auth">
+                        {user ? (
+                            <div className="user-info">
+                                <img
+                                    src="/default-avatar.png"
+                                    alt="avatar"
+                                    style={{
+                                        width: "28px",
+                                        height: "28px",
+                                        borderRadius: "50%",
+                                        marginRight: "8px",
+                                    }}
+                                />
+                                <span>{renderGreeting()}</span>
+                                <button
+                                    onClick={handleLogout}
+                                    style={{
+                                        marginLeft: "10px",
+                                        padding: "3px 8px",
+                                        borderRadius: "4px",
+                                        border: "none",
+                                        backgroundColor: "#e50914",
+                                        color: "#fff",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    Đăng xuất
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                <Link to="/register">Đăng ký</Link>
+                                <Link to="/login">Đăng nhập</Link>
+                            </>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Menu chính */}
+            <nav className="menu" style={{ textAlign: "center", marginTop: "10px" }}>
+                <Link to="/">Trang chủ</Link>
+                <div className="dropdown">
+                    <Link to="/phim">Phim ▾</Link>
+                    <div className="dropdown-content">
+                        <Link to="/phim/dang-chieu">Đang chiếu</Link>
+                        <Link to="/phim-sap-chieu">Sắp chiếu</Link>
+                    </div>
+                </div>
+                <Link to="/lich-chieu">Lịch chiếu</Link>
+                <Link to="/gia-ve">Giá vé</Link>
+                <Link to="/uudai">Ưu đãi</Link>
+                <Link to="/lien-he">Liên hệ</Link>
+            </nav>
+        </header>
+    );
+};
+
+export default Navbar;

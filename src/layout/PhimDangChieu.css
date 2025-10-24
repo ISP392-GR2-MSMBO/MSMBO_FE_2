@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
+
+.phim-body {
+    background-color: #000;
+    color: #fff;
+    font-family: 'Baloo 2', sans-serif;
+    padding: 40px 0;
+}
+
+.phim-container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.phim-section-title {
+    text-align: center;
+    font-size: 36px;
+    font-weight: 800;
+    color: #ffcc00;
+    margin-bottom: 40px;
+}
+
+.phim-movie-row {
+    display: flex;
+    gap: 30px;
+    background: #051835;
+    border-radius: 12px;
+    margin-bottom: 40px;
+    padding: 20px;
+    align-items: flex-start;
+}
+
+.phim-movie-left {
+    flex: 1;
+    position: relative;
+}
+
+.phim-poster-wrapper {
+    position: relative;
+    width: 260px;
+    height: 380px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.phim-poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Tag thể loại & ngôn ngữ */
+.phim-tag {
+    position: absolute;
+    left: 10px;
+    background-color: #ffcc00;
+    color: #000;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+.phim-genre {
+    top: 10px;
+}
+
+.phim-language {
+    top: 45px;
+}
+
+/* Thông tin bên phải */
+.phim-movie-right {
+    flex: 2;
+}
+
+.phim-movie-title {
+    color: #f1356d;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.phim-release-date {
+    color: #ccc;
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+.phim-movie-desc {
+    color: #ddd;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.phim-button-group {
+    display: flex;
+    gap: 10px;
+}
+
+.phim-trailer-btn,
+.phim-buy-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.phim-trailer-btn {
+    background-color: #3498db;
+    color: #fff;
+}
+
+.phim-trailer-btn:hover {
+    background-color: #217dbb;
+}
+
+.phim-buy-btn {
+    background-color: #ffcc00;
+    color: #000;
+}
+
+.phim-buy-btn:hover {
+    background-color: #f39c12;
+}

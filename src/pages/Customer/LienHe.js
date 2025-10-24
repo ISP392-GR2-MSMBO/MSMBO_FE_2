@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
-import "./LienHe.css";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import "../../layout/LienHe.css";
+
 const LienHe = () => {
     const [formData, setFormData] = useState({
         name: "",
@@ -16,29 +17,31 @@ const LienHe = () => {
 
     const intervalRef = useRef(null);
 
-    useEffect(() => {
-        startAutoSlide();
-        return () => stopAutoSlide();
-    }, []);
-
-    const startAutoSlide = () => {
-        stopAutoSlide();
-        intervalRef.current = setInterval(() => {
-            handleNext();
-        }, 4000);
-    };
-
-    const stopAutoSlide = () => {
-        if (intervalRef.current) clearInterval(intervalRef.current);
-    };
+    // ✅ Dùng useCallback để tránh cảnh báo "missing dependency"
+    const handleNext = useCallback(() => {
+        setPosterIndex((prev) => (prev + 1) % posters.length);
+    }, [posters.length]);
 
     const handlePrev = () => {
         setPosterIndex((prev) => (prev - 1 + posters.length) % posters.length);
     };
 
-    const handleNext = () => {
-        setPosterIndex((prev) => (prev + 1) % posters.length);
+    const startAutoSlide = useCallback(() => {
+        stopAutoSlide(); // clear trước khi setInterval mới
+        intervalRef.current = setInterval(() => {
+            handleNext();
+        }, 4000);
+    }, [handleNext]);
+
+    const stopAutoSlide = () => {
+        if (intervalRef.current) clearInterval(intervalRef.current);
     };
+
+    // ✅ Chỉ 1 useEffect gọn gàng
+    useEffect(() => {
+        startAutoSlide();
+        return () => stopAutoSlide();
+    }, [startAutoSlide]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });

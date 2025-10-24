@@ -1,4 +1,4 @@
-import './Login.css';
+import "../../layout/Login.css";
 const Register = () => {
     return (<div className="auth-container">
         <h2>Đăng ký</h2>

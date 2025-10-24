@@ -1,0 +1,242 @@
+/* === Tổng thể bố cục === */
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f6fa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* === Sidebar === */
+.admin-sidebar {
+    width: 240px;
+    background-color: #1f2937;
+    /* Màu tối hiện đại */
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px 15px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+}
+
+.sidebar-title {
+    font-size: 1.4rem;
+    margin-bottom: 30px;
+    color: #facc15;
+    /* Màu vàng nhẹ */
+    text-align: center;
+}
+
+/* Menu */
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+}
+
+.sidebar-menu a {
+    text-decoration: none;
+    color: #d1d5db;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.sidebar-menu a:hover {
+    background-color: #374151;
+    color: #fff;
+}
+
+/* Logout button */
+.logout-btn {
+    margin-top: auto;
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.logout-btn:hover {
+    background-color: #dc2626;
+}
+
+/* === Phần chính === */
+.admin-main {
+    flex-grow: 1;
+    margin-left: 240px;
+    /* Chừa chỗ cho sidebar */
+    display: flex;
+    flex-direction: column;
+    background-color: #f9fafb;
+    min-height: 100vh;
+}
+
+/* === Header === */
+.admin-header {
+    background-color: #ffffff;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.admin-header h1 {
+    font-size: 1.4rem;
+    color: #1f2937;
+}
+
+/* === Avatar + Dropdown === */
+.admin-avatar-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.admin-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 8px;
+    border: 2px solid #ccc;
+    transition: border-color 0.3s ease;
+}
+
+.admin-avatar-container:hover .admin-avatar {
+    border-color: #facc15;
+}
+
+.admin-name {
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background-color: #fff;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+    z-index: 99;
+}
+
+.dropdown-menu a,
+.dropdown-menu button {
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 10px;
+    color: #374151;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu button:hover {
+    background-color: #f3f4f6;
+}
+
+/* === Nội dung chính === */
+.admin-content {
+    padding: 30px;
+    flex-grow: 1;
+}
+
+.admin-main-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 60px;
+}
+
+.admin-btn {
+    display: inline-block;
+    background-color: #3b82f6;
+    color: white;
+    text-decoration: none;
+    padding: 15px 25px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    margin: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.admin-btn:hover {
+    background-color: #2563eb;
+}
+
+/* === Responsive === */
+@media (max-width: 900px) {
+    .admin-sidebar {
+        width: 200px;
+        padding: 20px 10px;
+    }
+
+    .admin-main {
+        margin-left: 200px;
+    }
+}
+
+@media (max-width: 700px) {
+    .admin-sidebar {
+        position: fixed;
+        left: -250px;
+        transition: left 0.3s ease;
+    }
+
+    .admin-sidebar.active {
+        left: 0;
+    }
+
+    .admin-main {
+        margin-left: 0;
+    }
+
+    .admin-header h1 {
+        font-size: 1rem;
+    }
+}
+
+/* === Welcome text fix màu === */
+.welcome-text {
+    color: #111 !important;
+    /* ép màu chữ đen */
+    text-align: center;
+    margin-top: 40px;
+}
+
+.welcome-text h1 {
+    color: #111 !important;
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.welcome-text p {
+    color: #333 !important;
+    font-size: 1rem;
+}

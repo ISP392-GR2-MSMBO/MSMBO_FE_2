@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
-import "./Seatmap.css";
-
+import "../../layout/Seatmap.css";
 const Seatmap = () => {
     const history = useHistory();
 

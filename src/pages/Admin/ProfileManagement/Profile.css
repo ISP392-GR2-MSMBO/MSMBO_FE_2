@@ -1,0 +1,21 @@
+.profile-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 12px;
+    background-color: #f8f9fa;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.profile-card p {
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+.loading {
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 100px;
+}

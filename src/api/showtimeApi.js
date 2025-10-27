@@ -68,4 +68,22 @@ export const showtimeApi = {
     },
 
 
+
+
+    // ✅ Lấy chi tiết suất chiếu và trạng thái ghế đã đặt
+    getShowtimeDetailsWithSeats: async (showtimeId) => {
+        // GIẢ ĐỊNH Backend có endpoint này. Đây là API QUAN TRỌNG nhất cho Seatmap
+        const res = await axios.get(`http://localhost:8080/api/showtime/${showtimeId}/details-with-seats`);
+        return res.data;
+
+    },
+
+    getShowtimeById: async (id) => {
+        const token = localStorage.getItem("token");
+        const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+        const res = await axios.get(`http://localhost:8080/api/showtime/${id}`, config);
+        // Giả định API này trả về cả movieID và theaterID
+        return res.data;
+    },
 };
+

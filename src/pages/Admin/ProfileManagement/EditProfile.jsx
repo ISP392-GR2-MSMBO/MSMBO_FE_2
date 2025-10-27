@@ -1,77 +1,96 @@
 import React, { useEffect, useState } from "react";
-import { adminApi } from "../../../api/adminApi";
-import { toast } from "react-toastify";
+import { Button, Form, Input, message } from "antd";
+import { userApi } from "../../../api/userApi";
+import { useLocalStorage } from "../../../hook/useLocalStorage";
 import "./Profile.css";
 
 const EditProfile = () => {
-    const [admin, setAdmin] = useState({
-        name: "",
-        email: "",
-        password: "",
-    });
+    const [storedUser] = useLocalStorage("user", null);
+    const [form] = Form.useForm();
+    const [loading, setLoading] = useState(true);
+    const [messageApi, contextHolder] = message.useMessage();
 
     useEffect(() => {
+        if (!storedUser || storedUser.roleID !== "MA") {
+            messageApi.error("Bạn không có quyền truy cập trang này!");
+            window.location.href = "/";
+            return;
+        }
+
         const fetchProfile = async () => {
             try {
-                const data = await adminApi.getProfile();
-                setAdmin({
-                    name: data.name || "",
+                const data = await userApi.getUserByUsername(storedUser.userName, "MA");
+                form.setFieldsValue({
+                    fullName: data.fullName || "",
                     email: data.email || "",
-                    password: "",
+                    phone: data.phone || "",
                 });
+                setLoading(false);
             } catch (error) {
-                toast.error("Không thể tải thông tin admin");
+                messageApi.error("Không thể tải thông tin người dùng!");
+                setLoading(false);
             }
         };
+
         fetchProfile();
-    }, []);
+    }, [storedUser, form, messageApi]);
 
-    const handleChange = (e) => {
-        setAdmin({ ...admin, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async (values) => {
         try {
-            await adminApi.updateProfile(admin);
-            toast.success("Cập nhật thông tin thành công!");
+            const data = await userApi.getUserByUsername(storedUser.userName, "MA");
+            await userApi.updateUser(data.userID, values);
+            messageApi.success("Đã lưu thành công!");
         } catch (error) {
-            toast.error("Lỗi khi cập nhật thông tin!");
+            messageApi.error("Lỗi khi cập nhật thông tin!");
+            console.error(error);
         }
     };
 
+    if (loading) return <p className="loading">Đang tải thông tin...</p>;
+
     return (
         <div className="profile-container">
-            <h2>✏️ Chỉnh sửa thông tin Admin</h2>
-            <form className="profile-form" onSubmit={handleSubmit}>
-                <label>Tên:</label>
-                <input
-                    type="text"
-                    name="name"
-                    value={admin.name}
-                    onChange={handleChange}
-                    required
-                />
+            {contextHolder}
+            <h2>✏️ Chỉnh sửa thông tin Manager</h2>
+            <Form
+                form={form}
+                layout="vertical"
+                onFinish={handleSubmit}
+                className="profile-form"
+            >
+                <Form.Item
+                    label="Họ và tên"
+                    name="fullName"
+                    rules={[{ message: "Vui lòng nhập họ và tên" }]}
+                >
+                    <Input />
+                </Form.Item>
 
-                <label>Email:</label>
-                <input
-                    type="email"
+                <Form.Item
+                    label="Email"
                     name="email"
-                    value={admin.email}
-                    onChange={handleChange}
-                    required
-                />
+                    rules={[
+                        { message: "Vui lòng nhập email" },
+                        { type: "email", message: "Email không hợp lệ" },
+                    ]}
+                >
+                    <Input />
+                </Form.Item>
 
-                <label>Mật khẩu (nếu muốn đổi):</label>
-                <input
-                    type="password"
-                    name="password"
-                    value={admin.password}
-                    onChange={handleChange}
-                />
+                <Form.Item
+                    label="Số điện thoại"
+                    name="phone"
+                    rules={[{ message: "Vui lòng nhập số điện thoại" }]}
+                >
+                    <Input />
+                </Form.Item>
 
-                <button type="submit" className="save-btn">💾 Lưu thay đổi</button>
-            </form>
+                <Form.Item>
+                    <Button type="primary" htmlType="submit">
+                        💾 Lưu thay đổi
+                    </Button>
+                </Form.Item>
+            </Form>
         </div>
     );
 };

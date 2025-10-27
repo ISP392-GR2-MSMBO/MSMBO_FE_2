@@ -1,12 +1,17 @@
-// ✅ Hook dùng để lưu user vào localStorage + re-render realtime
+// ✅ Hook lưu và cập nhật localStorage realtime, chống lỗi dữ liệu cũ
 import { useState, useEffect } from "react";
 
 export function useLocalStorage(key, initialValue) {
     const [storedValue, setStoredValue] = useState(() => {
         try {
             const item = localStorage.getItem(key);
-            return item ? JSON.parse(item) : initialValue;
+            if (!item || item === "undefined" || item === "null" || item === "{}") {
+                localStorage.removeItem(key);
+                return initialValue;
+            }
+            return JSON.parse(item);
         } catch {
+            localStorage.removeItem(key);
             return initialValue;
         }
     });
@@ -19,22 +24,28 @@ export function useLocalStorage(key, initialValue) {
             } else {
                 localStorage.setItem(key, JSON.stringify(value));
             }
-            // 🔔 Báo cho các component khác biết user đã thay đổi
-            window.dispatchEvent(new Event("userChange"));
+            // 🔄 Re-render realtime
+            window.dispatchEvent(new Event("storageChange"));
         } catch (error) {
-            console.error(error);
+            console.error("❌ useLocalStorage set error:", error);
         }
     };
 
-    // Lắng nghe thay đổi
     useEffect(() => {
         const handleChange = () => {
-            const item = localStorage.getItem(key);
-            setStoredValue(item ? JSON.parse(item) : initialValue);
+            try {
+                const item = localStorage.getItem(key);
+                setStoredValue(item ? JSON.parse(item) : initialValue);
+            } catch {
+                setStoredValue(initialValue);
+            }
         };
-
-        window.addEventListener("userChange", handleChange);
-        return () => window.removeEventListener("userChange", handleChange);
+        window.addEventListener("storageChange", handleChange);
+        window.addEventListener("storage", handleChange); // Đồng bộ giữa nhiều tab
+        return () => {
+            window.removeEventListener("storageChange", handleChange);
+            window.removeEventListener("storage", handleChange);
+        };
     }, [key, initialValue]);
 
     return [storedValue, setValue];

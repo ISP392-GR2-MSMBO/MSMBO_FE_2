@@ -10,7 +10,7 @@
     text-align: center;
     font-size: 2.2rem;
     font-weight: bold;
-    color: #ffcc00;
+    color: #fff;
     margin-bottom: 40px;
     text-transform: uppercase;
     letter-spacing: 1.5px;
@@ -26,7 +26,7 @@
     background: rgba(255, 255, 255, 0.05);
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 0 20px rgba(255, 204, 0, 0.1);
+    box-shadow: 0 0 20px rgba(244, 49, 5, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -56,7 +56,7 @@
 
 .phim-sap-chieu-wrapper__movie-title {
     font-size: 1.8rem;
-    color: #f1356d;
+    color: #fff;
     margin-bottom: 10px;
 }
 
@@ -69,7 +69,7 @@
 
 .phim-sap-chieu-wrapper__release-date {
     font-size: 1.1rem;
-    color: #f1356d;
+    color: #fff;
 }
 
 /* 📱 Responsive */

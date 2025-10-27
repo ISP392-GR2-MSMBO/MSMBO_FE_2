@@ -16,8 +16,10 @@ import GiaVe from "./pages/Customer/GiaVe";
 import UuDai from "./pages/Customer/UuDai";
 import LienHe from "./pages/Customer/LienHe";
 import MovieDetail from "./pages/Customer/MovieDetail";
-import Seatmap from "./pages/Customer/seatmap";
+import Seatmap from "./pages/Customer/Seatmap";
 import PhimSapChieu from "./pages/Customer/PhimSapChieu";
+import ViewCustomerProfile from "./pages/Customer/Profile/ViewCustomerProfile";
+import EditProfileCustomer from "./pages/Customer/Profile/EditProfileCustomer";
 
 function AppContent() {
   const location = useLocation();
@@ -44,7 +46,10 @@ function AppContent() {
           <Route path="/lien-he" component={LienHe} />
           <Route path="/movies/:name" component={MovieDetail} />
           <Route path="/seatmap/:id" component={Seatmap} />
+          <Route path="/profile" component={ViewCustomerProfile} />
+          <Route path="/edit-profile" component={EditProfileCustomer} />
 
+          <Route path="/book/:showtimeId" component={Seatmap} />
           {/* ====== ADMIN LAYOUT ROUTES ====== */}
           <Route path="/admin" component={AdminPage} />
         </Switch>

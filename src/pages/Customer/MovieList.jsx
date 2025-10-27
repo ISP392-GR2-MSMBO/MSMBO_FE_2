@@ -66,7 +66,7 @@ const MovieListSlider = ({ movies }) => {
                             {/* Nút Mua vé */}
                             <button
                                 style={{
-                                    backgroundColor: "#ec4899",
+                                    backgroundColor: "#e50914",
                                     color: "#fff",
                                     padding: "8px 16px",
                                     borderRadius: "8px",

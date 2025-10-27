@@ -1,0 +1,75 @@
+/* ========================================================================= */
+/* PHẦN CHỈNH SỬA HỒ SƠ (EDIT FORM)                                          */
+/* ========================================================================= */
+.customer-profile-form {
+    /* Giới hạn chiều rộng cho form chính, căn giữa trong container 550px */
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    text-align: left;
+    padding-top: 15px;
+}
+
+.form-group input {
+    /* Đảm bảo input chiếm 100% của max-width 400px */
+    width: 100%;
+    padding: 10px;
+    background: #333;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.disabled-input {
+    /* Giảm nhẹ chiều rộng cho input disabled để phân biệt */
+    width: 90%;
+    background-color: #555;
+    color: #aaa;
+}
+
+/* --- Nút hành động --- */
+.form-actions {
+    /* Đẩy các nút ra giữa/phải của form (400px) */
+    justify-content: center;
+    /* Căn giữa các nút */
+    gap: 25px;
+    /* Tăng khoảng cách giữa nút */
+    margin-top: 30px;
+}
+
+.form-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-cancel {
+    background-color: #ccc;
+    color: #333;
+}
+
+.btn-cancel:hover {
+    background-color: #bbb;
+}
+
+.btn-save {
+    background-color: #e50914;
+    color: white;
+}
+
+.btn-save:hover:not(:disabled) {
+    background-color: #c40710;
+}
+
+.btn-save:disabled {
+    background-color: #ffb3b3;
+    cursor: not-allowed;
+}

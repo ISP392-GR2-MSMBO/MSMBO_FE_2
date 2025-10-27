@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080/api/seat";
+const BASE_URL = "https://api-movie6868.purintech.id.vn/api/seat";
 
 export const seatApi = {
     // 🟢 Lấy tất cả ghế
@@ -25,8 +25,9 @@ export const seatApi = {
     updateSeatStatus: async (seatID, status) => {
         const res = await axios.put(BASE_URL, {
             seatID,
-            status, // "EMPTY" | "BOOKED" | "AVAILABLE" tùy theo API backend
+            status,
         });
         return res.data;
     },
+
 };

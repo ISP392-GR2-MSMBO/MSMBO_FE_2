@@ -65,18 +65,39 @@ export const userApi = {
         });
         return response.data;
     },
-    getUserByUsername: async (username) => {
-        const token = localStorage.getItem("token");
-        const config = token
-            ? { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
-            : { withCredentials: true };
+    // src/api/userApi.js
+    getUserByUsername: async (username, expectedRole) => {
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        const token = storedUser?.token;
 
-        const response = await axios.get("http://localhost:8080/api/users/userName", {
-            ...config,
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+                ...(token && { Authorization: `Bearer ${token}` }),
+            },
             params: { keyword: username },
-        });
+        };
 
-        console.log("📦 API trả về user theo username:", response.data);
-        return response.data; // API trả mảng [{...}]
+        try {
+            const response = await axios.get(
+                "http://localhost:8080/api/users/userName",
+                config
+            );
+
+            const users = response.data;
+            console.log("📦 API trả về:", users);
+
+            // ✅ Nếu có truyền expectedRole (ví dụ "MA" hoặc "CUS") thì lọc theo role
+            const matchedUser = expectedRole
+                ? users.find(u => u.userName === username && u.roleID === expectedRole)
+                : users.find(u => u.userName === username);
+
+            if (matchedUser) return matchedUser;
+
+            throw new Error("Không tìm thấy người dùng phù hợp!");
+        } catch (error) {
+            console.error("❌ Lỗi khi gọi API getUserByUsername:", error);
+            throw error;
+        }
     },
 };

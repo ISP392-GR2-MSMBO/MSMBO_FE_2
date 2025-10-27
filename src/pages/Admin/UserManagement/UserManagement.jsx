@@ -142,13 +142,13 @@ const UserManagement = () => {
             {/* Thanh chọn nhóm người dùng */}
             <div className="role-switch">
                 <button className={viewRole === "AD" ? "active" : ""} onClick={() => setViewRole("AD")}>
-                    👑 Admin & Manager
+                    Admin & Manager
                 </button>
                 <button className={viewRole === "CUS" ? "active" : ""} onClick={() => setViewRole("CUS")}>
-                    🧍 Khách hàng
+                    Khách hàng
                 </button>
                 <button className={viewRole === "ST" ? "active" : ""} onClick={() => setViewRole("ST")}>
-                    👷 Nhân viên
+                    Nhân viên
                 </button>
             </div>
 

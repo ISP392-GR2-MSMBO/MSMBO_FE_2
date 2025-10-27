@@ -1,7 +1,7 @@
 import { Link, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { movieApi } from "../../api/movieApi";
-import { useLocalStorage } from "../../hook/useLocalStorage"; // ✅ import hook
+import { useLocalStorage } from "../../hook/useLocalStorage";
 import "../../index.css";
 
 const Navbar = () => {
@@ -10,8 +10,9 @@ const Navbar = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredMovies, setFilteredMovies] = useState([]);
     const [showResults, setShowResults] = useState(false);
+    const [showUserMenu, setShowUserMenu] = useState(false);
 
-    // ✅ Dùng hook useLocalStorage để theo dõi trạng thái user
+    // ✅ Theo dõi realtime user
     const [user, setUser] = useLocalStorage("user", null);
 
     // ✅ Lấy danh sách phim đang chiếu
@@ -33,6 +34,18 @@ const Navbar = () => {
         fetchMovies();
     }, []);
 
+    // ✅ Đóng menu khi click ra ngoài
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (!e.target.closest(".user-info")) {
+                setShowUserMenu(false);
+            }
+        };
+        document.addEventListener("click", handleClickOutside);
+        return () => document.removeEventListener("click", handleClickOutside);
+    }, []);
+
+    // ✅ Tìm kiếm phim
     const handleSearchChange = (e) => {
         const value = e.target.value;
         setSearchTerm(value);
@@ -62,19 +75,29 @@ const Navbar = () => {
         }
     };
 
+    // ✅ Đăng xuất
     const handleLogout = () => {
-        setUser(null); // ✅ Xóa luôn dữ liệu user trong localStorage
+        setUser(null);
         history.push("/");
     };
 
-    const renderGreeting = () => {
-        if (!user) return null;
+    // ✅ Xem hồ sơ
+    const handleViewProfile = () => {
+        if (user && user.userID) {
+            history.push(`/profile/${user.userID}`);
+        } else {
+            history.push("/profile");
+        }
+        setShowUserMenu(false);
+    };
 
+    // ✅ Lời chào
+    const renderGreeting = () => {
+        if (!user || !user.roleID || !user.userName) return null;
         if (user.roleID === "MA" || user.roleID === "AD") {
             return "Xin chào, Manager";
-        } else {
-            return `Xin chào, ${user.userName}`;
         }
+        return `Xin chào, ${user.userName}`;
     };
 
     return (
@@ -94,6 +117,7 @@ const Navbar = () => {
                     </Link>
                 </div>
 
+                {/* Ô tìm kiếm */}
                 <div
                     style={{
                         display: "flex",
@@ -213,36 +237,67 @@ const Navbar = () => {
                     )}
                 </div>
 
-                {/* Khu vực đăng nhập/đăng ký hoặc user info */}
+                {/* Khu vực đăng nhập / đăng ký */}
                 <div className="top-bar">
                     <div className="auth">
-                        {user ? (
-                            <div className="user-info">
-                                <img
-                                    src="/default-avatar.png"
-                                    alt="avatar"
+                        {user && user.roleID && user.userName ? (
+                            <div className="user-info" style={{ position: "relative" }}>
+                                <div
+                                    onClick={() => setShowUserMenu((prev) => !prev)}
                                     style={{
-                                        width: "28px",
-                                        height: "28px",
-                                        borderRadius: "50%",
-                                        marginRight: "8px",
-                                    }}
-                                />
-                                <span>{renderGreeting()}</span>
-                                <button
-                                    onClick={handleLogout}
-                                    style={{
-                                        marginLeft: "10px",
-                                        padding: "3px 8px",
-                                        borderRadius: "4px",
-                                        border: "none",
-                                        backgroundColor: "#e50914",
-                                        color: "#fff",
+                                        display: "flex",
+                                        alignItems: "center",
                                         cursor: "pointer",
+                                        userSelect: "none",
                                     }}
                                 >
-                                    Đăng xuất
-                                </button>
+                                    <img
+                                        src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                                        alt="avatar"
+                                        style={{
+                                            width: "32px",
+                                            height: "32px",
+                                            borderRadius: "50%",
+                                            marginRight: "8px",
+                                        }}
+                                    />
+                                    <span style={{ fontWeight: 1000, fontSize: "21px" }}>
+                                        {renderGreeting()}
+                                    </span>
+                                </div>
+
+                                {showUserMenu && (
+                                    <div
+                                        style={{
+                                            position: "absolute",
+                                            top: "120%",
+                                            right: 0,
+                                            background: "white",
+                                            border: "1px solid #ddd",
+                                            borderRadius: "10px",
+                                            boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+                                            minWidth: "180px",
+                                            zIndex: 100,
+                                            padding: "8px 0",
+                                        }}
+                                    >
+                                        {/* ✅ Xem hồ sơ */}
+                                        <button onClick={handleViewProfile} className="dropdown-btn">
+                                            👁 Xem hồ sơ
+                                        </button>
+
+                                        <button onClick={() => history.push("/edit-profile")} className="dropdown-btn">
+                                            ✏️ Chỉnh sửa
+                                        </button>
+
+                                        <hr className="dropdown-divider" />
+
+                                        <button onClick={handleLogout} className="dropdown-btn">
+                                            Đăng xuất
+                                        </button>
+
+                                    </div>
+                                )}
                             </div>
                         ) : (
                             <>

@@ -31,16 +31,16 @@ const AdminPage = () => {
     return (
         <div className="admin-container">
             <aside className="admin-sidebar">
-                <h2 className="sidebar-title">🎬 Manager Panel</h2>
+                <h2 className="sidebar-title">Manager Panel</h2>
                 <nav className="sidebar-menu">
                     <NavLink to={`${url}/user-management`} activeClassName="active" className="sidebar-link">
-                        👤 Quản lý người dùng
+                        Quản lý người dùng
                     </NavLink>
                     <NavLink to={`${url}/movie-management`} activeClassName="active" className="sidebar-link">
-                        🎥 Quản lý phim
+                        Quản lý phim
                     </NavLink>
                     <NavLink to={`${url}/seat-management`} activeClassName="active" className="sidebar-link">
-                        🪑 Quản lý ghế ngồi
+                        Quản lý ghế
                     </NavLink>
                 </nav>
 

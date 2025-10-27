@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { movieApi } from "../../api/movieApi";
 import { showtimeApi } from "../../api/showtimeApi";
 import "../../layout/MovieDetail.css";
 
 const MovieDetail = () => {
     const { name } = useParams();
+    const history = useHistory();
+
     const [movie, setMovie] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [approvedShowtimes, setApprovedShowtimes] = useState([]);
     const [selectedDate, setSelectedDate] = useState(
-        new Date().toLocaleDateString("en-CA") // ✅ dùng giờ địa phương VN, không bị lệch
+        new Date().toLocaleDateString("en-CA")
     );
 
     useEffect(() => {
@@ -54,7 +56,7 @@ const MovieDetail = () => {
     if (error) return <p>{error}</p>;
     if (!movie) return <p>Không tìm thấy phim.</p>;
 
-    // ==== Lấy danh sách 5 ngày liên tiếp (hôm nay -> 4 ngày sau) ====
+    // ==== Lấy danh sách 7 ngày liên tiếp ====
     const nextDays = Array.from({ length: 7 }, (_, i) => {
         const date = new Date();
         date.setDate(date.getDate() + i);
@@ -70,18 +72,31 @@ const MovieDetail = () => {
                         day: "2-digit",
                         month: "2-digit",
                     }),
-            value: date.toLocaleDateString("en-CA"), // ✅ giờ VN
+            value: date.toLocaleDateString("en-CA"),
         };
     });
 
     // ==== Lọc lịch chiếu theo ngày và sắp xếp theo giờ ====
+    // Biến này chứa danh sách các suất chiếu đã được lọc theo ngày và sắp xếp theo giờ
     const showtimesForSelectedDate = approvedShowtimes
         .filter((s) => s.date === selectedDate)
         .sort((a, b) => a.startTime.localeCompare(b.startTime));
 
+    // **ĐÃ BỎ:** Không cần hàm groupedShowtimes nữa vì không cần nhóm theo rạp/phòng.
+
+    // ==== Hàm xử lý khi click vào giờ chiếu (Truyền state) ====
+    const handleSelectShowtime = (showtime) => {
+        const dataToPass = {
+            movie: movie,
+            showtime: showtime,
+        };
+
+        history.push(`/book/${showtime.showtimeID}`, { state: dataToPass });
+    };
+
+
     return (
         <div className="movie-detail-page">
-            {/* ===== Trailer ===== */}
             <div className="trailer-section">
                 {movie.trailer ? (
                     <iframe
@@ -94,7 +109,6 @@ const MovieDetail = () => {
                 )}
             </div>
 
-            {/* ===== Thông tin phim ===== */}
             <div className="detail-container">
                 <div className="poster">
                     <img
@@ -128,23 +142,19 @@ const MovieDetail = () => {
                 </div>
             </div>
 
-            {/* ===== Mô tả ===== */}
             <div className="description-section">
                 <h2>Nội dung phim</h2>
                 <p>{movie.description || "Nội dung phim đang được cập nhật."}</p>
             </div>
 
-            {/* ===== Lịch chiếu ===== */}
             <div className="showtime-section">
                 <h2>Lịch Chiếu</h2>
 
-                {/* --- Thanh chọn ngày --- */}
                 <div className="date-tabs">
                     {nextDays.map((day) => (
                         <button
                             key={day.value}
-                            className={`date-tab ${selectedDate === day.value ? "active" : ""
-                                }`}
+                            className={`date-tab ${selectedDate === day.value ? "active" : ""}`}
                             onClick={() => setSelectedDate(day.value)}
                         >
                             {day.label}
@@ -152,11 +162,15 @@ const MovieDetail = () => {
                     ))}
                 </div>
 
-                {/* --- Hiển thị các suất chiếu theo phòng --- */}
                 {showtimesForSelectedDate.length > 0 ? (
-                    <div className="showtime-grid">
+                    // **ĐÃ SỬA:** Hiển thị tất cả giờ chiếu trong một lưới duy nhất
+                    <div className="showtime-grid single-grid">
                         {showtimesForSelectedDate.map((st) => (
-                            <button key={st.showtimeID} className="showtime-btn">
+                            <button
+                                key={st.showtimeID}
+                                className="showtime-btn"
+                                onClick={() => handleSelectShowtime(st)}
+                            >
                                 {st.startTime}
                             </button>
                         ))}

@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { authApi } from "../../api/authApi";
 import { toast } from "react-toastify";
 import { message } from "antd";
-import { useLocalStorage } from "../../hook/useLocalStorage"; // ✅ import hook
+import { useLocalStorage } from "../../hook/useLocalStorage";
 import "../../index.css";
 
 const Login = () => {
@@ -12,7 +12,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // ✅ Dùng useLocalStorage thay vì localStorage trực tiếp
+    // Dùng hook để truy cập và thiết lập user trong localStorage
     const [, setUser] = useLocalStorage("user", null);
 
     const handleLogin = async () => {
@@ -25,16 +25,18 @@ const Login = () => {
         try {
             const data = await authApi.login({ userName, password });
 
-            // ✅ Lưu toàn bộ thông tin vào 1 object
+            // ✅ Lưu user vào localStorage (bao gồm token, roleID, userName)
             setUser({
                 token: data.token,
                 roleID: data.roleID,
                 userName: data.userName,
+                // Thêm userID vào đây nếu API trả về ngay sau login
+                // userID: data.userID, 
             });
 
             toast.success(`Chào mừng ${data.userName}!`);
 
-            if (data.roleID === "AD" || data.roleID === "MA") {
+            if (data.roleID === "MA") {
                 history.push("/admin");
             } else {
                 history.push("/");
@@ -71,13 +73,11 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                 />
                 <br />
-                <button type="submit" className="buy-btn" disabled={loading}>
+                {/* SỬ DỤNG CLASS LOGIN-BTN */}
+                <button type="submit" className="login-btn" disabled={loading}>
                     {loading ? "Đang đăng nhập..." : "Đăng nhập"}
                 </button>
             </form>
-            <p className="auth-link">
-                Chưa có tài khoản? <a href="/register">Đăng ký ngay</a>
-            </p>
         </div>
     );
 };

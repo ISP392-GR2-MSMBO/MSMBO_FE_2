@@ -12,9 +12,10 @@ const MovieDetail = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [approvedShowtimes, setApprovedShowtimes] = useState([]);
-    const [selectedDate, setSelectedDate] = useState(
-        new Date().toLocaleDateString("en-CA")
-    );
+
+    // Khởi tạo ngày hiện tại theo định dạng YYYY-MM-DD
+    const todayDateString = new Date().toLocaleDateString("en-CA");
+    const [selectedDate, setSelectedDate] = useState(todayDateString);
 
     useEffect(() => {
         const fetchMovie = async () => {
@@ -56,7 +57,11 @@ const MovieDetail = () => {
     if (error) return <p>{error}</p>;
     if (!movie) return <p>Không tìm thấy phim.</p>;
 
-    // ==== Lấy danh sách 7 ngày liên tiếp ====
+    // ----------------------------------------------------------------------
+    // LOGIC NGÀY VÀ THỜI GIAN
+    // ----------------------------------------------------------------------
+
+    // Lấy danh sách 7 ngày liên tiếp
     const nextDays = Array.from({ length: 7 }, (_, i) => {
         const date = new Date();
         date.setDate(date.getDate() + i);
@@ -72,17 +77,29 @@ const MovieDetail = () => {
                         day: "2-digit",
                         month: "2-digit",
                     }),
-            value: date.toLocaleDateString("en-CA"),
+            value: date.toLocaleDateString("en-CA"), // Định dạng YYYY-MM-DD
         };
     });
 
-    // ==== Lọc lịch chiếu theo ngày và sắp xếp theo giờ ====
-    // Biến này chứa danh sách các suất chiếu đã được lọc theo ngày và sắp xếp theo giờ
+    // Lấy giờ hiện tại (HH:mm) để so sánh
+    const now = new Date();
+    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const isToday = selectedDate === todayDateString;
+
+    // Lọc lịch chiếu theo ngày và thời gian thực
     const showtimesForSelectedDate = approvedShowtimes
-        .filter((s) => s.date === selectedDate)
+        .filter((s) => s.date === selectedDate) // 1. Lọc theo ngày được chọn
+        .filter((s) => {
+            // 2. Lọc theo thời gian thực (chỉ áp dụng cho ngày hôm nay)
+            if (isToday) {
+                // Giữ lại suất chiếu nếu giờ bắt đầu >= giờ hiện tại
+                return s.startTime >= currentTime;
+            }
+            // Nếu không phải hôm nay, giữ lại tất cả
+            return true;
+        })
         .sort((a, b) => a.startTime.localeCompare(b.startTime));
 
-    // **ĐÃ BỎ:** Không cần hàm groupedShowtimes nữa vì không cần nhóm theo rạp/phòng.
 
     // ==== Hàm xử lý khi click vào giờ chiếu (Truyền state) ====
     const handleSelectShowtime = (showtime) => {
@@ -163,7 +180,6 @@ const MovieDetail = () => {
                 </div>
 
                 {showtimesForSelectedDate.length > 0 ? (
-                    // **ĐÃ SỬA:** Hiển thị tất cả giờ chiếu trong một lưới duy nhất
                     <div className="showtime-grid single-grid">
                         {showtimesForSelectedDate.map((st) => (
                             <button

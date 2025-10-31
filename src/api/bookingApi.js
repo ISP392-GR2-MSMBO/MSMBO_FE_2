@@ -1,16 +1,40 @@
-// src/api/bookingApi.js (hoặc file API tương ứng)
+// src/api/bookingApi.js (Đã sửa đổi)
 
 import axios from 'axios';
 
 const API_BASE_URL = "http://localhost:8080/api";
 
-// Hàm hỗ trợ để lấy token từ localStorage (object 'user')
-const getAuthToken = () => {
+// -------------------------------------------------------------------------
+// AUTH UTILS (Đảm bảo tính nhất quán với cách lưu trữ token)
+// -------------------------------------------------------------------------
+
+/**
+ * Lấy token xác thực từ localStorage (key: "user")
+ */
+export const getAuthToken = () => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
         try {
             const userObject = JSON.parse(storedUser);
+            // ✅ Phải đảm bảo 'token' là key chứa token trong object user
             return userObject?.token;
+        } catch (e) {
+            return null;
+        }
+    }
+    return null;
+};
+
+/**
+ * Lấy ID người dùng hiện tại từ localStorage (key: "user")
+ */
+export const getCurrentUserId = () => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+        try {
+            const userObject = JSON.parse(storedUser);
+            // ✅ Phải đảm bảo 'id' (hoặc 'userID') là key chứa ID người dùng
+            return userObject?.id || userObject?.userID;
         } catch (e) {
             return null;
         }
@@ -25,18 +49,22 @@ const createAuthConfig = () => {
         : {};
 };
 
+// -------------------------------------------------------------------------
+// BOOKING API FUNCTIONS
+// -------------------------------------------------------------------------
+
 export const bookingApi = {
-    // API Đặt vé (đã có trong code Seatmap.js)
+    // API Đặt vé (SỬ DỤNG AUTH CONFIG để tránh lỗi "User not found")
     createBooking: async (data) => {
         const config = createAuthConfig();
         const response = await axios.post(`${API_BASE_URL}/bookings`, data, config);
         return response.data;
     },
 
-    // API Lấy ghế đã bán theo suất chiếu
+    // API Lấy ghế đã bán theo suất chiếu (SỬ DỤNG AUTH CONFIG)
     getSoldSeatsByShowtime: async (showtimeId) => {
         const config = createAuthConfig();
-        // API trả về danh sách các đối tượng ghế đã bán.
+        // Dùng endpoint từ Swagger: /api/bookings/showtime/{showtimeId}/sold-seats
         const response = await axios.get(
             `${API_BASE_URL}/bookings/showtime/${showtimeId}/sold-seats`,
             config
@@ -46,5 +74,23 @@ export const bookingApi = {
         return response.data.map(seat => seat.seatID);
     },
 
-    // ... các hàm API khác ...
+    // API Lấy danh sách booking theo UserID (Tùy chọn)
+    getBookingsByUserId: async (userId) => {
+        const config = createAuthConfig();
+        const response = await axios.get(`${API_BASE_URL}/bookings/user/${userId}`, config);
+        return response.data;
+    },
+
+
+    // ✅ HÀM ĐÃ BỔ SUNG: Lấy chi tiết booking theo BookingID
+    getBookingById: async (bookingId) => {
+        const config = createAuthConfig();
+        const response = await axios.get(`${API_BASE_URL}/bookings/${bookingId}`, config);
+        return response.data;
+    },
+    getBookingDetailById: async (bookingDetailId) => {
+        const config = createAuthConfig();
+        const response = await axios.get(`${API_BASE_URL}/bookings/details/${bookingDetailId}`, config);
+        return response.data;
+    },
 };

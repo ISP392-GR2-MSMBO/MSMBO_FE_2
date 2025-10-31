@@ -13,13 +13,17 @@ const EditProfile = () => {
     useEffect(() => {
         if (!storedUser || storedUser.roleID !== "MA") {
             messageApi.error("Bạn không có quyền truy cập trang này!");
-            window.location.href = "/";
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 500);
             return;
         }
 
         const fetchProfile = async () => {
             try {
+                // Lấy thông tin user hiện tại (để lấy userID mới nhất nếu cần)
                 const data = await userApi.getUserByUsername(storedUser.userName, "MA");
+
                 form.setFieldsValue({
                     fullName: data.fullName || "",
                     email: data.email || "",
@@ -27,6 +31,7 @@ const EditProfile = () => {
                 });
                 setLoading(false);
             } catch (error) {
+                console.error("Lỗi khi tải thông tin Manager:", error);
                 messageApi.error("Không thể tải thông tin người dùng!");
                 setLoading(false);
             }
@@ -37,16 +42,31 @@ const EditProfile = () => {
 
     const handleSubmit = async (values) => {
         try {
-            const data = await userApi.getUserByUsername(storedUser.userName, "MA");
-            await userApi.updateUser(data.userID, values);
-            messageApi.success("Đã lưu thành công!");
+            // BƯỚC 1: Lấy lại thông tin mới nhất và ID chính xác (giống logic Customer)
+            const currentProfile = await userApi.getUserByUsername(storedUser.userName, "MA");
+            const currentUserId = currentProfile?.userID;
+
+            if (!currentUserId) {
+                // Nếu không lấy được ID, ném lỗi để bắt ở catch
+                throw new Error("Không tìm thấy ID người dùng để cập nhật!");
+            }
+
+            // BƯỚC 2: Gọi API cập nhật
+            await userApi.updateUser(currentUserId, values);
+
+            // BƯỚC 3: Cập nhật lại localStorage nếu cần (tùy chọn)
+
+            messageApi.success(" Đã lưu thành công!");
         } catch (error) {
-            messageApi.error("Lỗi khi cập nhật thông tin!");
-            console.error(error);
+            console.error("Lỗi cập nhật:", error.response?.data || error.message);
+
+            // ✅ Bắt lỗi chi tiết từ API response và hiển thị bằng messageApi
+            const apiError = error.response?.data?.message || "Lỗi không xác định khi cập nhật.";
+            messageApi.error(`Cập nhật thất bại. ${apiError}`);
         }
     };
 
-    if (loading) return <p className="loading">Đang tải thông tin...</p>;
+    if (loading) return <p className="loading">⏳ Đang tải thông tin...</p>;
 
     return (
         <div className="profile-container">
@@ -80,14 +100,18 @@ const EditProfile = () => {
                 <Form.Item
                     label="Số điện thoại"
                     name="phone"
-                    rules={[{ message: "Vui lòng nhập số điện thoại" }]}
+                    // Thêm validation cơ bản cho SĐT
+                    rules={[
+                        { message: "Vui lòng nhập số điện thoại" },
+                        { pattern: /^[0-9]{10,}$/, message: "SĐT phải chứa ít nhất 10 chữ số." }
+                    ]}
                 >
                     <Input />
                 </Form.Item>
 
                 <Form.Item>
                     <Button type="primary" htmlType="submit">
-                        💾 Lưu thay đổi
+                        Lưu thay đổi
                     </Button>
                 </Form.Item>
             </Form>

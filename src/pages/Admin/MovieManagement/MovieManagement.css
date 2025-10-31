@@ -123,8 +123,17 @@
     font-weight: bold;
 }
 
-/* Nhóm nút */
+/* Nhóm nút chung */
 .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+    margin-top: 5px;
+}
+
+/* Nhóm nút trong cột Poster (mới) */
+.btn-group-poster {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
@@ -147,6 +156,7 @@
     transition: 0.3s;
 }
 
+/* Nút Duyệt/Từ chối/Sửa/Xóa */
 .approve-btn {
     background-color: #4CAF50;
 }
@@ -179,12 +189,27 @@
     background-color: #da190b;
 }
 
+/* Nút Chi tiết (Thời gian chiếu) */
 .detail-btn {
     background-color: #29b6f6;
+    color: white;
+    /* Đảm bảo màu chữ trắng */
 }
 
 .detail-btn:hover {
     background-color: #0288d1;
+}
+
+/* 🖼️ Nút Xem Banner (mới) */
+.view-banner-btn {
+    background-color: #fdd835;
+    /* Màu vàng nổi bật */
+    color: #333;
+    font-weight: bold;
+}
+
+.view-banner-btn:hover {
+    background-color: #fbc02d;
 }
 
 /* Back button */
@@ -208,7 +233,7 @@
     background-color: #0b7dda;
 }
 
-/* Popup chỉnh sửa */
+/* Popup Overlay (cho cả Edit và Banner) */
 .popup-overlay {
     position: fixed;
     top: 0;
@@ -235,19 +260,20 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+/* Popup chỉnh sửa */
 .popup-content h3 {
     text-align: center;
     margin-bottom: 15px;
 }
 
-.popup-content form label {
+.popup-content label {
     display: block;
     margin-bottom: 10px;
     font-weight: bold;
 }
 
-.popup-content form input,
-.popup-content form select {
+.popup-content input[type="file"],
+.popup-content select {
     width: 100%;
     padding: 6px 10px;
     border-radius: 4px;
@@ -292,13 +318,40 @@
     margin-top: 50px;
 }
 
-/* Ảnh preview */
+/* Ảnh poster preview */
 .poster-preview img {
     border: 1px solid #ccc;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
     max-width: 100%;
     height: auto;
     margin-top: 8px;
+}
+
+/* 🖼️ CSS dành riêng cho Popup Banner */
+.banner-popup-content {
+    max-width: 700px;
+    /* Mở rộng cho banner */
+    padding: 20px;
+}
+
+.banner-image-preview {
+    width: 100%;
+    max-height: 400px;
+    /* Giới hạn chiều cao */
+    object-fit: cover;
+    /* Đảm bảo hình ảnh được căn chỉnh tốt */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    display: block;
+    margin: 10px 0;
+}
+
+.no-banner-text {
+    text-align: center;
+    color: #000;
+    font-weight: bold;
+    padding: 20px;
+    border-radius: 5px;
 }
 
 /* 🔹 Responsive */

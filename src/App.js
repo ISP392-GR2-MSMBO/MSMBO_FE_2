@@ -20,7 +20,10 @@ import Seatmap from "./pages/Customer/Seatmap";
 import PhimSapChieu from "./pages/Customer/PhimSapChieu";
 import ViewCustomerProfile from "./pages/Customer/Profile/ViewCustomerProfile";
 import EditProfileCustomer from "./pages/Customer/Profile/EditProfileCustomer";
-
+import Payment from "./pages/Customer/Payment/Payment";
+import BookingDetail from "./pages/Customer/Profile/BookingDetail";
+import DieuKhoang from "./pages/Customer/ChinhSachVaDieuKhoang/DieuKhoang"; // ✅ IMPORT MỚI
+import ChinhSach from "./pages/Customer/ChinhSachVaDieuKhoang/ChinhSach";   // ✅ IMPORT MỚI
 function AppContent() {
   const location = useLocation();
 
@@ -50,6 +53,15 @@ function AppContent() {
           <Route path="/edit-profile" component={EditProfileCustomer} />
 
           <Route path="/book/:showtimeId" component={Seatmap} />
+
+          <Route path="/payment/:bookingId" element={<Payment />} />
+          <Route exact path="/booking" component={BookingDetail} /> {/* ✅ hiển thị danh sách */}
+          <Route path="/booking/:bookingId" component={BookingDetail} />
+
+          {/* ✅ ROUTE MỚI: Điều khoản sử dụng */}
+          <Route path="/dieu-khoan" component={DieuKhoang} />
+          {/* ✅ ROUTE MỚI: Chính sách bảo mật */}
+          <Route path="/chinh-sach-bao-mat" component={ChinhSach} />
           {/* ====== ADMIN LAYOUT ROUTES ====== */}
           <Route path="/admin" component={AdminPage} />
         </Switch>

@@ -3,6 +3,10 @@ import { movieApi } from "../../../api/movieApi";
 import { toast } from "react-toastify";
 import "./MovieManagement.css";
 import { useHistory } from "react-router-dom";
+// ✅ IMPORT PHÂN TRANG VÀ MODAL TỪ ANTD
+import { Pagination, Spin, Modal } from 'antd';
+
+const { confirm } = Modal;
 
 // === Component hiển thị "Xem thêm / Thu gọn" ===
 const ExpandableText = ({ text, maxChars = 60 }) => {
@@ -33,23 +37,6 @@ const ExpandableText = ({ text, maxChars = 60 }) => {
     );
 };
 
-// === Hàm upload ảnh Cloudinary ===
-const uploadImageToCloudinary = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "movie-upload1");
-    formData.append("cloud_name", "dmprbuogr");
-
-    const res = await fetch(
-        "https://api.cloudinary.com/v1_1/dmprbuogr/image/upload",
-        {
-            method: "POST",
-            body: formData,
-        }
-    );
-    const data = await res.json();
-    return data.secure_url;
-};
 
 const MovieManagement = () => {
     const history = useHistory();
@@ -58,6 +45,13 @@ const MovieManagement = () => {
     const [showEditForm, setShowEditForm] = useState(false);
     const [selectedMovie, setSelectedMovie] = useState(null);
     const [searchText, setSearchText] = useState("");
+    const [showBannerPopup, setShowBannerPopup] = useState(false);
+    const [selectedBannerUrl, setSelectedBannerUrl] = useState(null);
+    const [selectedMovieName, setSelectedMovieName] = useState("");
+
+    // ✅ STATE MỚI CHO PHÂN TRANG
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageSize] = useState(10); // 10 phim mỗi trang
 
     // --- Lấy danh sách phim ---
     const fetchMovies = async () => {
@@ -75,30 +69,50 @@ const MovieManagement = () => {
             setMovies(mapped);
         } catch (error) {
             console.error(error);
-            toast.error("❌ Lỗi khi tải danh sách phim!");
+            // ✅ ĐÃ SỬA: Bỏ ký tự ❌ thừa (để react-toastify tự quản lý icon)
+            toast.error("Lỗi khi tải danh sách phim!");
         } finally {
             setLoading(false);
         }
     };
 
+    // Khi tìm kiếm thay đổi, reset về trang 1
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchText]);
+
     useEffect(() => {
         fetchMovies();
     }, []);
 
-    // --- Xóa phim ---
-    const handleDelete = async (movie) => {
-        if (!window.confirm(`Xác nhận xóa phim "${movie.movieName}"?`)) return;
-        try {
-            await movieApi.deleteMovie(movie.movieID);
-            toast.success("🗑️ Xóa thành công!");
-            setMovies((prev) => prev.filter((m) => m.movieID !== movie.movieID));
-        } catch (error) {
-            console.error(error);
-            toast.error("❌ Xóa thất bại!");
-        }
+    // --- Xử lý sự kiện phân trang ---
+    const handlePageChange = (page, size) => {
+        setCurrentPage(page);
     };
 
-    // --- Duyệt phim ---
+    // --- Xử lý các hành động quản lý phim ---
+
+    const handleDelete = (movie) => {
+        confirm({
+            title: 'Xác nhận xóa phim',
+            content: `Bạn có chắc chắn muốn xóa phim "${movie.movieName}"?`,
+            okText: 'Xóa',
+            okType: 'danger',
+            cancelText: 'Hủy',
+            onOk: async () => {
+                try {
+                    await movieApi.deleteMovie(movie.movieID);
+                    toast.success("Xóa thành công!");
+                    setMovies((prev) => prev.filter((m) => m.movieID !== movie.movieID));
+                } catch (error) {
+                    console.error(error);
+                    // ✅ ĐÃ SỬA: Bỏ ký tự ❌ thừa
+                    toast.error("Xóa thất bại!");
+                }
+            },
+        });
+    };
+
     const handleApprove = async (movie) => {
         if (!window.confirm(`Duyệt phim "${movie.movieName}"?`)) return;
         try {
@@ -113,11 +127,11 @@ const MovieManagement = () => {
             toast.success(`✅ Phim "${movie.movieName}" đã được duyệt!`);
         } catch (error) {
             console.error(error);
-            toast.error("❌ Lỗi khi duyệt phim!");
+            // ✅ ĐÃ SỬA: Bỏ ký tự ❌ thừa
+            toast.error("Lỗi khi duyệt phim!");
         }
     };
 
-    // --- Từ chối phim ---
     const handleReject = async (movie) => {
         if (!window.confirm(`Từ chối phim "${movie.movieName}"?`)) return;
         try {
@@ -132,39 +146,58 @@ const MovieManagement = () => {
             toast.info(`🚫 Phim "${movie.movieName}" đã bị từ chối.`);
         } catch (error) {
             console.error(error);
-            toast.error("❌ Lỗi khi từ chối phim!");
+            // ✅ ĐÃ SỬA: Bỏ ký tự ❌ thừa
+            toast.error("Lỗi khi từ chối phim!");
         }
     };
 
-    // --- Chỉnh sửa phim ---
     const handleEditClick = (movie) => {
         setSelectedMovie({ ...movie });
         setShowEditForm(true);
     };
 
+    // --- Cập nhật trạng thái ---
     const handleStatusSave = async () => {
         if (!selectedMovie) return;
         try {
-            const updatedMovie = { ...selectedMovie };
+            const updatedMovie = {
+                ...selectedMovie,
+                poster: selectedMovie.poster,
+            };
+
             await movieApi.updateMovie(updatedMovie.movieID, updatedMovie);
+
             setMovies((prev) =>
                 prev.map((m) =>
                     m.movieID === updatedMovie.movieID ? updatedMovie : m
                 )
             );
-            toast.success("💾 Cập nhật trạng thái/phim thành công!");
+
+            toast.success("Cập nhật trạng thái thành công!");
             setShowEditForm(false);
         } catch (error) {
             console.error(error);
-            toast.error("❌ Lỗi khi cập nhật phim!");
+            toast.error("Lỗi khi cập nhật phim!");
         }
     };
 
-    if (loading) return <div className="loading">Đang tải...</div>;
+    const handleShowBanner = (movie) => {
+        setSelectedBannerUrl(movie.banner);
+        setSelectedMovieName(movie.movieName);
+        setShowBannerPopup(true);
+    };
 
+    if (loading) return <div className="loading"><Spin tip="Đang tải danh sách phim..." size="large" /></div>;
+
+    // 1. Lọc phim theo từ khóa
     const filteredMovies = movies.filter((m) =>
         m.movieName?.toLowerCase().includes(searchText.toLowerCase())
     );
+
+    // 2. TÍNH TOÁN PHIM HIỂN THỊ TRÊN TRANG HIỆN TẠI
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const currentMovies = filteredMovies.slice(startIndex, endIndex);
 
     return (
         <div className="movie-management-container">
@@ -203,9 +236,11 @@ const MovieManagement = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredMovies.map((movie) => (
+                        {/* ✅ DÙNG currentMovies CHO PHÂN TRANG */}
+                        {currentMovies.map((movie) => (
                             <tr key={movie.movieID}>
                                 <td>{movie.movieID}</td>
+                                {/* CỘT POSTER (ĐÃ BỎ NÚT SỬA POSTER) */}
                                 <td>
                                     {movie.poster ? (
                                         <>
@@ -218,31 +253,46 @@ const MovieManagement = () => {
                                                     marginBottom: "6px",
                                                 }}
                                             />
-                                            <br />
-                                            <button
-                                                className="detail-btn"
-                                                onClick={() =>
-                                                    history.push(`/admin/showtimes/${movie.movieID}`)
-                                                }
-                                            >
-                                                ⏰ Chi tiết
-                                            </button>
+                                            <div className="btn-group-poster">
+                                                <button
+                                                    className="detail-btn"
+                                                    onClick={() =>
+                                                        history.push(`/admin/showtimes/${movie.movieID}`)
+                                                    }
+                                                >
+                                                    Chi tiết
+                                                </button>
+                                                <button
+                                                    className="detail-btn view-banner-btn"
+                                                    onClick={() => handleShowBanner(movie)}
+                                                >
+                                                    🖼️ Banner
+                                                </button>
+                                            </div>
                                         </>
                                     ) : (
                                         <>
                                             <span style={{ color: "#777" }}>Chưa có ảnh</span>
-                                            <br />
-                                            <button
-                                                className="detail-btn"
-                                                onClick={() =>
-                                                    history.push(`/admin/showtimes/${movie.movieID}`)
-                                                }
-                                            >
-                                                ⏰ Chi tiết
-                                            </button>
+                                            <div className="btn-group-poster">
+                                                <button
+                                                    className="detail-btn"
+                                                    onClick={() =>
+                                                        history.push(`/admin/showtimes/${movie.movieID}`)
+                                                    }
+                                                >
+                                                    Chi tiết
+                                                </button>
+                                                <button
+                                                    className="detail-btn view-banner-btn"
+                                                    onClick={() => handleShowBanner(movie)}
+                                                >
+                                                    🖼️ Banner
+                                                </button>
+                                            </div>
                                         </>
                                     )}
                                 </td>
+                                {/* Hết CỘT POSTER */}
                                 <td>{movie.movieName}</td>
                                 <td>{movie.genre}</td>
                                 <td>{movie.duration} phút</td>
@@ -255,7 +305,7 @@ const MovieManagement = () => {
                                 <td>
                                     {movie.trailer ? (
                                         <a href={movie.trailer} target="_blank" rel="noreferrer">
-                                            🎞️ Xem trailer
+                                            Xem trailer
                                         </a>
                                     ) : "-"}
                                 </td>
@@ -272,7 +322,7 @@ const MovieManagement = () => {
                                 </td>
                                 <td>
                                     {movie.status === "Ended" ? (
-                                        <span className="ended-text">🎬 Đã kết thúc</span>
+                                        <span className="ended-text"> Đã kết thúc</span>
                                     ) : movie.approveStatus === "APPROVE" ? (
                                         <span className="approved-text">✅ Đã duyệt</span>
                                     ) : movie.approveStatus === "DENIED" ? (
@@ -302,19 +352,30 @@ const MovieManagement = () => {
                                         className="edit-btn"
                                         onClick={() => handleEditClick(movie)}
                                     >
-                                        ✏️ Sửa trạng thái / poster
+                                        Sửa
                                     </button>
                                     <button
                                         className="delete-btn"
                                         onClick={() => handleDelete(movie)}
                                     >
-                                        🗑️ Xóa
+                                        Xóa
                                     </button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+            </div>
+
+            {/* ✅ PHÂN TRANG ANTD */}
+            <div className="pagination-container" style={{ textAlign: 'center', marginTop: '20px' }}>
+                <Pagination
+                    current={currentPage}
+                    pageSize={pageSize}
+                    total={filteredMovies.length} // Tổng số lượng phim (sau khi lọc)
+                    onChange={handlePageChange}
+                    showSizeChanger={false} // Tắt chọn kích thước trang
+                />
             </div>
 
             {/* Quay lại */}
@@ -324,13 +385,13 @@ const MovieManagement = () => {
                 </button>
             </div>
 
-            {/* Popup chỉnh sửa */}
+            {/* Popup chỉnh sửa trạng thái (ĐÃ BỎ PHẦN POSTER) */}
             {showEditForm && selectedMovie && (
                 <div className="popup-overlay">
                     <div className="popup-content">
-                        <h3>✏️ Chỉnh sửa trạng thái / poster</h3>
+                        <h3>✏️ Chỉnh sửa trạng thái</h3>
 
-                        {/* Poster */}
+                        {/* Poster Preview (Giữ lại để xem) */}
                         <div className="poster-preview">
                             <p><strong>Poster hiện tại:</strong></p>
                             {selectedMovie.poster ? (
@@ -340,27 +401,6 @@ const MovieManagement = () => {
                                     style={{ width: "150px", borderRadius: "8px", marginBottom: "8px" }}
                                 />
                             ) : <p>Chưa có ảnh</p>}
-                        </div>
-
-                        <div className="poster-upload">
-                            <p><strong>Tải poster mới:</strong></p>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={async (e) => {
-                                    const file = e.target.files[0];
-                                    if (!file) return;
-                                    try {
-                                        toast.info("⏳ Đang tải ảnh lên Cloudinary...");
-                                        const url = await uploadImageToCloudinary(file);
-                                        setSelectedMovie((prev) => ({ ...prev, poster: url }));
-                                        toast.success("✅ Ảnh đã tải lên thành công!");
-                                    } catch (err) {
-                                        console.error(err);
-                                        toast.error("❌ Lỗi khi tải ảnh!");
-                                    }
-                                }}
-                            />
                         </div>
 
                         {/* Chọn trạng thái */}
@@ -389,6 +429,33 @@ const MovieManagement = () => {
                             onClick={() => setShowEditForm(false)}
                         >
                             ❌ Hủy
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Popup Xem Banner (GIỮ NGUYÊN) */}
+            {showBannerPopup && (
+                <div className="popup-overlay" onClick={() => setShowBannerPopup(false)}>
+                    <div className="popup-content banner-popup-content" onClick={(e) => e.stopPropagation()}>
+                        <h3>Banner phim "{selectedMovieName}"</h3>
+                        {selectedBannerUrl ? (
+                            <img
+                                src={selectedBannerUrl}
+                                alt={`Banner ${selectedMovieName}`}
+                                className="banner-image-preview"
+                            />
+                        ) : (
+                            <p className="no-banner-text">
+                                Phim này chưa có banner được tải lên.
+                            </p>
+                        )}
+                        <button
+                            className="cancel-btn"
+                            onClick={() => setShowBannerPopup(false)}
+                            style={{ display: 'block', margin: '15px auto 0 auto' }}
+                        >
+                            Đóng
                         </button>
                     </div>
                 </div>

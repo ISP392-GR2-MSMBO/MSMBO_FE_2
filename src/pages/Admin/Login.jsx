@@ -1,23 +1,25 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { authApi } from "../../api/authApi";
-import { toast } from "react-toastify";
-import { message } from "antd";
+// Loại bỏ import toast vì đã chuyển sang dùng message Antd
+// import { toast } from "react-toastify";
+import { message } from "antd"; // ✅ Giữ lại import message
 import { useLocalStorage } from "../../hook/useLocalStorage";
 import "../../index.css";
 
 const Login = () => {
     const history = useHistory();
+    const [messageApi, contextHolder] = message.useMessage();
+
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
-    // Dùng hook để truy cập và thiết lập user trong localStorage
     const [, setUser] = useLocalStorage("user", null);
 
     const handleLogin = async () => {
         if (!userName || !password) {
-            message.error("Vui lòng nhập đầy đủ thông tin!");
+            messageApi.error("Vui lòng nhập đầy đủ thông tin!");
             return;
         }
 
@@ -25,16 +27,17 @@ const Login = () => {
         try {
             const data = await authApi.login({ userName, password });
 
-            // ✅ Lưu user vào localStorage (bao gồm token, roleID, userName)
+            // ✅ Lưu user vào localStorage
             setUser({
                 token: data.token,
                 roleID: data.roleID,
                 userName: data.userName,
-                // Thêm userID vào đây nếu API trả về ngay sau login
-                // userID: data.userID, 
+                userID: data.userID,
+
             });
 
-            toast.success(`Chào mừng ${data.userName}!`);
+            // ✅ Sử dụng messageApi.success
+            messageApi.success(`Chào mừng ${data.userName}!`);
 
             if (data.roleID === "MA") {
                 history.push("/admin");
@@ -43,7 +46,8 @@ const Login = () => {
             }
         } catch (err) {
             console.error("Login error:", err);
-            toast.error("Đăng nhập thất bại! Sai username hoặc password.");
+            // ✅ Sử dụng messageApi.error cho lỗi đăng nhập thất bại
+            messageApi.error("Tên đăng nhập hoặc mật khẩu không đúng.");
         } finally {
             setLoading(false);
         }
@@ -51,6 +55,9 @@ const Login = () => {
 
     return (
         <div className="auth-container">
+            {/* ✅ THÊM contextHolder VÀO ĐÂY */}
+            {contextHolder}
+
             <h2>Đăng nhập</h2>
             <form
                 className="auth-form"
@@ -61,14 +68,14 @@ const Login = () => {
             >
                 <input
                     type="text"
-                    placeholder="Username"
+                    placeholder="Tên đăng nhập"
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
                 />
                 <br />
                 <input
                     type="password"
-                    placeholder="Password"
+                    placeholder="Mật khẩu"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />

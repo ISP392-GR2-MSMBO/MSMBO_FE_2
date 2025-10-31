@@ -1,14 +1,45 @@
+// src/pages/Customer/Seatmap.jsx (CODE ĐÃ SỬA ĐỔI HOÀN CHỈNH)
+
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { showtimeApi } from "../../api/showtimeApi";
-import { bookingApi } from "../../api/bookingApi"; // Đã sửa đổi
+import { bookingApi } from "../../api/bookingApi";
 import { seatApi } from "../../api/seatApi";
 import { movieApi } from "../../api/movieApi";
 import "../../layout/Seatmap.css";
 
 // =========================================================================
-// CẤU TRÚC VÀ LOGIC HỖ TRỢ
+// HÀM HỖ TRỢ XÁC THỰC (Được thêm/sửa)
+// =========================================================================
+
+/** Lấy Token từ localStorage (key: "user") */
+const getAuthToken = () => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+        try {
+            const userObject = JSON.parse(storedUser);
+            return userObject?.token;
+        } catch (e) { return null; }
+    }
+    return null;
+};
+
+/** Lấy ID người dùng từ localStorage (key: "user") */
+const getCurrentUserId = () => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+        try {
+            const userObject = JSON.parse(storedUser);
+            // Dùng 'id' hoặc 'userID' tùy thuộc vào cách backend trả về
+            return userObject?.id || userObject?.userID;
+        } catch (e) { return null; }
+    }
+    return null;
+};
+
+// =========================================================================
+// CẤU TRÚC VÀ LOGIC HỖ TRỢ (GIỮ NGUYÊN)
 // =========================================================================
 
 const SEAT_PRICE = {
@@ -32,9 +63,7 @@ const findPartnerSeat = (seat, allSeats) => {
     );
 };
 
-// =========================================================================
-// HÀM TẠO LAYOUT CUỐI CÙNG (HỢP NHẤT GHẾ CƠ BẢN VÀ GHẾ ĐÃ BÁN)
-// =========================================================================
+// Hàm tạo layout cuối cùng (Hợp nhất ghế cơ bản và ghế đã bán)
 const createFinalSeatsLayout = (theaterId, apiSeatsData, soldSeatIDs) => {
     // 1. Tạo Set Sold Seats để tra cứu nhanh
     const soldSeatIDSet = new Set(soldSeatIDs);
@@ -94,13 +123,23 @@ const Seatmap = () => {
     const [loading, setLoading] = useState(true);
     const [isBooking, setIsBooking] = useState(false);
 
-    const CURRENT_USER_ID = 1;
+    // SỬA ĐỔI LỚN 1: Lấy ID người dùng thực tế
+    const CURRENT_USER_ID = getCurrentUserId();
+
 
     // =========================================================================
-    // 1. FETCH DATA THỰC TẾ (Giữ nguyên logic)
+    // 1. FETCH DATA THỰC TẾ (Thêm kiểm tra đăng nhập)
     // =========================================================================
     useEffect(() => {
         const fetchSeatAndShowtimeData = async () => {
+            // SỬA ĐỔI LỚN 2: Bắt buộc đăng nhập trước khi gọi API cần xác thực
+            if (!CURRENT_USER_ID || !getAuthToken()) {
+                toast.error("Vui lòng đăng nhập để tiếp tục đặt vé.");
+                history.push("/login", { from: location.pathname }); // Chuyển hướng
+                setLoading(false);
+                return;
+            }
+
             if (!showtimeId) {
                 setLoading(false);
                 toast.error("Thiếu ID suất chiếu!");
@@ -138,13 +177,14 @@ const Seatmap = () => {
                 setShowtimeDetails({ ...currentStDetails, roomName: roomName });
 
                 const seatsData = await seatApi.getSeatsByRoom(theaterId);
+                // API này cần Auth Token (đã sửa trong bookingApi.js)
                 const soldSeatIDs = await bookingApi.getSoldSeatsByShowtime(showtimeId);
 
                 const seatsWithStatus = createFinalSeatsLayout(theaterId, seatsData, soldSeatIDs);
                 setAllSeats(seatsWithStatus);
 
             } catch (error) {
-                toast.error("❌ Lỗi tải dữ liệu phim/suất chiếu hoặc ghế đã bán. Kiểm tra API Backend.");
+                toast.error("❌ Lỗi tải dữ liệu. Kiểm tra API Backend hoặc phiên đăng nhập.");
                 console.error("Fetch Data Error:", error);
                 setMovieDetails(null);
                 setShowtimeDetails(null);
@@ -159,7 +199,7 @@ const Seatmap = () => {
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [showtimeId]);
+    }, [showtimeId, history, location.pathname]);
 
     // =========================================================================
     // 2. LOGIC CHỌN/BỎ CHỌN GHẾ (Giữ nguyên logic)
@@ -248,10 +288,13 @@ const Seatmap = () => {
         .sort((a, b) => a.localeCompare(b));
 
 
-    // =========================================================================
-    // 4. HÀM ĐẶT VÉ (Giữ nguyên logic)
-    // =========================================================================
     const handleBooking = async () => {
+        if (!CURRENT_USER_ID) {
+            toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
+            history.push("/login");
+            return;
+        }
+
         if (selectedSeats.length === 0) {
             toast.warn("⚠️ Vui lòng chọn ghế!");
             return;
@@ -271,11 +314,13 @@ const Seatmap = () => {
             const result = await bookingApi.createBooking(bookingData);
             toast.success("✅ Đặt vé thành công! Chuyển đến thanh toán.");
 
-            history.push(`/payment/${result.bookingID}`, { bookingDetails: result });
+            // 👉 Chuyển đến Payment page
+            //history.push(`/payment/${result.bookingID}`, { bookingDetails: result });
 
         } catch (error) {
             console.error("Booking failed:", error);
-            toast.error("❌ Đặt vé thất bại. Có thể ghế đã được người khác chọn.");
+            // Lỗi 401/403 (User not found) hoặc 409 (Conflict - ghế đã bị chọn)
+            toast.error("❌ Đặt vé thất bại. Có thể ghế đã được người khác chọn hoặc phiên đăng nhập không hợp lệ.");
         } finally {
             setIsBooking(false);
         }
@@ -283,9 +328,10 @@ const Seatmap = () => {
 
 
     // =========================================================================
-    // 5. RENDER UI
+    // 5. RENDER UI (Giữ nguyên)
     // =========================================================================
 
+    // ... (phần render UI giữ nguyên, không cần sửa đổi) ...
     const groupSeatsByRow = allSeats.reduce((acc, seat) => {
         if (!acc[seat.row]) {
             acc[seat.row] = [];
@@ -307,7 +353,7 @@ const Seatmap = () => {
     }
 
     /**
-     * Component con để render một ghế (Giữ nguyên)
+     * Component con để render một ghế
      */
     const SeatItem = ({ seat, onClick }) => {
         const isSelected = selectedSeats.some(s => s.seatID === seat.seatID);
@@ -355,7 +401,6 @@ const Seatmap = () => {
                             const isCoupleRow = rowSeats.length > 0 && rowSeats[0].type.toUpperCase() === "COUPLE";
 
                             if (isCoupleRow) {
-                                // Logic render GHẾ ĐÔI
                                 const coupleBlock1 = rowSeats.filter(s => s.number <= 4);
                                 const coupleBlock2 = rowSeats.filter(s => s.number >= 7);
 
@@ -365,7 +410,6 @@ const Seatmap = () => {
                                         <div className="seatmap-seats couple-group-1">
                                             {coupleBlock1.map(seat => <SeatItem key={seat.seatID} seat={seat} onClick={toggleSeat} />)}
                                         </div>
-                                        {/* LỐI ĐI CHÍNH GIỮA */}
                                         {coupleBlock1.length > 0 && coupleBlock2.length > 0 && <div className="seatmap-aisle-spacer"></div>}
                                         <div className="seatmap-seats couple-group-2">
                                             {coupleBlock2.map(seat => <SeatItem key={seat.seatID} seat={seat} onClick={toggleSeat} />)}
@@ -375,7 +419,6 @@ const Seatmap = () => {
                                 );
 
                             } else {
-                                // Logic render GHẾ THƯỜNG
                                 const leftBlock = rowSeats.filter(s => s.number <= 5);
                                 const rightBlock = rowSeats.filter(s => s.number >= 6);
 
@@ -383,15 +426,12 @@ const Seatmap = () => {
                                     <div key={row} className="seatmap-seat-row">
                                         <span className="seatmap-row-label">{row}</span>
 
-                                        {/* Khối Trái (1-5) */}
                                         <div className="seatmap-seats standard-group-left">
                                             {leftBlock.map(seat => <SeatItem key={seat.seatID} seat={seat} onClick={toggleSeat} />)}
                                         </div>
 
-                                        {/* LỐI ĐI CHÍNH GIỮA */}
                                         {leftBlock.length > 0 && rightBlock.length > 0 && <div className="seatmap-aisle-spacer"></div>}
 
-                                        {/* Khối Phải (6-10) */}
                                         <div className="seatmap-seats standard-group-right">
                                             {rightBlock.map(seat => <SeatItem key={seat.seatID} seat={seat} onClick={toggleSeat} />)}
                                         </div>
@@ -402,18 +442,15 @@ const Seatmap = () => {
                         })}
                     </div>
 
-                    {/* 🔥 VỊ TRÍ MÀN HÌNH ĐÃ ĐIỀU CHỈNH: Vạch trước, chữ sau */}
                     <div className="seatmap-screen-line"></div>
                     <h2 className="seatmap-screen-title">Màn hình</h2>
 
                     <div className="seatmap-legend">
-                        {/* Nhóm 1: TRẠNG THÁI (Trống, Đang chọn, Đã bán, Vô hiệu hóa) */}
                         <div className="legend-group status-group">
                             <span className="legend-box selected"></span> Đang chọn
                             <span className="legend-box sold"></span> Đã bán (SOLD)
                         </div>
 
-                        {/* Nhóm 2: LOẠI GHẾ (Thường, VIP, Đôi) */}
                         <div className="legend-group type-group">
                             <span className="legend-box standard"></span> Ghế thường
                             <span className="legend-box vip"></span> Ghế VIP
@@ -422,7 +459,7 @@ const Seatmap = () => {
                     </div>
                 </div>
 
-                {/* ===== Cột phải: Tổng kết & Thanh toán (Giữ nguyên) ===== */}
+                {/* ===== Cột phải: Tổng kết & Thanh toán ===== */}
                 <div className="seatmap-summary-box">
                     <div className="seatmap-summary-content">
                         <img

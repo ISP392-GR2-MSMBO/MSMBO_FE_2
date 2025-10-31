@@ -13,7 +13,10 @@ import ShowtimeManagement from "./ShowtimeManagement/ShowtimeManagement";
 import ViewProfile from "./ProfileManagement/ViewProfile";
 import EditProfile from "./ProfileManagement/EditProfile";
 import SeatManagement from "./SeatManagement/SeatManagement";
-import { useLocalStorage } from "../../hook/useLocalStorage"; // ✅ thêm
+import ManagerReport from "./ManagerReport/ManagerReport";
+import Revenue from "./Revenue/Revenue";
+
+import { useLocalStorage } from "../../hook/useLocalStorage";
 
 const AdminPage = () => {
     const { path, url } = useRouteMatch();
@@ -42,10 +45,17 @@ const AdminPage = () => {
                     <NavLink to={`${url}/seat-management`} activeClassName="active" className="sidebar-link">
                         Quản lý ghế
                     </NavLink>
+                    <NavLink to={`${url}/report-management`} activeClassName="active" className="sidebar-link">
+                        Hỗ trợ
+                    </NavLink>
+                    <NavLink to={`${url}/revenue`} activeClassName="active" className="sidebar-link">
+                        Thống kê doanh thu
+                    </NavLink>
+
                 </nav>
 
                 <button className="logout-btn" onClick={handleLogout}>
-                    🚪 Đăng xuất
+                    Đăng xuất
                 </button>
             </aside>
 
@@ -86,6 +96,9 @@ const AdminPage = () => {
                         <Route path={`${path}/movie-management`} component={MovieManagement} />
                         <Route path={`${path}/showtimes/:movieID`} component={ShowtimeManagement} />
                         <Route path={`${path}/seat-management`} component={SeatManagement} />
+                        <Route path={`${path}/report-management`} component={ManagerReport} />
+                        <Route path={`${path}/revenue`} component={Revenue} />
+
                         <Route path={`${path}/view-profile`} component={ViewProfile} />
                         <Route path={`${path}/edit-profile`} component={EditProfile} />
                     </Switch>

@@ -1,12 +1,13 @@
 // ✅ src/api/movieApi.js
 import axios from "axios";
+import { baseApiUrl } from "../utils/endpoints";
 
 export const movieApi = {
     // Lấy tất cả phim
     getMovies: async () => {
         const token = localStorage.getItem("token");
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-        const res = await axios.get("http://localhost:8080/api/movie", config);
+        const res = await axios.get(`${baseApiUrl}/movie`, config);
         return res.data;
     },
     getNowShowing: async () => {

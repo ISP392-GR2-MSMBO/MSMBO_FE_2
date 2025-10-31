@@ -91,6 +91,12 @@ const Navbar = () => {
         setShowUserMenu(false);
     };
 
+    const handleViewHistory = () => {
+        history.push("/booking");
+        setShowUserMenu(false);
+    };
+
+
     // ✅ Lời chào
     const renderGreeting = () => {
         if (!user || !user.roleID || !user.userName) return null;
@@ -123,7 +129,7 @@ const Navbar = () => {
                         display: "flex",
                         alignItems: "center",
                         flexGrow: 1,
-                        maxWidth: "400px",
+                        maxWidth: "550px",
                         margin: "0 auto",
                         position: "relative",
                     }}
@@ -140,9 +146,10 @@ const Navbar = () => {
                             background: "white",
                             border: "1px solid #e50914",
                             borderRadius: "6px",
-                            padding: "6px 10px",
+                            padding: "10px 15px",
                             flexGrow: 1,
                             outline: "none",
+                            height: '45px',
                         }}
                     />
                     <button
@@ -152,7 +159,7 @@ const Navbar = () => {
                             }
                         }}
                         style={{
-                            padding: "6px 12px",
+                            padding: "10px 12px",
                             borderRadius: "6px",
                             border: "none",
                             backgroundColor: "#e50914",
@@ -160,6 +167,7 @@ const Navbar = () => {
                             cursor: "pointer",
                             marginLeft: "8px",
                             flexShrink: 0,
+                            height: '45px',
                         }}
                     >
                         Tìm
@@ -290,12 +298,16 @@ const Navbar = () => {
                                             ✏️ Chỉnh sửa
                                         </button>
 
+                                        {/* ✅ NÚT MỚI: LỊCH SỬ GIAO DỊCH */}
+                                        <button onClick={handleViewHistory} className="dropdown-btn">
+                                            📜 Lịch sử Giao dịch
+                                        </button>
+
                                         <hr className="dropdown-divider" />
 
                                         <button onClick={handleLogout} className="dropdown-btn">
                                             Đăng xuất
                                         </button>
-
                                     </div>
                                 )}
                             </div>
@@ -321,7 +333,7 @@ const Navbar = () => {
                 </div>
                 <Link to="/lich-chieu">Lịch chiếu</Link>
                 <Link to="/gia-ve">Giá vé</Link>
-                <Link to="/uudai">Ưu đãi</Link>
+                <Link to="/uu-dai">Ưu đãi</Link>
                 <Link to="/lien-he">Liên hệ</Link>
             </nav>
         </header>

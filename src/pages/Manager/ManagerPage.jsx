@@ -6,7 +6,7 @@ import {
     useRouteMatch,
     useHistory,
 } from "react-router-dom";
-import "./AdminPage.css";
+import "./ManagerPage.css";
 import UserManagement from "./UserManagement/UserManagement";
 import MovieManagement from "./MovieManagement/MovieManagement";
 import ShowtimeManagement from "./ShowtimeManagement/ShowtimeManagement";
@@ -30,7 +30,9 @@ const AdminPage = () => {
         setUser(null); // ✅ clear toàn bộ user
         history.push("/login");
     };
-
+    const handleGoHome = () => {
+        history.push("/");
+    };
     return (
         <div className="admin-container">
             <aside className="admin-sidebar">
@@ -54,8 +56,8 @@ const AdminPage = () => {
 
                 </nav>
 
-                <button className="logout-btn" onClick={handleLogout}>
-                    Đăng xuất
+                <button className="logout-btn" onClick={handleGoHome}>
+                    Quay về Trang chủ
                 </button>
             </aside>
 

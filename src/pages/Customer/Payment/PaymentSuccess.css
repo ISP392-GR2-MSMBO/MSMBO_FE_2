@@ -1,0 +1,23 @@
+.payment-cancel-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 90vh;
+    background: #1a1a1a;
+    color: white;
+}
+
+.payment-cancel-page button {
+    background: #ff4444;
+    color: white;
+    border: none;
+    margin-top: 20px;
+    padding: 10px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.payment-cancel-page button:hover {
+    background: #ff6666;
+}

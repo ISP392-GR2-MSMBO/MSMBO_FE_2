@@ -1,5 +1,3 @@
-// src/pages/Customer/Seatmap.jsx (CODE ĐÃ SỬA ĐỔI HOÀN CHỈNH)
-
 import React, { useState, useEffect } from "react";
 import { useHistory, useParams, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -8,9 +6,10 @@ import { bookingApi } from "../../api/bookingApi";
 import { seatApi } from "../../api/seatApi";
 import { movieApi } from "../../api/movieApi";
 import "../../layout/Seatmap.css";
+import { paymentApi } from "../../api/paymentApi";
 
 // =========================================================================
-// HÀM HỖ TRỢ XÁC THỰC (Được thêm/sửa)
+// HÀM HỖ TRỢ XÁC THỰC
 // =========================================================================
 
 /** Lấy Token từ localStorage (key: "user") */
@@ -31,7 +30,6 @@ const getCurrentUserId = () => {
     if (storedUser) {
         try {
             const userObject = JSON.parse(storedUser);
-            // Dùng 'id' hoặc 'userID' tùy thuộc vào cách backend trả về
             return userObject?.id || userObject?.userID;
         } catch (e) { return null; }
     }
@@ -39,23 +37,21 @@ const getCurrentUserId = () => {
 };
 
 // =========================================================================
-// CẤU TRÚC VÀ LOGIC HỖ TRỢ (GIỮ NGUYÊN)
+// CẤU TRÚC VÀ LOGIC HỖ TRỢ
 // =========================================================================
 
 const SEAT_PRICE = {
     STANDARD: 95000,
     VIP: 110000,
-    COUPLE: 180000,
+    COUPLE: 110000,
 };
 
-// MOCK API: Giả định một hàm API để tra cứu tên phòng dựa trên theaterID
 const mockTheaterApi = {
     getTheaterName: (theaterId) => {
         return `Phòng Chiếu ${theaterId}`;
     }
 };
 
-// Hàm tìm ghế đối tác
 const findPartnerSeat = (seat, allSeats) => {
     const partnerNumber = seat.number % 2 === 1 ? seat.number + 1 : seat.number - 1;
     return allSeats.find(
@@ -65,13 +61,11 @@ const findPartnerSeat = (seat, allSeats) => {
 
 // Hàm tạo layout cuối cùng (Hợp nhất ghế cơ bản và ghế đã bán)
 const createFinalSeatsLayout = (theaterId, apiSeatsData, soldSeatIDs) => {
-    // 1. Tạo Set Sold Seats để tra cứu nhanh
     const soldSeatIDSet = new Set(soldSeatIDs);
 
     const finalLayout = [];
     const fixedRowsOrder = ["I", "H", "G", "F", "E", "D", "C", "B", "A"];
 
-    // 2. Hợp nhất dữ liệu
     apiSeatsData.forEach(seat => {
         const seatID = seat.seatID;
         let finalStatus = seat.status ? seat.status.toUpperCase() : "AVAILABLE";
@@ -79,6 +73,8 @@ const createFinalSeatsLayout = (theaterId, apiSeatsData, soldSeatIDs) => {
         if (soldSeatIDSet.has(seatID) && finalStatus === "AVAILABLE") {
             finalStatus = "SOLD";
         }
+
+        const apiPrice = seat.finalePrice || SEAT_PRICE[seat.type.toUpperCase()] || SEAT_PRICE.STANDARD;
 
         if (fixedRowsOrder.includes(seat.row)) {
             finalLayout.push({
@@ -88,12 +84,11 @@ const createFinalSeatsLayout = (theaterId, apiSeatsData, soldSeatIDs) => {
                 number: seat.number,
                 type: seat.type ? seat.type.toUpperCase() : "STANDARD",
                 status: finalStatus,
-                price: seat.finalePrice,
+                price: apiPrice,
             });
         }
     });
 
-    // 3. Sắp xếp lại
     finalLayout.sort((a, b) => {
         const rowOrder = fixedRowsOrder.indexOf(a.row) - fixedRowsOrder.indexOf(b.row);
         if (rowOrder !== 0) return rowOrder;
@@ -123,19 +118,17 @@ const Seatmap = () => {
     const [loading, setLoading] = useState(true);
     const [isBooking, setIsBooking] = useState(false);
 
-    // SỬA ĐỔI LỚN 1: Lấy ID người dùng thực tế
     const CURRENT_USER_ID = getCurrentUserId();
 
 
     // =========================================================================
-    // 1. FETCH DATA THỰC TẾ (Thêm kiểm tra đăng nhập)
+    // 1. FETCH DATA THỰC TẾ
     // =========================================================================
     useEffect(() => {
         const fetchSeatAndShowtimeData = async () => {
-            // SỬA ĐỔI LỚN 2: Bắt buộc đăng nhập trước khi gọi API cần xác thực
             if (!CURRENT_USER_ID || !getAuthToken()) {
                 toast.error("Vui lòng đăng nhập để tiếp tục đặt vé.");
-                history.push("/login", { from: location.pathname }); // Chuyển hướng
+                history.push("/login", { from: location.pathname });
                 setLoading(false);
                 return;
             }
@@ -177,7 +170,6 @@ const Seatmap = () => {
                 setShowtimeDetails({ ...currentStDetails, roomName: roomName });
 
                 const seatsData = await seatApi.getSeatsByRoom(theaterId);
-                // API này cần Auth Token (đã sửa trong bookingApi.js)
                 const soldSeatIDs = await bookingApi.getSoldSeatsByShowtime(showtimeId);
 
                 const seatsWithStatus = createFinalSeatsLayout(theaterId, seatsData, soldSeatIDs);
@@ -202,7 +194,7 @@ const Seatmap = () => {
     }, [showtimeId, history, location.pathname]);
 
     // =========================================================================
-    // 2. LOGIC CHỌN/BỎ CHỌN GHẾ (Giữ nguyên logic)
+    // 2. LOGIC CHỌN/BỎ CHỌN GHẾ
     // =========================================================================
     const toggleSeat = (seat) => {
         if (seat.status !== "AVAILABLE") return;
@@ -227,6 +219,7 @@ const Seatmap = () => {
                     toast.error(`Ghế đối tác ${partnerSeat.row}${partnerSeat.number} không khả dụng!`);
                     return;
                 }
+                // Thêm cả hai ghế vào danh sách được chọn
                 newSelectedSeats.push(seat, partnerSeat);
             }
 
@@ -238,42 +231,29 @@ const Seatmap = () => {
             }
         }
 
+        // Loại bỏ trùng lặp và cập nhật
         setSelectedSeats(Array.from(new Set(newSelectedSeats)));
     };
 
     // =========================================================================
-    // 3. TÍNH TỔNG CỘNG (Giữ nguyên logic)
+    // 3. TÍNH TỔNG CỘNG
     // =========================================================================
     const calculateTotal = () => {
         let total = 0;
-        let countedSeatIDs = new Set();
 
         const seatPriceMap = new Map();
         allSeats.forEach(seat => {
-            const apiPrice = seat.price;
-            seatPriceMap.set(seat.seatID, apiPrice);
+            const finalPrice = seat.price || (SEAT_PRICE[seat.type.toUpperCase()] || SEAT_PRICE.STANDARD);
+            seatPriceMap.set(seat.seatID, finalPrice);
         });
 
         selectedSeats.forEach(seat => {
-            if (countedSeatIDs.has(seat.seatID)) return;
-
-            const type = seat.type ? seat.type.toUpperCase() : "STANDARD";
-            const isCouple = type === "COUPLE";
-
-            const price = seatPriceMap.get(seat.seatID) || SEAT_PRICE.STANDARD;
-
-            if (isCouple) {
+            const price = seatPriceMap.get(seat.seatID);
+            if (price) {
                 total += price;
-
-                const partnerSeat = findPartnerSeat(seat, allSeats);
-
-                countedSeatIDs.add(seat.seatID);
-                if (partnerSeat) {
-                    countedSeatIDs.add(partnerSeat.seatID);
-                }
             } else {
-                total += price;
-                countedSeatIDs.add(seat.seatID);
+                const fallbackPrice = SEAT_PRICE[seat.type.toUpperCase()] || SEAT_PRICE.STANDARD;
+                total += fallbackPrice;
             }
         });
 
@@ -288,6 +268,9 @@ const Seatmap = () => {
         .sort((a, b) => a.localeCompare(b));
 
 
+    // =========================================================================
+    // 4. LOGIC ĐẶT VÉ VÀ CHUYỂN HƯỚNG (ĐÃ SỬA LỖI LẤY BOOKING ID & CHUYỂN HƯỚNG)
+    // =========================================================================
     const handleBooking = async () => {
         if (!CURRENT_USER_ID) {
             toast.error("Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
@@ -311,16 +294,27 @@ const Seatmap = () => {
 
         try {
             setIsBooking(true);
-            const result = await bookingApi.createBooking(bookingData);
+            const response = await bookingApi.createBooking(bookingData);
+
+            // ✅ SỬA ĐỔI: Kiểm tra và lấy bookingID từ response
+            const bookingID = response?.bookingID || response?.data?.bookingID || response?.id;
+
+            if (!bookingID) {
+                throw new Error("Backend không trả về Booking ID hợp lệ.");
+            }
+
+            const PaymentInfo = await paymentApi.createPaymentLink(bookingID);
+            console.log("PaymentInfo:", PaymentInfo);
             toast.success("✅ Đặt vé thành công! Chuyển đến thanh toán.");
 
-            // 👉 Chuyển đến Payment page
-            //history.push(`/payment/${result.bookingID}`, { bookingDetails: result });
+            // 🚀 SỬA LỖI CHUYỂN HƯỚNG: Dùng window.location.href để chuyển hướng ra ngoài ứng dụng
+            window.location.href = PaymentInfo.checkoutUrl;
 
         } catch (error) {
-            console.error("Booking failed:", error);
-            // Lỗi 401/403 (User not found) hoặc 409 (Conflict - ghế đã bị chọn)
-            toast.error("❌ Đặt vé thất bại. Có thể ghế đã được người khác chọn hoặc phiên đăng nhập không hợp lệ.");
+            console.error("Booking failed:", error.response?.data || error.message);
+            // Cải thiện thông báo lỗi
+            const errorMessage = error.response?.data?.message || error.message || "Lỗi không xác định.";
+            toast.error(`❌ Đặt vé thất bại. ${errorMessage}. Vui lòng kiểm tra console.`);
         } finally {
             setIsBooking(false);
         }
@@ -328,10 +322,9 @@ const Seatmap = () => {
 
 
     // =========================================================================
-    // 5. RENDER UI (Giữ nguyên)
+    // 5. RENDER UI
     // =========================================================================
 
-    // ... (phần render UI giữ nguyên, không cần sửa đổi) ...
     const groupSeatsByRow = allSeats.reduce((acc, seat) => {
         if (!acc[seat.row]) {
             acc[seat.row] = [];
@@ -340,7 +333,7 @@ const Seatmap = () => {
         return acc;
     }, {});
 
-    const sortedRows = ["H", "G", "F", "E", "D", "C", "B", "A"].filter(row => groupSeatsByRow[row] && groupSeatsByRow[row].length > 0);
+    const sortedRows = ["I", "H", "G", "F", "E", "D", "C", "B", "A"].filter(row => groupSeatsByRow[row] && groupSeatsByRow[row].length > 0);
 
     const movieName = movieDetails?.movieName || "Tên phim...";
     const posterUrl = movieDetails?.poster || movieDetails?.posterUrl || "https://placehold.co/500x750";
@@ -355,7 +348,7 @@ const Seatmap = () => {
     /**
      * Component con để render một ghế
      */
-    const SeatItem = ({ seat, onClick }) => {
+    const SeatItem = ({ seat }) => {
         const isSelected = selectedSeats.some(s => s.seatID === seat.seatID);
         const isUnavailable = seat.status === "UNAVAILABLE";
         const isSold = seat.status === "SOLD";
@@ -408,11 +401,11 @@ const Seatmap = () => {
                                     <div key={row} className="seatmap-seat-row couple-row">
                                         <span className="seatmap-row-label">{row}</span>
                                         <div className="seatmap-seats couple-group-1">
-                                            {coupleBlock1.map(seat => <SeatItem key={seat.seatID} seat={seat} onClick={toggleSeat} />)}
+                                            {coupleBlock1.map(seat => <SeatItem key={seat.seatID} seat={seat} />)}
                                         </div>
                                         {coupleBlock1.length > 0 && coupleBlock2.length > 0 && <div className="seatmap-aisle-spacer"></div>}
                                         <div className="seatmap-seats couple-group-2">
-                                            {coupleBlock2.map(seat => <SeatItem key={seat.seatID} seat={seat} onClick={toggleSeat} />)}
+                                            {coupleBlock2.map(seat => <SeatItem key={seat.seatID} seat={seat} />)}
                                         </div>
                                         <span className="seatmap-row-label">{row}</span>
                                     </div>
@@ -427,13 +420,13 @@ const Seatmap = () => {
                                         <span className="seatmap-row-label">{row}</span>
 
                                         <div className="seatmap-seats standard-group-left">
-                                            {leftBlock.map(seat => <SeatItem key={seat.seatID} seat={seat} onClick={toggleSeat} />)}
+                                            {leftBlock.map(seat => <SeatItem key={seat.seatID} seat={seat} />)}
                                         </div>
 
                                         {leftBlock.length > 0 && rightBlock.length > 0 && <div className="seatmap-aisle-spacer"></div>}
 
                                         <div className="seatmap-seats standard-group-right">
-                                            {rightBlock.map(seat => <SeatItem key={seat.seatID} seat={seat} onClick={toggleSeat} />)}
+                                            {rightBlock.map(seat => <SeatItem key={seat.seatID} seat={seat} />)}
                                         </div>
                                         <span className="seatmap-row-label">{row}</span>
                                     </div>

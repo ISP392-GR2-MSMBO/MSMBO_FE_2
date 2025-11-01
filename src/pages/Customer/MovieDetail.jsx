@@ -4,6 +4,23 @@ import { movieApi } from "../../api/movieApi";
 import { showtimeApi } from "../../api/showtimeApi";
 import "../../layout/MovieDetail.css";
 
+// 🆕 Hàm helper để lấy class CSS cho độ tuổi dựa trên giá trị age
+const getAgeRatingClass = (age) => {
+    if (!age) return "";
+    // Xử lý các định dạng như "13+" hoặc chỉ số "18"
+    const ageStr = String(age).toLowerCase().replace('+', '');
+    const ageNum = parseInt(ageStr, 10);
+
+    // Ánh xạ độ tuổi sang class CSS đã định nghĩa trong MovieDetail.css
+    if (ageNum >= 18) return "age-rating-t18";
+    if (ageNum >= 16) return "age-rating-t16";
+    if (ageNum >= 13) return "age-rating-t13";
+    // Mặc định cho Phổ biến/Khuyến khích (P/K) nếu độ tuổi nhỏ (ví dụ: 10, 12)
+    if (ageNum <= 12) return "age-rating-p";
+
+    return "";
+};
+
 const MovieDetail = () => {
     const { name } = useParams();
     const history = useHistory();
@@ -36,6 +53,7 @@ const MovieDetail = () => {
                     return;
                 }
 
+                // Giả định rằng bạn có showtimeApi.getApprovedShowtimesByMovie
                 const showtimes = await showtimeApi.getApprovedShowtimesByMovie(movieID);
                 const activeShowtimes = Array.isArray(showtimes)
                     ? showtimes.filter((s) => !s.deleted)
@@ -134,7 +152,15 @@ const MovieDetail = () => {
                     />
                 </div>
                 <div className="info">
-                    <h1 className="title">{movie.movieName}</h1>
+                    {/* 👇 ĐÃ BỔ SUNG ĐỘ TUỔI VÀO ĐÂY */}
+                    <h1 className="title">
+                        {movie.movieName}
+                        {movie.age && (
+                            <span className={`age-rating ${getAgeRatingClass(movie.age)}`}>
+                                {`T${String(movie.age).replace('+', '')}`}
+                            </span>
+                        )}
+                    </h1>
                     <p>
                         <strong>🎭 Thể loại:</strong> {movie.genre || "Không rõ"}
                     </p>

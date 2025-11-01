@@ -8,6 +8,16 @@
     font-family: "Baloo 2", sans-serif;
 }
 
+.lichchieu-title {
+    color: #fff;
+    /* ✅ ĐÃ THÊM: Màu trắng cho tiêu đề */
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
 /* === Thanh chọn ngày === */
 .lichchieu-date-tabs {
     display: flex;

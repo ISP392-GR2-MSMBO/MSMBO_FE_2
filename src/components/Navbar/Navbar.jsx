@@ -37,8 +37,9 @@ const Navbar = () => {
     // ✅ Đóng menu khi click ra ngoài
     useEffect(() => {
         const handleClickOutside = (e) => {
-            if (!e.target.closest(".user-info")) {
+            if (!e.target.closest(".user-info") && !e.target.closest(".search-results")) {
                 setShowUserMenu(false);
+                setShowResults(false);
             }
         };
         document.addEventListener("click", handleClickOutside);
@@ -78,6 +79,8 @@ const Navbar = () => {
     // ✅ Đăng xuất
     const handleLogout = () => {
         setUser(null);
+        localStorage.removeItem("token");
+        localStorage.removeItem("userID");
         history.push("/");
     };
 
@@ -96,15 +99,21 @@ const Navbar = () => {
         setShowUserMenu(false);
     };
 
+    const handleManagerPanel = () => {
+        history.push("/manager");
+        setShowUserMenu(false);
+    };
 
     // ✅ Lời chào
     const renderGreeting = () => {
         if (!user || !user.roleID || !user.userName) return null;
-        if (user.roleID === "MA" || user.roleID === "AD") {
+        if (user.roleID === "MA") {
             return "Xin chào, Manager";
         }
         return `Xin chào, ${user.userName}`;
     };
+
+    const isManager = user && user.roleID === "MA";
 
     return (
         <header className="navbar">
@@ -149,7 +158,7 @@ const Navbar = () => {
                             padding: "10px 15px",
                             flexGrow: 1,
                             outline: "none",
-                            height: '45px',
+                            height: "45px",
                         }}
                     />
                     <button
@@ -167,7 +176,7 @@ const Navbar = () => {
                             cursor: "pointer",
                             marginLeft: "8px",
                             flexShrink: 0,
-                            height: '45px',
+                            height: "45px",
                         }}
                     >
                         Tìm
@@ -246,7 +255,7 @@ const Navbar = () => {
                 </div>
 
                 {/* Khu vực đăng nhập / đăng ký */}
-                <div className="top-bar">
+                <div className="top-bar" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                     <div className="auth">
                         {user && user.roleID && user.userName ? (
                             <div className="user-info" style={{ position: "relative" }}>
@@ -269,7 +278,7 @@ const Navbar = () => {
                                             marginRight: "8px",
                                         }}
                                     />
-                                    <span style={{ fontWeight: 1000, fontSize: "21px" }}>
+                                    <span style={{ fontWeight: 1000, fontSize: "21px", color: "white" }}>
                                         {renderGreeting()}
                                     </span>
                                 </div>
@@ -289,7 +298,6 @@ const Navbar = () => {
                                             padding: "8px 0",
                                         }}
                                     >
-                                        {/* ✅ Xem hồ sơ */}
                                         <button onClick={handleViewProfile} className="dropdown-btn">
                                             👁 Xem hồ sơ
                                         </button>
@@ -298,23 +306,36 @@ const Navbar = () => {
                                             ✏️ Chỉnh sửa
                                         </button>
 
-                                        {/* ✅ NÚT MỚI: LỊCH SỬ GIAO DỊCH */}
                                         <button onClick={handleViewHistory} className="dropdown-btn">
                                             📜 Lịch sử Giao dịch
                                         </button>
 
+                                        {/* ✅ Chỉ hiện Manager Panel nếu là MA */}
+                                        {isManager && (
+                                            <>
+                                                <hr className="dropdown-divider" />
+                                                <button onClick={handleManagerPanel} className="dropdown-btn">
+                                                    🔑 Manager Panel
+                                                </button>
+                                            </>
+                                        )}
+
                                         <hr className="dropdown-divider" />
 
                                         <button onClick={handleLogout} className="dropdown-btn">
-                                            Đăng xuất
+                                            🚪 Đăng xuất
                                         </button>
                                     </div>
                                 )}
                             </div>
                         ) : (
                             <>
-                                <Link to="/register">Đăng ký</Link>
-                                <Link to="/login">Đăng nhập</Link>
+                                <Link to="/register" style={{ color: "#fff", marginLeft: "10px" }}>
+                                    Đăng ký
+                                </Link>
+                                <Link to="/login" style={{ color: "#fff", marginLeft: "10px" }}>
+                                    Đăng nhập
+                                </Link>
                             </>
                         )}
                     </div>

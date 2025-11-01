@@ -57,7 +57,18 @@ const MovieListSlider = ({ movies }) => {
                         </div>
 
                         {/* Movie Info */}
-                        <h4 className="mt-2 text-center font-semibold text-white">{movie.movieName}</h4>
+                        {/* Đã áp dụng CSS inline để tên phim TO và ĐẬM hơn, giữ nguyên màu TRẮNG */}
+                        <h4
+                            style={{
+                                marginTop: "15px", // Tăng khoảng cách trên
+                                fontSize: "1.5rem", // Tăng cỡ chữ (tương đương text-xl)
+                                fontWeight: 700, // Tăng độ đậm (font-bold)
+                                textAlign: "center",
+                                color: "#fff" // Giữ màu TRẮNG
+                            }}
+                        >
+                            {movie.movieName}
+                        </h4>
                         <p className="text-sm text-center text-gray-300">Thể loại: {movie.genre}</p>
                         <p className="text-sm text-center text-gray-300">Thời lượng: {movie.duration} phút</p>
 

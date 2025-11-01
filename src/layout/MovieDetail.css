@@ -24,7 +24,6 @@
     position: relative;
     border-radius: 10px;
     margin-top: 0;
-    /* Không cần kéo lên */
     z-index: 1;
 }
 
@@ -32,7 +31,6 @@
 .poster {
     position: relative;
     margin-top: 0;
-    /* 🔥 bỏ margin-top âm */
     z-index: 2;
     flex-shrink: 0;
 }
@@ -56,11 +54,59 @@
 }
 
 .info .title {
+    /* Đã thêm display: flex để căn chỉnh độ tuổi bên cạnh tên phim */
+    display: flex;
+    align-items: center;
+    /* Căn giữa theo chiều dọc */
+    gap: 15px;
+    /* Khoảng cách giữa tên phim và tag độ tuổi */
     font-size: 48px;
     font-weight: 900;
     margin-bottom: 10px;
     color: #fff;
 }
+
+/* 🔥 CSS CHO TAG ĐỘ TUỔI */
+.age-rating {
+    font-size: 20px;
+    /* Nhỏ hơn tên phim */
+    font-weight: 800;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    /* Đảm bảo tag là một khối nhỏ (inline-block) */
+    display: inline-block;
+}
+
+/* Màu mẫu cho các mức rating phổ biến */
+.age-rating-p,
+.age-rating-k {
+    /* Phổ biến / Khuyến khích */
+    background-color: #4CAF50;
+    /* Xanh lá */
+    color: #000;
+}
+
+.age-rating-t13 {
+    /* T13 */
+    background-color: #ff9800;
+    /* Vàng cam */
+    color: #000;
+}
+
+.age-rating-t16 {
+    /* T16 */
+    background-color: #0970d7;
+    /* Đỏ */
+}
+
+.age-rating-t18 {
+    /* T18 */
+    background-color: #ff0022;
+    /* Tím */
+}
+
 
 .info p {
     margin: 8px 0;
@@ -501,18 +547,13 @@
 /* Thêm CSS này để định nghĩa giao diện lưới hiển thị giờ chiếu */
 .showtime-grid {
     display: flex;
-    /* Dùng Flexbox để sắp xếp các nút */
     flex-wrap: wrap;
-    /* Cho phép các nút xuống dòng */
     gap: 15px;
-    /* 🔥 THÊM KHOẢNG CÁCH GIỮA CÁC NÚT (15px là khoảng cách phù hợp) */
     margin-top: 20px;
-    /* Thêm khoảng cách với thanh chọn ngày */
     padding: 10px 0;
 }
 
 .showtime-btn {
-    /* Giữ nguyên các thuộc tính hiển thị cơ bản của nút */
     background-color: #e50914;
     border: none;
     border-radius: 8px;
@@ -521,8 +562,5 @@
     font-weight: bold;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
-    /* Thêm shadow để làm nổi bật */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
 }
-
-/* ... (các hover effect khác giữ nguyên) */

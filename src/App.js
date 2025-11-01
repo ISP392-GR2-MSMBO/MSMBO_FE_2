@@ -1,15 +1,17 @@
+// 📁 src/App.js
 import {
   BrowserRouter as Router,
   Route,
   Switch,
   useLocation,
 } from "react-router-dom";
+
 import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import Home from "./Home";
-import Login from "./pages/Admin/Login";
+import Login from "./pages/Manager/Login";
 import Register from "./pages/Customer/Register";
-import AdminPage from "./pages/Admin/AdminPage"; // ✅ Đổi từ AdminLayout thành AdminPage
+import ManagerPage from "./pages/Manager/ManagerPage";
 import Phim from "./pages/Customer/Phim";
 import LichChieu from "./pages/Customer/LichChieu";
 import GiaVe from "./pages/Customer/GiaVe";
@@ -22,12 +24,15 @@ import ViewCustomerProfile from "./pages/Customer/Profile/ViewCustomerProfile";
 import EditProfileCustomer from "./pages/Customer/Profile/EditProfileCustomer";
 import Payment from "./pages/Customer/Payment/Payment";
 import BookingDetail from "./pages/Customer/Profile/BookingDetail";
-import DieuKhoang from "./pages/Customer/ChinhSachVaDieuKhoang/DieuKhoang"; // ✅ IMPORT MỚI
-import ChinhSach from "./pages/Customer/ChinhSachVaDieuKhoang/ChinhSach";   // ✅ IMPORT MỚI
+import DieuKhoang from "./pages/Customer/ChinhSachVaDieuKhoang/DieuKhoang";
+import ChinhSach from "./pages/Customer/ChinhSachVaDieuKhoang/ChinhSach";
+import PaymentSuccess from "./pages/Customer/Payment/PaymentSuccess";
+
+// ✅ Thêm import mới
+import ProtectedRoute from "./components/ProtectedRoute";
+
 function AppContent() {
   const location = useLocation();
-
-  // 🔹 Kiểm tra nếu đang trong khu vực admin
   const isAdminPage = location.pathname.startsWith("/admin");
 
   return (
@@ -51,19 +56,22 @@ function AppContent() {
           <Route path="/seatmap/:id" component={Seatmap} />
           <Route path="/profile" component={ViewCustomerProfile} />
           <Route path="/edit-profile" component={EditProfileCustomer} />
-
           <Route path="/book/:showtimeId" component={Seatmap} />
-
-          <Route path="/payment/:bookingId" element={<Payment />} />
-          <Route exact path="/booking" component={BookingDetail} /> {/* ✅ hiển thị danh sách */}
+          <Route path="/payment/:bookingId" component={Payment} />
+          <Route exact path="/booking" component={BookingDetail} />
           <Route path="/booking/:bookingId" component={BookingDetail} />
-
-          {/* ✅ ROUTE MỚI: Điều khoản sử dụng */}
+          <Route path="/payment-success" component={PaymentSuccess} /> {/* Đã có */}
+          <Route path="/payment-result" component={PaymentSuccess} />
+          {/* ✅ ROUTE MỚI: Điều khoản & Chính sách */}
           <Route path="/dieu-khoan" component={DieuKhoang} />
-          {/* ✅ ROUTE MỚI: Chính sách bảo mật */}
           <Route path="/chinh-sach-bao-mat" component={ChinhSach} />
-          {/* ====== ADMIN LAYOUT ROUTES ====== */}
-          <Route path="/admin" component={AdminPage} />
+
+          {/* ====== ADMIN ROUTE BẢO VỆ ====== */}
+          <ProtectedRoute
+            path="/manager"
+            component={ManagerPage}
+            requiredRole="MA"
+          />
         </Switch>
       </div>
 

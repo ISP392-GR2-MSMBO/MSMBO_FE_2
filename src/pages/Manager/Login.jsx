@@ -40,7 +40,9 @@ const Login = () => {
             messageApi.success(`Chào mừng ${data.userName}!`);
 
             if (data.roleID === "MA") {
-                history.push("/admin");
+                history.push("/manager");
+            } else if (data.roleID === "ST") { // <--- THÊM ĐIỀU KIỆN CHO STAFF
+                history.push("/staff");
             } else {
                 history.push("/");
             }

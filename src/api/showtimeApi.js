@@ -5,7 +5,7 @@ export const showtimeApi = {
     getShowtimes: async () => {
         const token = localStorage.getItem("token");
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-        const res = await axios.get("http://localhost:8080/api/showtime", config);
+        const res = await axios.get("https://api-movie6868.purintech.id.vn/api/showtime", config);
         return res.data;
     },
 
@@ -13,7 +13,7 @@ export const showtimeApi = {
     getShowtimesByMovie: async (movieID) => {
         const token = localStorage.getItem("token");
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-        const res = await axios.get(`http://localhost:8080/api/showtime/movie/${movieID}`, config);
+        const res = await axios.get(`https://api-movie6868.purintech.id.vn/api/showtime/movie/${movieID}`, config);
         return res.data;
     },
 
@@ -21,7 +21,7 @@ export const showtimeApi = {
     createShowtime: async (data) => {
         const token = localStorage.getItem("token");
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-        const res = await axios.post("http://localhost:8080/api/showtime", data, config);
+        const res = await axios.post("https://api-movie6868.purintech.id.vn/api/showtime", data, config);
         return res.data;
     },
 
@@ -29,7 +29,7 @@ export const showtimeApi = {
     updateShowtime: async (id, data) => {
         const token = localStorage.getItem("token");
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-        const res = await axios.put(`http://localhost:8080/api/showtime/${id}`, data, config);
+        const res = await axios.put(`https://api-movie6868.purintech.id.vn/api/showtime/${id}`, data, config);
         return res.data;
     },
 
@@ -37,7 +37,7 @@ export const showtimeApi = {
     deleteShowtime: async (id) => {
         const token = localStorage.getItem("token");
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-        const res = await axios.delete(`http://localhost:8080/api/showtime/${id}`, config);
+        const res = await axios.delete(`https://api-movie6868.purintech.id.vn/api/showtime/${id}`, config);
         return res.data;
     },
     // ✅ Duyệt showtime (Approve)
@@ -45,7 +45,7 @@ export const showtimeApi = {
         const token = localStorage.getItem("token");
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
         // Giả sử backend có endpoint: POST /api/showtime/{id}/approve
-        const res = await axios.post(`http://localhost:8080/api/showtime/${id}/approve`, {}, config);
+        const res = await axios.post(`https://api-movie6868.purintech.id.vn/api/showtime/${id}/approve`, {}, config);
         return res.data;
     },
 
@@ -54,12 +54,12 @@ export const showtimeApi = {
         const token = localStorage.getItem("token");
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
         // Giả sử backend có endpoint: POST /api/showtime/{id}/reject
-        const res = await axios.post(`http://localhost:8080/api/showtime/${id}/reject`, {}, config);
+        const res = await axios.post(`https://api-movie6868.purintech.id.vn/api/showtime/${id}/reject`, {}, config);
         return res.data;
     },
     //customer
     getApprovedShowtimesByMovie: async (movieID) => {
-        const res = await axios.get(`http://localhost:8080/api/showtime/movie/${movieID}`);
+        const res = await axios.get(`https://api-movie6868.purintech.id.vn/api/showtime/movie/${movieID}`);
         const data = res.data;
 
         return Array.isArray(data)
@@ -73,7 +73,7 @@ export const showtimeApi = {
     // ✅ Lấy chi tiết suất chiếu và trạng thái ghế đã đặt
     getShowtimeDetailsWithSeats: async (showtimeId) => {
         // GIẢ ĐỊNH Backend có endpoint này. Đây là API QUAN TRỌNG nhất cho Seatmap
-        const res = await axios.get(`http://localhost:8080/api/showtime/${showtimeId}/details-with-seats`);
+        const res = await axios.get(`https://api-movie6868.purintech.id.vn/api/showtime/${showtimeId}/details-with-seats`);
         return res.data;
 
     },
@@ -81,7 +81,7 @@ export const showtimeApi = {
     getShowtimeById: async (id) => {
         const token = localStorage.getItem("token");
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-        const res = await axios.get(`http://localhost:8080/api/showtime/${id}`, config);
+        const res = await axios.get(`https://api-movie6868.purintech.id.vn/api/showtime/${id}`, config);
         // Giả định API này trả về cả movieID và theaterID
         return res.data;
     },

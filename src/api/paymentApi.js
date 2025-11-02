@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "https://api-movie6868.purintech.id.vn";
 
 const getAuthToken = () => {
     const storedUser = localStorage.getItem("user");

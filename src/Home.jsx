@@ -41,7 +41,7 @@ const Home = () => {
     const fetchNowShowing = async () => {
         try {
             // 💡 TỐT HƠN NÊN DÙNG movieApi.getNowShowing() đã có logic lọc
-            const res = await fetch("http://localhost:8080/api/movie/status/now-showing");
+            const res = await fetch("https://api-movie6868.purintech.id.vn/api/movie/status/now-showing");
             const data = await res.json();
 
             const filtered = data.filter(

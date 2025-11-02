@@ -2,16 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Button, Form, Input, message } from "antd";
 import { userApi } from "../../../api/userApi";
 import { useLocalStorage } from "../../../hook/useLocalStorage";
-import "./Profile.css";
+// ✅ Đổi tên import CSS
+import "./ProfileStaff.css";
 
-const EditProfile = () => {
+// ✅ Đổi tên component
+const EditProfileStaff = () => {
     const [storedUser] = useLocalStorage("user", null);
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(true);
     const [messageApi, contextHolder] = message.useMessage();
 
     useEffect(() => {
-        if (!storedUser || storedUser.roleID !== "MA") {
+        // ✅ Thay đổi logic kiểm tra role từ "MA" sang "ST" (Staff)
+        if (!storedUser || storedUser.roleID !== "ST") {
             messageApi.error("Bạn không có quyền truy cập trang này!");
             setTimeout(() => {
                 window.location.href = "/";
@@ -21,7 +24,8 @@ const EditProfile = () => {
 
         const fetchProfile = async () => {
             try {
-                const data = await userApi.getUserByUsername(storedUser.userName, "MA");
+                // ✅ Sử dụng roleID "ST" khi gọi API lấy thông tin Staff
+                const data = await userApi.getUserByUsername(storedUser.userName, "ST");
 
                 form.setFieldsValue({
                     fullName: data.fullName || "",
@@ -30,8 +34,8 @@ const EditProfile = () => {
                 });
                 setLoading(false);
             } catch (error) {
-                console.error("Lỗi khi tải thông tin Manager:", error);
-                messageApi.error("Không thể tải thông tin người dùng!");
+                console.error("Lỗi khi tải thông tin Nhân viên:", error);
+                messageApi.error("Không thể tải thông tin nhân viên!");
                 setLoading(false);
             }
         };
@@ -41,15 +45,17 @@ const EditProfile = () => {
 
     const handleSubmit = async (values) => {
         try {
-            const currentProfile = await userApi.getUserByUsername(storedUser.userName, "MA");
+            // BƯỚC 1: Lấy lại thông tin mới nhất và ID chính xác
+            // ✅ Sử dụng roleID "ST"
+            const currentProfile = await userApi.getUserByUsername(storedUser.userName, "ST");
             const currentUserId = currentProfile?.userID;
 
             if (!currentUserId) {
-                throw new Error("Không tìm thấy ID người dùng để cập nhật!");
+                throw new Error("Không tìm thấy ID nhân viên để cập nhật!");
             }
 
+            // BƯỚC 2: Gọi API cập nhật
             await userApi.updateUser(currentUserId, values);
-
 
             messageApi.success(" Đã lưu thành công!");
         } catch (error) {
@@ -60,18 +66,23 @@ const EditProfile = () => {
         }
     };
 
-    if (loading) return <p className="loading">⏳ Đang tải thông tin...</p>;
+    // ✅ Đổi tên class loading (nếu bạn sử dụng CSS riêng cho staff)
+    if (loading) return <p className="loading-staff">⏳ Đang tải thông tin...</p>;
 
     return (
-        <div className="profile-container">
+        // ✅ Đổi tên class container
+        <div className="profile-container-staff">
             {contextHolder}
-            <h2>✏️ Chỉnh sửa thông tin Manager</h2>
+            {/* ✅ Đổi tiêu đề */}
+            <h2>✏️ Chỉnh sửa thông tin Nhân viên</h2>
             <Form
                 form={form}
                 layout="vertical"
                 onFinish={handleSubmit}
-                className="profile-form"
+                // ✅ Đổi tên class form
+                className="profile-form-staff"
             >
+                {/* Các Form.Item giữ nguyên cấu trúc vì dữ liệu cập nhật là chung */}
                 <Form.Item
                     label="Họ và tên"
                     name="fullName"
@@ -112,4 +123,4 @@ const EditProfile = () => {
     );
 };
 
-export default EditProfile;
+export default EditProfileStaff;

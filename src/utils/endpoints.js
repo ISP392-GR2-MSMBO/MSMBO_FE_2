@@ -1,1 +1,1 @@
-export const baseApiUrl = "http://localhost:8080/api";
+export const baseApiUrl = "https://api-movie6868.purintech.id.vn/api";

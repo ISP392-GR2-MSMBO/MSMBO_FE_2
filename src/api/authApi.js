@@ -1,7 +1,7 @@
 // ✅ API cho đăng nhập & đăng ký
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8080/api/auth";
+const BASE_URL = "https://api-movie6868.purintech.id.vn/api/auth";
 
 export const authApi = {
     // === Đăng nhập ===
@@ -34,6 +34,35 @@ export const authApi = {
             return response.data;
         } catch (error) {
             console.error("❌ Register failed:", error.response?.data || error.message);
+            throw error;
+        }
+    },
+
+    // === Quên Mật khẩu (Forgot Password) ===
+    forgotPassword: async (email) => {
+        try {
+            // API thường chỉ cần email
+            const response = await axios.post(`${BASE_URL}/forgot-password`, { email }, {
+                headers: { "Content-Type": "application/json" },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("❌ Forgot Password failed:", error.response?.data || error.message);
+            throw error;
+        }
+    },
+
+    // === Đặt lại Mật khẩu (Reset Password) ===
+    // Thường cần token/mã xác nhận và mật khẩu mới
+    resetPassword: async (resetData) => {
+        try {
+            // resetData: { token, newPassword } hoặc { email, code, newPassword } tùy theo API
+            const response = await axios.post(`${BASE_URL}/reset-password`, resetData, {
+                headers: { "Content-Type": "application/json" },
+            });
+            return response.data;
+        } catch (error) {
+            console.error("❌ Reset Password failed:", error.response?.data || error.message);
             throw error;
         }
     },

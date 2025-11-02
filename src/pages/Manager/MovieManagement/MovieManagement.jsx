@@ -257,7 +257,7 @@ const MovieManagement = () => {
                                                 <button
                                                     className="detail-btn"
                                                     onClick={() =>
-                                                        history.push(`/admin/showtimes/${movie.movieID}`)
+                                                        history.push(`/manager/showtimes/${movie.movieID}`)
                                                     }
                                                 >
                                                     Chi tiết
@@ -277,7 +277,7 @@ const MovieManagement = () => {
                                                 <button
                                                     className="detail-btn"
                                                     onClick={() =>
-                                                        history.push(`/admin/showtimes/${movie.movieID}`)
+                                                        history.push(`/manager/showtimes/${movie.movieID}`)
                                                     }
                                                 >
                                                     Chi tiết
@@ -380,7 +380,7 @@ const MovieManagement = () => {
 
             {/* Quay lại */}
             <div className="back-container">
-                <button className="back-btn" onClick={() => history.push("/admin")}>
+                <button className="back-btn" onClick={() => history.push("/manager")}>
                     🔙 Quay lại
                 </button>
             </div>

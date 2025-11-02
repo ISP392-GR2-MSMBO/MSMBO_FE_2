@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const API_BASE_URL = "http://localhost:8080/api";
+const API_BASE_URL = "https://api-movie6868.purintech.id.vn/api";
 
 // -------------------------------------------------------------------------
 // AUTH UTILS (Đảm bảo tính nhất quán với cách lưu trữ token)
@@ -92,5 +92,23 @@ export const bookingApi = {
         const config = createAuthConfig();
         const response = await axios.get(`${API_BASE_URL}/bookings/details/${bookingDetailId}`, config);
         return response.data;
+    },
+
+
+    deleteBookingById: async (bookingId) => {
+        const config = createAuthConfig();
+        if (!config.headers.Authorization) {
+            // Ném lỗi nếu không có token, vì API này thường yêu cầu xác thực
+            throw new Error("Không có token xác thực. Vui lòng đăng nhập lại.");
+        }
+
+        return axios
+            .delete(`${API_BASE_URL}/bookings/${bookingId}`, config)
+            .then((response) => response.data)
+            .catch((error) => {
+                console.error(`Error deleting booking ${bookingId}:`, error);
+                // Ném lỗi để component PaymentFail có thể bắt và hiển thị
+                throw error;
+            });
     },
 };

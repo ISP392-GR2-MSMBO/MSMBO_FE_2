@@ -1,9 +1,7 @@
-// 📁 src/App.js
 import {
   BrowserRouter as Router,
   Route,
   Switch,
-  useLocation,
 } from "react-router-dom";
 
 import Navbar from "./components/Navbar/Navbar";
@@ -22,68 +20,73 @@ import Seatmap from "./pages/Customer/Seatmap";
 import PhimSapChieu from "./pages/Customer/PhimSapChieu";
 import ViewCustomerProfile from "./pages/Customer/Profile/ViewCustomerProfile";
 import EditProfileCustomer from "./pages/Customer/Profile/EditProfileCustomer";
-import Payment from "./pages/Customer/Payment/Payment";
 import BookingDetail from "./pages/Customer/Profile/BookingDetail";
 import DieuKhoang from "./pages/Customer/ChinhSachVaDieuKhoang/DieuKhoang";
 import ChinhSach from "./pages/Customer/ChinhSachVaDieuKhoang/ChinhSach";
 import PaymentSuccess from "./pages/Customer/Payment/PaymentSuccess";
-
-// ✅ Thêm import mới
 import ProtectedRoute from "./components/ProtectedRoute";
+import PaymentFail from "./pages/Customer/Payment/PaymentFail";
 
-function AppContent() {
-  const location = useLocation();
-  const isAdminPage = location.pathname.startsWith("/admin");
-
-  return (
-    <div className="App">
-      {/* Ẩn Navbar và Footer khi đang ở khu vực admin */}
-      {!isAdminPage && <Navbar />}
-
-      <div className="content">
-        <Switch>
-          {/* ====== CUSTOMER ROUTES ====== */}
-          <Route exact path="/" component={Home} />
-          <Route path="/login" component={Login} />
-          <Route path="/register" component={Register} />
-          <Route path="/phim" component={Phim} />
-          <Route path="/phim-sap-chieu" component={PhimSapChieu} />
-          <Route path="/lich-chieu" component={LichChieu} />
-          <Route path="/gia-ve" component={GiaVe} />
-          <Route path="/uu-dai" component={UuDai} />
-          <Route path="/lien-he" component={LienHe} />
-          <Route path="/movies/:name" component={MovieDetail} />
-          <Route path="/seatmap/:id" component={Seatmap} />
-          <Route path="/profile" component={ViewCustomerProfile} />
-          <Route path="/edit-profile" component={EditProfileCustomer} />
-          <Route path="/book/:showtimeId" component={Seatmap} />
-          <Route path="/payment/:bookingId" component={Payment} />
-          <Route exact path="/booking" component={BookingDetail} />
-          <Route path="/booking/:bookingId" component={BookingDetail} />
-          <Route path="/payment-success" component={PaymentSuccess} /> {/* Đã có */}
-          <Route path="/payment-result" component={PaymentSuccess} />
-          {/* ✅ ROUTE MỚI: Điều khoản & Chính sách */}
-          <Route path="/dieu-khoan" component={DieuKhoang} />
-          <Route path="/chinh-sach-bao-mat" component={ChinhSach} />
-
-          {/* ====== ADMIN ROUTE BẢO VỆ ====== */}
-          <ProtectedRoute
-            path="/manager"
-            component={ManagerPage}
-            requiredRole="MA"
-          />
-        </Switch>
-      </div>
-
-      {!isAdminPage && <Footer />}
-    </div>
-  );
-}
+import StaffRoutes from "./pages/Staff//Routes/StaffRoutes";
 
 function App() {
   return (
     <Router>
-      <AppContent />
+      <Route
+        path="/"
+        render={({ location }) => {
+          // ✅ Đảm bảo isManagerPage là TRUE cho mọi path con của /manager
+          const currentPath = location.pathname;
+          const isManagerPage = location.pathname.startsWith("/manager");
+          const isStaffPage = currentPath.startsWith("/staff");
+          const shouldHideNavAndFooter = isManagerPage || isStaffPage;
+          return (
+            <div className="App">
+              {/* Ẩn Navbar và Footer khi vào khu vực Manager */}
+              {!shouldHideNavAndFooter && <Navbar />}
+              <div className="content">
+                <Switch>
+                  {/* ====== CUSTOMER ROUTES ====== */}
+                  <Route exact path="/" component={Home} />
+                  <Route path="/login" component={Login} />
+                  <Route path="/register" component={Register} />
+                  <Route path="/phim" component={Phim} />
+                  <Route path="/phim-sap-chieu" component={PhimSapChieu} />
+                  <Route path="/lich-chieu" component={LichChieu} />
+                  <Route path="/gia-ve" component={GiaVe} />
+                  <Route path="/uu-dai" component={UuDai} />
+                  <Route path="/lien-he" component={LienHe} />
+                  <Route path="/movies/:name" component={MovieDetail} />
+                  <Route path="/seatmap/:id" component={Seatmap} />
+                  <Route path="/profile" component={ViewCustomerProfile} />
+                  <Route path="/edit-profile" component={EditProfileCustomer} />
+                  <Route path="/book/:showtimeId" component={Seatmap} />
+                  <Route exact path="/booking" component={BookingDetail} />
+                  <Route path="/booking/:bookingId" component={BookingDetail} />
+                  <Route path="/payment-success" component={PaymentSuccess} />
+                  <Route path="/payment-result" component={PaymentSuccess} />
+                  <Route path="/dieu-khoan" component={DieuKhoang} />
+                  <Route path="/chinh-sach-bao-mat" component={ChinhSach} />
+                  <Route path="/payment-fail" component={PaymentFail} />
+                  <Route path="/payment-failed" component={PaymentFail} />
+                  <Route path="/payment-cancel" component={PaymentFail} />
+
+
+                  <Route path="/staff" component={StaffRoutes} />
+
+                  {/* ====== ADMIN ROUTE (Manager) ====== */}
+                  <ProtectedRoute
+                    path="/manager" // ✅ Giữ nguyên path /manager
+                    component={ManagerPage}
+                    requiredRole="MA"
+                  />
+                </Switch>
+              </div>
+              {!shouldHideNavAndFooter && <Footer />}
+            </div>
+          );
+        }}
+      />
     </Router>
   );
 }

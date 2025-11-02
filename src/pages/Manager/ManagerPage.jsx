@@ -18,7 +18,7 @@ import Revenue from "./Revenue/Revenue";
 
 import { useLocalStorage } from "../../hook/useLocalStorage";
 
-const AdminPage = () => {
+const ManagerPage = () => {
     const { path, url } = useRouteMatch();
     const history = useHistory();
     const [menuOpen, setMenuOpen] = useState(false);
@@ -34,8 +34,8 @@ const AdminPage = () => {
         history.push("/");
     };
     return (
-        <div className="admin-container">
-            <aside className="admin-sidebar">
+        <div className="manager-container">
+            <aside className="manager-sidebar">
                 <h2 className="sidebar-title">Manager Panel</h2>
                 <nav className="sidebar-menu">
                     <NavLink to={`${url}/user-management`} activeClassName="active" className="sidebar-link">
@@ -61,20 +61,20 @@ const AdminPage = () => {
                 </button>
             </aside>
 
-            <div className="admin-main">
-                <header className="admin-header">
+            <div className="manager-main">
+                <header className="manager-header">
                     <h1>Hệ thống quản lí web</h1>
 
                     <div
-                        className="admin-avatar-container"
+                        className="manager-avatar-container"
                         onClick={() => setMenuOpen(!menuOpen)}
                     >
                         <img
                             src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                            alt="Admin Avatar"
-                            className="admin-avatar"
+                            alt="Manager Avatar"
+                            className="manager-avatar"
                         />
-                        <span className="admin-name">{user?.userName || "Manager"}</span>
+                        <span className="manager-name">{user?.userName || "Manager"}</span>
 
                         {menuOpen && (
                             <div className="dropdown-menu">
@@ -86,7 +86,7 @@ const AdminPage = () => {
                     </div>
                 </header>
 
-                <main className="admin-content">
+                <main className="manager-content">
                     <Switch>
                         <Route exact path={path}>
                             <div className="welcome-text">
@@ -110,4 +110,4 @@ const AdminPage = () => {
     );
 };
 
-export default AdminPage;
+export default ManagerPage;

@@ -1,6 +1,7 @@
-
 import axios from "axios";
+
 const BASE_URL = "https://api-movie6868.purintech.id.vn/api/reports";
+
 export const reportApi = {
     // 🟢 Lấy danh sách report của người gửi
     getReportsBySender: async (senderId) => {
@@ -9,7 +10,6 @@ export const reportApi = {
         const res = await axios.get(`${BASE_URL}/sender/${senderId}`, config);
         return res.data;
     },
-
 
     // 🟢 Gửi báo cáo (tạo report mới)
     createReport: async (senderId, reportData) => {
@@ -24,7 +24,6 @@ export const reportApi = {
         return res.data;
     },
 
-
     // 🟡 Lấy chi tiết report theo ID
     getReportById: async (reportId) => {
         const token = localStorage.getItem("token");
@@ -32,7 +31,6 @@ export const reportApi = {
         const res = await axios.get(`${BASE_URL}/${reportId}`, config);
         return res.data;
     },
-
 
     // 🟠 Cập nhật trạng thái report (Cho Manager/Admin)
     updateReportStatus: async (reportId, status) => {
@@ -46,7 +44,6 @@ export const reportApi = {
         const res = await axios.patch(`${BASE_URL}/${reportId}/status`, { status }, config);
         return res.data;
     },
-
 
     // 🔵 Lấy danh sách report đang chờ xử lý
     getPendingQueue: async () => {

@@ -1,0 +1,155 @@
+/* StaffLayout.css */
+.staff-app {
+  display: flex;
+  height: 100vh;
+  background-color: #e8eefc;
+  font-family: "Inter", sans-serif;
+  overflow: hidden;
+}
+
+/* --- Sidebar --- */
+.staff-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 230px;
+  height: 100vh;
+  background: linear-gradient(180deg, #0a1a3f, #101a42);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 3px 0 8px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+}
+
+.staff-sidebar h2 {
+  padding: 20px;
+  font-size: 18px;
+  text-align: center;
+  background: #1e3a8a;
+  color :white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: 700;
+}
+
+.staff-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+}
+
+.staff-nav a {
+  padding: 12px 20px;
+  color: #f1f5f9;
+  text-decoration: none;
+  transition: 0.3s;
+  font-weight: 500;
+}
+
+.staff-nav a:hover,
+.staff-nav a.active {
+  background-color: #3b82f6;
+  color: #ffffff;
+  border-radius: 6px;
+}
+
+.staff-sidebar-footer {
+  text-align: center;
+  padding: 12px;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+/* --- Main layout (header + content) --- */
+.staff-main {
+  margin-left: 230px; /* dịch qua phải bằng sidebar */
+  width: calc(100% - 230px);
+  display: flex;
+  flex-direction: column;
+  background-color: #f6f9ff;
+  min-height: 100vh;
+}
+
+/* --- Header --- */
+.staff-header {
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 30px;
+  border-bottom: 2px solid #e2e8f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.staff-header-left h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.staff-header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.staff-username {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.staff-profile {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #3b82f6;
+  object-fit: cover;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.staff-profile:hover {
+  transform: scale(1.05);
+}
+
+/* --- Dropdown (Profile menu) --- */
+.staff-dropdown {
+  position: absolute;
+  top: 70px;
+  right: 30px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  width: 160px;
+  z-index: 1000;
+}
+
+.staff-dropdown button {
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+  color: #1e293b;
+}
+
+.staff-dropdown button:hover {
+  background: #e0e7ff;
+  color: #1e3a8a;
+}
+
+/* --- Content --- */
+.staff-content {
+  flex: 1;
+  padding: 25px 40px;
+  overflow-y: auto;
+  background-color: #f0f4ff;
+}

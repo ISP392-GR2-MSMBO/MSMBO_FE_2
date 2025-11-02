@@ -11,27 +11,27 @@ export const movieApi = {
         return res.data;
     },
     getNowShowing: async () => {
-        const res = await axios.get("http://localhost:8080/api/movie/status/now-showing");
+        const res = await axios.get("https://api-movie6868.purintech.id.vn/api/movie/status/now-showing");
         // ✅ Lọc phim đã duyệt và chưa xóa
         return res.data.filter(movie => movie.approveStatus === "APPROVE" && movie.deleted !== true);
     },
 
 
     getMovieByName: async (name) => {
-        const res = await axios.get(`http://localhost:8080/api/movie/${name}`);
+        const res = await axios.get(`https://api-movie6868.purintech.id.vn/api/movie/${name}`);
         return Array.isArray(res.data) ? res.data[0] : res.data;
     },
 
     // 🎞 Lấy phim sắp chiếu (Coming Soon)
     getComingSoon: async () => {
-        const res = await axios.get("http://localhost:8080/api/movie/status/coming-soon");
+        const res = await axios.get("https://api-movie6868.purintech.id.vn/api/movie/status/coming-soon");
         return res.data.filter(movie => movie.approveStatus === "APPROVE" && movie.deleted !== true);
     },
     // Tạo phim mới
     createMovie: async (data) => {
         const token = localStorage.getItem("token");
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-        const res = await axios.post("http://localhost:8080/api/movie", data, config);
+        const res = await axios.post("https://api-movie6868.purintech.id.vn/api/movie", data, config);
         return res.data;
     },
 
@@ -39,7 +39,7 @@ export const movieApi = {
     updateMovie: async (id, data) => {
         const token = localStorage.getItem("token");
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-        const res = await axios.put(`http://localhost:8080/api/movie/${id}`, data, config);
+        const res = await axios.put(`https://api-movie6868.purintech.id.vn/api/movie/${id}`, data, config);
         return res.data;
     },
 
@@ -47,7 +47,7 @@ export const movieApi = {
     deleteMovie: async (id) => {
         const token = localStorage.getItem("token");
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-        const res = await axios.delete(`http://localhost:8080/api/movie/${id}`, config);
+        const res = await axios.delete(`https://api-movie6868.purintech.id.vn/api/movie/${id}`, config);
         return res.data;
     },
 
@@ -56,7 +56,7 @@ export const movieApi = {
     approveMovie: async (id) => {
         const token = localStorage.getItem("token");
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-        const res = await axios.post(`http://localhost:8080/api/movie/${id}/approve`, {}, config);
+        const res = await axios.post(`https://api-movie6868.purintech.id.vn/api/movie/${id}/approve`, {}, config);
         return res.data;
     },
 
@@ -64,7 +64,7 @@ export const movieApi = {
     rejectMovie: async (id) => {
         const token = localStorage.getItem("token");
         const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-        const res = await axios.post(`http://localhost:8080/api/movie/${id}/reject`, {}, config);
+        const res = await axios.post(`https://api-movie6868.purintech.id.vn/api/movie/${id}/reject`, {}, config);
         return res.data;
     },
     uploadPoster: async (file) => {

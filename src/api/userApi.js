@@ -7,7 +7,7 @@ export const userApi = {
         const config = token
             ? { headers: { Authorization: `Bearer ${token}` }, credentials: 'include' }
             : { credentials: 'include' };
-        const response = await axios.get("http://localhost:8080/api/users", config);
+        const response = await axios.get("https://api-movie6868.purintech.id.vn/api/users", config);
         return response.data;
     },
 
@@ -17,7 +17,7 @@ export const userApi = {
         const config = token
             ? { headers: { Authorization: `Bearer ${token}` } }
             : {};
-        const response = await axios.get(`http://localhost:8080/api/users/${id}`, config);
+        const response = await axios.get(`https://api-movie6868.purintech.id.vn/api/users/${id}`, config);
         return response.data;
     },
 
@@ -27,7 +27,7 @@ export const userApi = {
         const config = token
             ? { headers: { Authorization: `Bearer ${token}` } }
             : {};
-        const response = await axios.post("http://localhost:8080/api/users", data, config);
+        const response = await axios.post("https://api-movie6868.purintech.id.vn/api/users", data, config);
         return response.data;
     },
 
@@ -37,7 +37,7 @@ export const userApi = {
         const config = token
             ? { headers: { Authorization: `Bearer ${token}` } }
             : {};
-        const response = await axios.put(`http://localhost:8080/api/users/${id}`, data, config);
+        const response = await axios.put(`https://api-movie6868.purintech.id.vn/api/users/${id}`, data, config);
         return response.data;
     },
 
@@ -47,7 +47,7 @@ export const userApi = {
         const config = token
             ? { headers: { Authorization: `Bearer ${token}` } }
             : {};
-        const response = await axios.delete(`http://localhost:8080/api/users/${id}`, config);
+        const response = await axios.delete(`https://api-movie6868.purintech.id.vn/api/users/${id}`, config);
         return response.data;
     },
 
@@ -59,7 +59,7 @@ export const userApi = {
             ? { headers: { Authorization: `Bearer ${token}` } }
             : {};
         // Gửi request PUT với query parameter newRole
-        const response = await axios.put(`http://localhost:8080/api/users/${id}/role`, null, {
+        const response = await axios.put(`https://api-movie6868.purintech.id.vn/api/users/${id}/role`, null, {
             ...config,
             params: { newRole }
         });
@@ -80,7 +80,7 @@ export const userApi = {
 
         try {
             const response = await axios.get(
-                "http://localhost:8080/api/users/userName",
+                "https://api-movie6868.purintech.id.vn/api/users/userName",
                 config
             );
 

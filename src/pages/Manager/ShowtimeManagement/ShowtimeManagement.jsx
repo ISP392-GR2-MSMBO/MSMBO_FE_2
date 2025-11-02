@@ -54,8 +54,6 @@ const ShowtimeManagement = () => {
                     await fetchShowtimes();
                 } catch (err) {
                     console.error("Lỗi khi duyệt:", err);
-
-                    // ✅ SỬA: Bỏ ký tự ❌ thủ công. Ant Design sẽ hiển thị icon lỗi (dấu X tròn)
                     messageApi.error("Giờ chiếu đã qua không thể duyệt!");
                 }
             },
@@ -205,7 +203,7 @@ const ShowtimeManagement = () => {
             <div className="back-container">
                 <button
                     className="back-btn"
-                    onClick={() => history.push("/admin/movie-management")}
+                    onClick={() => history.push("/manager/movie-management")}
                 >
                     🔙 Quay lại
                 </button>

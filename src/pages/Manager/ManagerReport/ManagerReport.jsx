@@ -64,7 +64,7 @@ const ManagerReport = () => {
 
             const statusesToFetch = viewMode;
 
-            const res = await axios.get("http://localhost:8080/api/reports/queue", {
+            const res = await axios.get("https://api-movie6868.purintech.id.vn/api/reports/queue", {
                 params: {
                     type: "THEATER_ISSUE",
                     status: [statusesToFetch]

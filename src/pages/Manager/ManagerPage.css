@@ -1,5 +1,7 @@
+/* === ManagerPage.css === */
+
 /* === Tổng thể bố cục === */
-.admin-container {
+.manager-container {
     display: flex;
     min-height: 100vh;
     background-color: #f5f6fa;
@@ -7,7 +9,7 @@
 }
 
 /* === Sidebar === */
-.admin-sidebar {
+.manager-sidebar {
     width: 240px;
     background-color: #1f2937;
     /* Màu tối hiện đại */
@@ -49,7 +51,8 @@
     font-weight: 500;
 }
 
-.sidebar-menu a:hover {
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
     background-color: #374151;
     color: #fff;
 }
@@ -72,7 +75,7 @@
 }
 
 /* === Phần chính === */
-.admin-main {
+.manager-main {
     flex-grow: 1;
     margin-left: 240px;
     /* Chừa chỗ cho sidebar */
@@ -83,7 +86,7 @@
 }
 
 /* === Header === */
-.admin-header {
+.manager-header {
     background-color: #ffffff;
     padding: 15px 30px;
     display: flex;
@@ -95,20 +98,20 @@
     z-index: 10;
 }
 
-.admin-header h1 {
+.manager-header h1 {
     font-size: 1.4rem;
     color: #1f2937;
 }
 
 /* === Avatar + Dropdown === */
-.admin-avatar-container {
+.manager-avatar-container {
     position: relative;
     display: flex;
     align-items: center;
     cursor: pointer;
 }
 
-.admin-avatar {
+.manager-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -117,11 +120,11 @@
     transition: border-color 0.3s ease;
 }
 
-.admin-avatar-container:hover .admin-avatar {
+.manager-avatar-container:hover .manager-avatar {
     border-color: #facc15;
 }
 
-.admin-name {
+.manager-name {
     font-weight: 600;
     color: #1f2937;
 }
@@ -161,19 +164,19 @@
 }
 
 /* === Nội dung chính === */
-.admin-content {
+.manager-content {
     padding: 30px;
     flex-grow: 1;
 }
 
-.admin-main-center {
+.manager-main-center {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 60px;
 }
 
-.admin-btn {
+.manager-btn {
     display: inline-block;
     background-color: #3b82f6;
     color: white;
@@ -185,38 +188,38 @@
     transition: background-color 0.3s ease;
 }
 
-.admin-btn:hover {
+.manager-btn:hover {
     background-color: #2563eb;
 }
 
 /* === Responsive === */
 @media (max-width: 900px) {
-    .admin-sidebar {
+    .manager-sidebar {
         width: 200px;
         padding: 20px 10px;
     }
 
-    .admin-main {
+    .manager-main {
         margin-left: 200px;
     }
 }
 
 @media (max-width: 700px) {
-    .admin-sidebar {
+    .manager-sidebar {
         position: fixed;
         left: -250px;
         transition: left 0.3s ease;
     }
 
-    .admin-sidebar.active {
+    .manager-sidebar.active {
         left: 0;
     }
 
-    .admin-main {
+    .manager-main {
         margin-left: 0;
     }
 
-    .admin-header h1 {
+    .manager-header h1 {
         font-size: 1rem;
     }
 }

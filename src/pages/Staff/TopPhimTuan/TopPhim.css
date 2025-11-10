@@ -1,0 +1,65 @@
+/* StaffTopPhim.css */
+.staff-top-movies-container {
+  /* ✅ Đã sửa top-movies-container */
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  font-family: "Inter", sans-serif;
+}
+
+.staff-title {
+  /* ✅ Đã sửa title */
+  margin-bottom: 20px;
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 22px;
+}
+
+.staff-top-movies-table {
+  /* ✅ Đã sửa top-movies-table */
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 32px;
+  font-size: 15px;
+  color: black;
+}
+
+.staff-top-movies-table thead {
+  /* ✅ Đã sửa top-movies-table thead */
+  background: #f8fafc;
+  color: #334155;
+}
+
+.staff-top-movies-table th,
+.staff-top-movies-table td {
+  /* ✅ Đã sửa top-movies-table th, td */
+  padding: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.staff-top-movies-table tr:hover {
+  /* ✅ Đã sửa top-movies-table tr:hover */
+  background-color: #f1f5f9;
+  transition: 0.2s;
+}
+
+.staff-center {
+  /* ✅ Đã sửa center */
+  text-align: center;
+}
+
+.staff-chart-box {
+  /* ✅ Đã sửa chart-box */
+  width: 100%;
+  height: 350px;
+  margin-top: 12px;
+}
+
+.staff-loading {
+  /* ✅ Đã sửa loading */
+  padding: 20px;
+  text-align: center;
+  font-size: 16px;
+  color: #475569;
+}

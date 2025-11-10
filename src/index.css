@@ -9,9 +9,7 @@
 
 body {
   background-color: #000;
-  /* 👈 Nền đen cho toàn trang */
   color: #fff;
-  /* 👈 Chữ trắng mặc định */
 }
 
 /* Navbar tổng */
@@ -40,14 +38,13 @@ body {
 }
 
 .auth a:hover {
-  color: #f1356d;
+  color: #e50914;
 }
 
 /* Logo */
-
 .logo img {
-  height: 100px;
-  width: 250px;
+  height: 80px;
+  width: 200px;
 }
 
 /* Thanh tìm kiếm */
@@ -57,31 +54,9 @@ body {
   gap: 10px;
   max-width: 400px;
   flex: 1;
-  margin: -5px auto 30px;
-}
-
-.search-box input {
-  flex: 1;
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: none;
-  outline: none;
-  background: #f7f0f0;
-  color: #fff;
-}
-
-.search-box button {
-  background: #f1356d;
-  color: #fff;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.search-box button:hover {
-  background: #ff4c7d;
+  margin: -5px auto 10px;
+  position: relative;
+  top: -60px;
 }
 
 /* Menu dưới */
@@ -89,11 +64,13 @@ body {
   display: flex;
   justify-content: center;
   gap: 30px;
-  padding: 12px 0;
+  padding: 6px 0;
   border-top: 1px solid #333;
   background: #000;
+  position: relative;
+  top: -20px;
+  margin-bottom: 0;
 }
-
 
 .menu a {
   text-decoration: none;
@@ -107,7 +84,7 @@ body {
 }
 
 .menu a:hover {
-  background: #f1356d;
+  background: #e50914;
   color: #fff;
 }
 
@@ -138,7 +115,7 @@ body {
 }
 
 .dropdown-content a:hover {
-  background: #f1356d;
+  background: #e50914;
 }
 
 .dropdown:hover .dropdown-content {
@@ -151,7 +128,6 @@ body {
   color: #fff;
   padding: 10px;
   background-color: #000;
-  /* 👈 Nền tối cho card */
   border-radius: 10px;
 }
 
@@ -161,8 +137,6 @@ body {
   margin: 0 auto;
   border-radius: 10px;
   overflow: hidden;
-  /* 👈 Thêm dòng này */
-
 }
 
 .movie-poster {
@@ -170,22 +144,6 @@ body {
   height: 100%;
   object-fit: cover;
 }
-
-.buy-btn {
-  margin-top: 10px;
-  padding: 6px 14px;
-  border: none;
-  background: #f1356d;
-  color: #000;
-  font-weight: bold;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.buy-btn:hover {
-  background: #f39c12;
-}*/
 
 /* Mũi tên hiển thị chắc chắn */
 .slick-prev:before,
@@ -209,22 +167,20 @@ body {
 /* 🎬 Banner */
 .banner {
   width: 100%;
-  height: 550px;
+  height: 600px;
   position: relative;
   overflow: hidden;
   background: #000;
-  /* 👈 phòng khi ảnh không tải */
 }
 
 .banner-img {
   width: 100%;
-  height: 100%;
+  height: 200%;
   object-fit: cover;
 }
 
 .section-title {
   margin: 40px auto 20px;
-  /* 👈 dùng auto trái/phải để căn giữa */
   text-align: center;
   font-size: 40px;
   font-weight: 800;
@@ -232,14 +188,17 @@ body {
   text-transform: uppercase;
   letter-spacing: 1.5px;
   width: 100%;
-  /* 👈 đảm bảo chiếm đủ chiều ngang */
   display: block;
 }
 
-
 /* Các đoạn văn hoặc tiêu đề khác */
-
-
+h1,
+h2,
+h3,
+h4,
+p {
+  color: #fff;
+}
 
 .movie-info {
   margin: 10px 0;
@@ -283,35 +242,160 @@ body {
   background-color: #2980b9;
 }
 
-.buy-btn {
-  background: #f1c40f;
-  color: #000;
-  border: none;
-}
-
 .buy-btn:hover {
   background: #f39c12;
 }
 
 .movie-title {
   font-size: 15px;
-  /* 👈 tăng kích thước chữ */
   font-weight: 700;
-  /* 👈 chữ đậm */
   color: #fff;
-  /* 👈 chữ trắng nổi bật */
   margin: 12px 0 8px;
   text-align: center;
-  /* 👈 căn giữa tên phim */
   text-transform: uppercase;
   transition: 0.3s;
-  /* 👈 hiệu ứng mượt khi hover */
 }
 
 .movie-title:hover {
-  color: #f10fb1;
-  /* 👈 khi hover thì đổi sang vàng */
+  color: #e50914;
   cursor: pointer;
 }
 
+.dropdown-btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+  padding: 10px 16px;
+  background: white;
+  border: none;
+  color: black;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
 
+.dropdown-btn:hover {
+  background: #c7c7c7;
+}
+
+.dropdown-divider {
+  margin: 6px 0;
+  border: none;
+  border-top: 1px solid #eee;
+}
+
+/* ========================================================================= */
+/* --- STYLE CHO FORM ĐĂNG NHẬP / ĐĂNG KÝ (LOGIN/REGISTER) --- */
+/* ========================================================================= */
+
+.auth-container {
+  max-width: 420px;
+  margin: 100px auto 50px;
+  padding: 40px;
+  background: #1e1e1e;
+  /* Nền form tối */
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  color: #fff;
+}
+
+.auth-container h2 {
+  color: #fff;
+  font-size: 30px;
+  margin-bottom: 25px;
+  font-weight: 800;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  /* Khoảng cách giữa các trường */
+}
+
+/* Input boxes */
+.auth-form input {
+  width: 100%;
+  padding: 14px 15px;
+  border: none;
+  border-radius: 8px;
+
+  /* Màu nền input là MÀU TRẮNG và chữ đen */
+  background: #fff;
+  color: #000;
+
+  font-size: 18px;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.auth-form input:focus {
+  background: #fff;
+  outline: none;
+  border: 1px solid #e50914;
+  /* Viền đỏ khi focus */
+  box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+}
+
+/* Placeholder color cho input trắng trên nền tối */
+.auth-form input::placeholder {
+  color: #777;
+}
+
+
+.auth-form br {
+  display: none;
+}
+
+
+/* --- NÚT ĐĂNG NHẬP (login-btn) --- */
+
+.login-btn {
+  margin-top: 15px;
+  padding: 12px 14px;
+  border: none;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  text-transform: uppercase;
+  font-size: 18px;
+
+  /* Màu ĐỎ Chủ đạo */
+  background: #e50914 !important;
+  color: #fff !important;
+  /* Dùng !important để ghi đè màu hồng */
+
+  width: 100%;
+}
+
+.login-btn:hover {
+  background: #c40710 !important;
+}
+
+.login-btn:disabled {
+  background: #ffb3b3;
+  cursor: not-allowed;
+}
+
+/* --- Link "Đăng ký ngay" --- */
+.auth-link {
+  margin-top: 20px;
+  font-size: 16px;
+  color: #ccc;
+}
+
+.auth-link a {
+  color: #e50914;
+  /* Màu đỏ chủ đạo */
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.auth-link a:hover {
+  color: #ffcc00;
+}

@@ -1,0 +1,482 @@
+/* === Toàn Trang === */
+.manager-page {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #000;
+    background-color: #f9f9f9;
+}
+
+/* 🎯 === Tiêu đề chính (ĐÃ SỬA HOÀN TOÀN + !important) === */
+.manager-page h2 {
+    color: #000 !important;
+    /* ✅ MÀU ĐEN (Ưu tiên tuyệt đối) */
+    border-bottom: none !important;
+    /* ✅ BỎ GẠCH CHÂN (Ưu tiên tuyệt đối) */
+    text-align: center;
+    /* ✅ Căn giữa */
+    font-size: 32px;
+    /* ✅ Kích thước to hơn */
+    font-weight: 700;
+    /* ✅ In đậm hơn */
+
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 25px;
+}
+
+/* 🎯 ĐƯỜNG KẺ NGANG VÀ KHOẢNG CÁCH CHO KHU VỰC TIÊU ĐỀ/NÚT */
+.header-and-controls-section {
+    border-bottom: 1px solid #ddd;
+    /* Đường kẻ ngang phân tách (màu xám nhạt) */
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+}
+
+.subtext {
+    color: #555;
+    font-size: 16px;
+}
+
+/* 🟢 Box Container cho nội dung chính */
+.main-report-content-box {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 0;
+}
+
+/* === Nút điều khiển trạng thái === */
+.manager-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+    /* Căn giữa các nút */
+}
+
+.control-btn {
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    color: #000;
+    transition: all 0.3s;
+}
+
+.control-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.control-btn.active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+}
+
+/* === Phần danh sách báo cáo === */
+.report-queue-container {
+    margin-top: 0;
+}
+
+.report-queue-container h3 {
+    color: #000;
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-size: 20px;
+    text-align: left;
+}
+
+/* === Bảng báo cáo (Đã tối ưu cho cột STT) === */
+.manager-report-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.manager-report-table th,
+.manager-report-table td {
+    padding: 12px;
+    color: #000;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+}
+
+.manager-report-table th {
+    background-color: #e9ecef;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 14px;
+    border-top: none;
+}
+
+.manager-report-table td {
+    font-size: 14px;
+}
+
+.manager-report-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+
+/* === Nút hành động trong bảng (Xem mô tả) === */
+.btn-action {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #fff;
+    background-color: #17a2b8;
+    transition: transform 0.2s, background-color 0.3s;
+    font-size: 13px;
+}
+
+.btn-action:hover {
+    transform: translateY(-1px);
+    background-color: #138496;
+}
+
+/* === Nút Sửa Trạng Thái (Mở Modal) === */
+.btn-status-edit {
+    background-color: #ffc107;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    font-size: 13px;
+    transition: background-color 0.2s;
+}
+
+.btn-status-edit:hover {
+    background-color: #e0a800;
+}
+
+/* === Modal Popup (Chung) === */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal {
+    background-color: #fff;
+    padding: 30px 35px;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    color: #000;
+    position: relative;
+    animation: fadeInUp 0.3s ease;
+}
+
+/* 🟢 Modal Xem Mô Tả: Đảm bảo mô tả màu đen */
+.modal p {
+    color: #000;
+}
+
+
+@keyframes fadeInUp {
+    from {
+        transform: translateY(40px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close-btn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin-top: 15px;
+    float: right;
+}
+
+.close-btn:hover {
+    background-color: #0056b3;
+}
+
+/* === Modal Sửa Trạng Thái (Modal Status Edit) === */
+.modal-status-edit {
+    max-width: 450px;
+    text-align: center;
+}
+
+/* 🟢 Điều chỉnh để ID và Trạng thái hiện tại nổi bật, căn giữa */
+.modal-report-id,
+.modal-current-status {
+    font-size: 16px;
+    margin: 5px 0;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.modal-report-id {
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.modal-report-id .highlight-id {
+    font-weight: 700;
+    color: #000;
+    font-size: 20px;
+}
+
+.modal-current-status {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    text-transform: capitalize;
+}
+
+.status-selection-group {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    text-align: left;
+}
+
+.status-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.status-radio-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.status-radio-item input[type="radio"] {
+    margin-right: 8px;
+}
+
+/* === Style cho label trạng thái (như button) === */
+.status-btn {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+/* === Nút hành động trong Modal === */
+.modal-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn-save-status {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.btn-save-status:hover:not(:disabled) {
+    background-color: #1e7e34;
+}
+
+.btn-save-status:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.btn-cancel {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.btn-cancel:hover {
+    background-color: #c82333;
+}
+
+
+/* === Màu chữ trạng thái === */
+.status-pending {
+    /* ĐÃ SỬA: BỎ MÀU NỀN VÀNG TRONG BẢNG (TD) */
+    background-color: transparent !important;
+    font-weight: 600;
+    color: #ff9800;
+    /* Giữ màu chữ cam */
+}
+
+.status-pending {
+    /* ĐÃ SỬA: BỎ MÀU NỀN VÀNG TRONG BẢNG (TD) */
+    background-color: transparent !important;
+    font-weight: 600;
+    color: #ff9800;
+}
+
+.status-in_progress,
+.status-btn-in_progress {
+    font-weight: 600;
+    color: #007bff;
+}
+
+.status-resolved,
+.status-btn-resolved {
+    font-weight: 600;
+    color: #28a745;
+}
+
+.status-rejected,
+.status-btn-rejected {
+    font-weight: 600;
+    color: #dc3545;
+}
+
+.status-archived,
+.status-btn-archived {
+    font-weight: 600;
+    color: #6c757d;
+}
+
+/* === Form tạo báo cáo TỐI ƯU GIAO DIỆN === */
+.create-report-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.report-form-card {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    border: 1px solid #e0e0e0;
+}
+
+.report-title {
+    color: #343a40;
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-size: 24px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.report-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #495057;
+    font-size: 16px;
+}
+
+.report-textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    color: #343a40;
+    font-size: 15px;
+    resize: vertical;
+    background-color: #f8f9fa;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    min-height: 150px;
+}
+
+.report-textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+    background-color: #fff;
+}
+
+.report-button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%;
+    font-size: 18px;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.report-button:hover:not(:disabled) {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+.report-button:disabled {
+    background-color: #adb5bd;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Tối ưu thông báo */
+.report-message {
+    margin-top: 15px;
+    font-weight: 600;
+    padding: 10px 15px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 15px;
+}
+
+/* Thông báo thành công */
+.report-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* Thông báo lỗi/cảnh báo */
+.report-message.error,
+.report-message.warning {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}

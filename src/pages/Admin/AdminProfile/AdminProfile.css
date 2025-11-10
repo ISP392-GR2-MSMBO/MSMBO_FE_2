@@ -1,0 +1,95 @@
+/* File: ProfileAdmin.css */
+
+/* --- 1. CONTAINER CHÍNH --- */
+.profile-container-admin {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #f0f2f5;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-family: Arial, sans-serif;
+}
+
+.profile-container-admin h2 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+}
+
+/* --- 2. THẺ HIỂN THỊ THÔNG TIN (VIEW) --- */
+.profile-card-admin {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.profile-card-admin p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    padding: 8px 0;
+    border-bottom: 1px dashed #adb5bd;
+    color: #000;
+}
+
+.profile-card-admin p:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.profile-card-admin strong {
+    color: #343a40;
+    display: inline-block;
+    min-width: 150px;
+}
+
+/* --- 3. FORM CHỈNH SỬA (EDIT) --- */
+.profile-form-admin {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.profile-form-admin .ant-form-item-label > label {
+    font-weight: bold;
+    color: #343a40;
+}
+
+/* ✅ Nút Primary */
+.profile-form-admin .ant-btn-primary {
+    background-color: #28a745;
+    border-color: #28a745;
+    transition: background-color 0.3s;
+    color: #ffffff;
+}
+
+.profile-form-admin .ant-btn-primary:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    color: #ffffff;
+}
+
+/* --- Loading & Error --- */
+.loading-admin {
+    text-align: center;
+    font-size: 1.2em;
+    color: #ffc107;
+    padding: 20px;
+}
+
+.error-admin {
+    text-align: center;
+    font-size: 1.2em;
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    padding: 15px;
+    border-radius: 5px;
+}

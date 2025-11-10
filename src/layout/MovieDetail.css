@@ -1,0 +1,561 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
+
+.movie-detail-page {
+    font-family: "Baloo 2", sans-serif;
+    color: #eee;
+    background: #000;
+}
+
+/* Trailer full width */
+.trailer-section iframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+}
+
+/* ======= BẢN CHỈNH SỬA GIAO DIỆN POSTER KHÔNG CHE TRAILER ======= */
+
+.detail-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+    padding: 40px 60px;
+    background: #111;
+    position: relative;
+    border-radius: 10px;
+    margin-top: 0;
+    z-index: 1;
+}
+
+/* Poster không đè trailer nữa */
+.poster {
+    position: relative;
+    margin-top: 0;
+    z-index: 2;
+    flex-shrink: 0;
+}
+
+.poster img {
+    width: 300px;
+    border-radius: 12px;
+    box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.7);
+    transition: transform 0.3s ease;
+}
+
+.poster img:hover {
+    transform: scale(1.05);
+}
+
+/* Giữ phần thông tin ở bên phải */
+.info {
+    flex: 1;
+    position: relative;
+    z-index: 3;
+}
+
+.info .title {
+    /* Đã thêm display: flex để căn chỉnh độ tuổi bên cạnh tên phim */
+    display: flex;
+    align-items: center;
+    /* Căn giữa theo chiều dọc */
+    gap: 15px;
+    /* Khoảng cách giữa tên phim và tag độ tuổi */
+    font-size: 48px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+/* 🔥 CSS CHO TAG ĐỘ TUỔI */
+.age-rating {
+    font-size: 20px;
+    /* Nhỏ hơn tên phim */
+    font-weight: 800;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    /* Đảm bảo tag là một khối nhỏ (inline-block) */
+    display: inline-block;
+}
+
+/* Màu mẫu cho các mức rating phổ biến */
+.age-rating-p,
+.age-rating-k {
+    /* Phổ biến / Khuyến khích */
+    background-color: #ff0022;
+    /* Xanh lá */
+    color: #fff;
+}
+
+.age-rating-t13 {
+    background-color: #ff0022;
+    color: #fff;
+}
+
+.age-rating-t16 {
+    /* T16 */
+    background-color: #ff0022;
+}
+
+.age-rating-t18 {
+    background-color: #ff0022;
+}
+
+
+.info p {
+    margin: 8px 0;
+    font-size: 22px;
+    line-height: 1.6;
+    color: #ddd;
+}
+
+.info p strong {
+    font-weight: 600;
+    color: #fff;
+}
+
+/* Trailer */
+.trailer-section iframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+    display: block;
+}
+
+/* Giữa trailer và detail có khoảng cách nhẹ */
+.trailer-section {
+    margin-bottom: 20px;
+}
+
+/* ===== TAGS (Thể loại) ===== */
+.tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.tag {
+    display: inline-block;
+    background: #222;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #66aaff;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.tag:hover {
+    background: #e50914;
+    color: #fff;
+    border-color: #e50914;
+    transform: translateY(-2px);
+}
+
+/* Cast */
+.cast {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.cast .actor {
+    display: inline-block;
+    background: #222;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #66aaff;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.cast .actor:hover {
+    background: #e50914;
+    color: #fff;
+    border-color: #e50914;
+    transform: translateY(-2px);
+}
+
+/* Mô tả & Lịch chiếu */
+.description-section,
+.showtimes-section {
+    padding: 30px 60px;
+    background: #111;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+/* ======= LỊCH CHIẾU PHONG CÁCH GALAXY ======= */
+
+.showtime-section {
+    margin-top: 40px;
+    background: #0f0f0f;
+    border-radius: 14px;
+    padding: 30px 40px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+.showtime-section h2 {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #f1f1f1;
+    margin-bottom: 25px;
+    letter-spacing: 0.5px;
+}
+
+.showtime-section h2::before {
+    content: "🎟️";
+    font-size: 22px;
+    margin-right: 10px;
+}
+
+/* ====== TAB NGÀY CHIẾU ====== */
+.date-tabs {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: #e50914 #222;
+}
+
+.date-tabs::-webkit-scrollbar {
+    height: 6px;
+}
+
+.date-tabs::-webkit-scrollbar-thumb {
+    background-color: #e50914;
+    border-radius: 10px;
+}
+
+.date-tab {
+    flex-shrink: 0;
+    background: #222;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.date-tab.active {
+    background: #e50914;
+    color: #fff;
+    font-weight: 600;
+    transform: scale(1.05);
+}
+
+.date-tab:hover {
+    background: #b00610;
+}
+
+/* ====== Thanh chọn ngày có nút cuộn ====== */
+.date-tabs-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.date-tabs {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 8px 0;
+    scrollbar-width: thin;
+    scrollbar-color: #e50914 #111;
+    flex: 1;
+}
+
+/* Ẩn thanh cuộn trên Chrome */
+.date-tabs::-webkit-scrollbar {
+    height: 6px;
+}
+
+.date-tabs::-webkit-scrollbar-thumb {
+    background: #e50914;
+    border-radius: 4px;
+}
+
+/* Nút mũi tên trái/phải */
+.arrow-btn {
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: none;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 40px;
+    height: 60px;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    z-index: 5;
+}
+
+.arrow-btn:hover {
+    background: #e50914;
+    transform: scale(1.1);
+}
+
+/* Vị trí trái/phải */
+.arrow-btn.left {
+    margin-right: 10px;
+}
+
+.arrow-btn.right {
+    margin-left: 10px;
+}
+
+/* Ẩn nút mũi tên khi không cần */
+.date-tabs-wrapper {
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .arrow-btn {
+        width: 35px;
+        height: 50px;
+        font-size: 24px;
+    }
+}
+
+/* ====== NHÓM PHỤ ĐỀ / LỒNG TIẾNG ====== */
+.showtime-group {
+    margin-bottom: 25px;
+}
+
+
+.showtime-group .label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 17px;
+    color: #fff;
+    margin-bottom: 12px;
+}
+
+.label .dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+}
+
+/* Màu biểu tượng */
+.label.sub .dot {
+    background-color: #4effa3;
+}
+
+.label.dub .dot {
+    background-color: #a674ff;
+}
+
+/* ====== CÁC GIỜ CHIẾU ====== */
+.showtime-list {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-left: 25px;
+}
+
+.time-btn {
+    background: #111;
+    border: 1px solid #007bff;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.time-btn:hover {
+    background: linear-gradient(135deg, #e50914, #e50914);
+    border-color: #e50914;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(241, 53, 109, 0.7);
+}
+
+
+/* ====== ĐƯỜNG GẠCH NGANG NGĂN CÁCH ====== */
+.showtime-divider {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #007bff, transparent);
+    margin: 20px 0 30px 0;
+    border-radius: 2px;
+    opacity: 0.7;
+}
+
+/* ======= MÔ TẢ PHIM ======= */
+.description-section {
+    padding: 30px 60px;
+    background: #0f0f0f;
+    margin-top: 20px;
+    border-radius: 14px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Tiêu đề mô tả */
+.description-section h2 {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #f1f1f1;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+}
+
+.description-section h2::before {
+    content: "📖";
+    font-size: 22px;
+    margin-right: 10px;
+}
+
+/* Nội dung mô tả phim */
+.description-section p {
+    font-size: 18px;
+    line-height: 1.9;
+    color: #f1f1f1;
+    margin-top: 10px;
+    text-align: justify;
+    text-indent: 25px;
+    letter-spacing: 0.3px;
+    word-spacing: 1px;
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 4px solid #007bff;
+    padding: 15px 20px;
+    border-radius: 8px;
+}
+
+.showtime-section {
+    margin-top: 20px;
+    background: #0f0f0f;
+    border-radius: 14px;
+    padding: 30px 60px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+}
+
+.showtime-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.showtime-btn {
+    background-color: #e50914;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 10px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.showtime-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ==== Thanh chọn ngày ==== */
+.date-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 12px;
+    margin-top: 10px;
+    margin-bottom: 25px;
+}
+
+.date-tab {
+    padding: 10px 18px;
+    border-radius: 10px;
+    background: #1e1e1e;
+    border: 1px solid #444;
+    color: #f0f0f0;
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+.date-tab:hover {
+    background: #2a2a2a;
+    border-color: #888;
+    transform: translateY(-2px);
+}
+
+.date-tab.active {
+    background: #007bff;
+    color: #fff;
+    border-color: #007bff;
+    box-shadow: 0 0 10px rgba(4, 0, 14, 0.5);
+}
+
+/* ==== Tiêu đề "Lịch Chiếu" ==== */
+.showtime-section h2 {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.showtime-section h2::before {
+    content: "🎟️";
+    font-size: 22px;
+}
+
+/* ==== Thông báo không có suất chiếu ==== */
+.no-showtime {
+    margin-top: 15px;
+    color: #ffd54f;
+    font-weight: 500;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Thêm CSS này để định nghĩa giao diện lưới hiển thị giờ chiếu */
+.showtime-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 10px 0;
+}
+
+.showtime-btn {
+    background-color: #e50914;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 10px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+}

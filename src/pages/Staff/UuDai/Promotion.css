@@ -1,0 +1,250 @@
+/* src/pages/StaffPromotion.css */
+
+/* Container */
+.staff-promo-container {
+  /* ✅ Đã sửa create-promo */
+  max-width: 100%;
+  margin: 32px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(20, 20, 30, 0.06);
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #243143;
+   margin-top: 8px;
+}
+
+/* Header */
+.staff-promo-container h2 {
+  margin: 0 0 14px;
+  font-size: 22px;
+  letter-spacing: -0.2px;
+  color:black;
+}
+.staff-promo-container h4 {
+
+   margin-top:20px;
+ 
+  font-size: 15px;
+
+  color:black;
+
+}
+
+/* Form grid */
+.staff-promo-form {
+  /* ✅ Đã sửa form-row (sử dụng như block chính) */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* Inputs */
+.staff-promo-input {
+  /* ✅ Đã sửa input */
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #e3e7ea;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+  background: #fbfdff;
+}
+
+.staff-promo-input:focus {
+  border-color: #4da6ff;
+  box-shadow: 0 0 0 4px rgba(77, 166, 255, 0.08);
+}
+
+/* Seat type list */
+.staff-promo-seat-list {
+  /* ✅ Đã sửa seat-list */
+  margin-top: 8px;
+  padding: 10px;
+  border: 1px dashed #e6edf3;
+  border-radius: 8px;
+  background: #fcfeff;
+  max-height: 240px;
+  overflow-y: auto;
+  
+}
+
+.staff-promo-seat-item {
+  /* ✅ Đã sửa seat-item */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 6px;
+  border-radius: 6px;
+  transition: background 120ms;
+  cursor: pointer;
+  font-size: 14px;
+  color: #263238;
+}
+
+.staff-promo-seat-item:hover {
+  background: rgba(36, 65, 67, 0.03);
+}
+
+.staff-promo-seat-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #1190ff;
+}
+
+
+/* Actions */
+.staff-promo-btn {
+  /* ✅ Đã sửa btn (class nền chung) */
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 90ms ease, box-shadow 120ms ease;
+}
+
+/* Primary */
+.staff-promo-btn-primary {
+  /* ✅ Đã sửa btn-primary */
+  background: linear-gradient(90deg, #2ea0ff, #0077e6);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(2, 119, 189, 0.12);
+  margin-top: 15px;
+}
+
+.staff-promo-btn-primary:hover {
+  transform: translateY(-1px);
+}
+
+/* Error Box */
+.staff-promo-error-box {
+  /* ✅ Đã sửa error-box */
+  background: #ffe6e6;
+  color: #b30000;
+  border: 1px solid #b30000;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+/* List Table */
+.staff-promo-table {
+  /* ✅ Đã thêm table */
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.staff-promo-table th,
+.staff-promo-table td {
+  border: 1px solid #e3e7ea;
+  padding: 10px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.staff-promo-table th {
+  background: #f1f5f9;
+  font-weight: 600;
+  color: #3b4858;
+}
+
+.staff-promo-table tr:nth-child(even) {
+  background: #fcfdfe;
+}
+
+.staff-promo-table img {
+  border-radius: 4px;
+  object-fit: cover;
+  height: 60px;
+}
+
+/* Toggle Buttons */
+.staff-promo-btn-on {
+  /* ✅ Đã sửa btn-on */
+  background-color: #28a745;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.staff-promo-btn-on:hover {
+  background-color: #1e7e34;
+}
+
+.staff-promo-btn-off {
+  /* ✅ Đã sửa btn-off */
+  background-color: #ffc107;
+  color: #333;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.staff-promo-btn-off:hover {
+  background-color: #e0a800;
+}
+
+/* Delete Button */
+.staff-promo-btn-delete {
+  /* ✅ Đã sửa btn-delete */
+  background-color: #ff4d4f;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.staff-promo-btn-delete:hover {
+  background-color: #d9363e;
+}
+
+.staff-promo-hr {
+  /* ✅ Đã thêm hr */
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), #e3e7ea, rgba(0, 0, 0, 0));
+}
+
+/* Responsive */
+@media (max-width: 680px) {
+  .staff-promo-container {
+    /* margin: 18px;
+    padding: 16px; */
+     max-width: 100%; 
+  }
+}
+.staff-promo-table {
+  width: 100%;
+  display: table;
+}
+.staff-pagination {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  align-items: center;
+}
+
+.staff-pagination button {
+  padding: 6px 12px;
+  border: none;
+  background: #2a72ff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.staff-pagination button:disabled {
+  background: #bbb;
+  cursor: not-allowed;
+}

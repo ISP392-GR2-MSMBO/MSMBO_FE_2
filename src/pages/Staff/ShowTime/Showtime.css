@@ -1,0 +1,634 @@
+/* =================================== */
+/* 1. Reset/Base Styles */
+/* =================================== */
+.staff-showtime-root {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.staff-showtime-root h2 {
+    color: #343a40;
+    margin-bottom: 0;
+}
+
+/* =================================== */
+/* 2. Buttons & Global Elements */
+/* =================================== */
+.staff-showtime-root button {
+    cursor: pointer;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    font-weight: 500;
+    border: 1px solid transparent;
+}
+
+.staff-showtime-btn-primary {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.staff-showtime-btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.staff-showtime-btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    border-color: #6c757d;
+    margin-left: 10px;
+}
+
+.staff-showtime-btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #5a6268;
+}
+
+.staff-showtime-icon-btn {
+    background: none;
+    border: none;
+    padding: 5px 8px;
+    font-size: 16px;
+    margin: 0 2px;
+}
+
+.staff-showtime-icon-btn:hover {
+    background-color: #e9ecef;
+}
+
+.staff-showtime-icon-btn.staff-showtime-delete {
+    color: #dc3545;
+}
+
+.staff-showtime-icon-btn.staff-showtime-delete:hover {
+    background-color: #f8d7da;
+}
+
+/* =================================== */
+/* 3. Topbar & Tabs */
+/* =================================== */
+.staff-showtime-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.staff-showtime-tabs button {
+    background: none;
+    color: #6c757d;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 10px 20px;
+    margin-left: 10px;
+    font-size: 16px;
+}
+
+.staff-showtime-tabs button.active {
+    color: #007bff;
+    border-bottom: 3px solid #007bff;
+    font-weight: bold;
+}
+
+/* =================================== */
+/* 4. Manage Tab (CRUD Table) */
+/* =================================== */
+.staff-showtime-manage-tab {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.staff-showtime-manage-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.staff-showtime-right-controls>* {
+    margin-left: 10px;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.staff-showtime-table-wrap {
+    overflow-x: auto;
+}
+
+.staff-showtime-manage-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.staff-showtime-manage-table th,
+.staff-showtime-manage-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+    color: black;
+}
+
+.staff-showtime-manage-table th {
+    background-color: #e9ecef;
+    font-weight: bold;
+    color: #495057;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.staff-showtime-manage-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+.staff-showtime-status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.staff-showtime-status-badge.approve {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.staff-showtime-status-badge.pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.staff-showtime-status-badge.denied {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.staff-showtime-muted {
+    color: #6c757d;
+    font-style: italic;
+    font-size: 14px;
+}
+
+/* --- Search Box --- */
+.staff-showtime-search-box {
+    position: relative;
+    width: 260px;
+}
+
+.staff-showtime-search-box input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    outline: none;
+    background: #fff;
+    font-size: 15px;
+    transition: all 0.2s ease-in-out;
+    color: #1e293b;
+}
+
+.staff-showtime-search-box input::placeholder {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.staff-showtime-search-box input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* =================================== */
+/* 5. Timeline Tab */
+/* =================================== */
+.staff-showtime-timeline-tab {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.staff-showtime-timeline-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e9ecef;
+    flex-wrap: wrap;
+}
+
+.staff-showtime-timeline-controls label {
+    font-weight: bold;
+    margin-right: 5px;
+    color: #495057;
+}
+
+.staff-showtime-timeline-controls input[type="date"],
+.staff-showtime-timeline-controls select {
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+}
+
+.staff-showtime-day-tabs {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    gap: 5px;
+}
+
+.staff-showtime-day-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    background-color: #f8f9fa;
+    color: #495057;
+    min-width: 60px;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.staff-showtime-day-tab:hover {
+    background-color: #e9ecef;
+}
+
+.staff-showtime-day-tab.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.staff-showtime-day-label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.staff-showtime-day-date {
+    font-size: 12px;
+}
+
+/* Timeline Grid Structure */
+.staff-showtime-timeline-wrapper {
+    overflow-x: auto;
+}
+
+.staff-showtime-timeline-grid-header,
+.staff-showtime-timeline-row {
+    display: flex;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.staff-showtime-timeline-grid-header {
+    background-color: #f1f3f5;
+    font-weight: bold;
+    color: #343a40;
+}
+
+.staff-showtime-col-movie {
+    width: 200px;
+    flex-shrink: 0;
+    padding: 10px;
+    border-right: 1px solid #e9ecef;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: black;
+}
+
+.staff-showtime-col-hours {
+    flex-grow: 1;
+    display: flex;
+    position: relative;
+    min-width: 800px;
+}
+
+/* Hour markers in header */
+.staff-showtime-hour-col {
+    width: calc(100% / 16);
+    border-left: 1px dashed #ced4da;
+    padding: 5px 0;
+    text-align: center;
+    font-size: 12px;
+    box-sizing: border-box;
+}
+
+.staff-showtime-timeline-grid-header .staff-showtime-hour-col:first-child {
+    border-left: none;
+}
+
+/* Timeline Body */
+.staff-showtime-timeline-body {
+    overflow-y: auto;
+    max-height: 60vh;
+}
+
+.staff-showtime-timeline-row:hover {
+    background-color: #fcfcfc;
+}
+
+.staff-showtime-movie-cell .staff-showtime-movie-title {
+    font-weight: bold;
+    color: #007bff;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: unset;
+    line-height: 1.3;
+    max-height: 3.9em;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.staff-showtime-movie-cell .staff-showtime-movie-id {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.staff-showtime-col-hours .staff-showtime-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 50px;
+}
+
+/* Show Block Styling */
+.staff-showtime-show-block {
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    border-radius: 4px;
+    padding: 5px;
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.staff-showtime-show-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 15;
+}
+
+.staff-showtime-block-title {
+    font-weight: bold;
+    white-space: normal;
+    line-height: 1.2;
+    max-height: 2.4em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.staff-showtime-block-sub {
+    font-size: 10px;
+    opacity: 0.9;
+    white-space: nowrap;
+}
+
+/* Status Colors for Show Blocks */
+.staff-showtime-show-block.approve {
+    background-color: #28a745;
+    color: white;
+}
+
+.staff-showtime-show-block.pending {
+    background-color: #ffc107;
+    color: #343a40;
+}
+
+.staff-showtime-show-block.denied {
+    background-color: #dc3545;
+    color: white;
+}
+
+.staff-showtime-no-data {
+    text-align: center;
+    padding: 40px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* --- Message No Showtime on Timeline --- */
+.staff-showtime-no-showtimes-message {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #adb5bd;
+    font-style: italic;
+    font-size: 14px;
+}
+
+/* =================================== */
+/* 6. Modal */
+/* =================================== */
+.staff-showtime-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.staff-showtime-modal {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 90%;
+}
+
+.staff-showtime-modal h3 {
+    margin-top: 0;
+    color: #007bff;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.staff-showtime-modal-form label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #495057;
+}
+
+.staff-showtime-modal-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #1e4061;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.staff-showtime-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.staff-showtime-error-box {
+    background: #ffe5e5;
+    color: #a10000;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 12px;
+    border-left: 4px solid #ff4a4a;
+}
+
+/* --- Modal Ghế --- */
+.staff-showtime-seat-layout {
+    padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.staff-showtime-seat-box {
+    width: 32px;
+    height: 32px;
+    margin: 4px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    color: #0f172a;
+    cursor: pointer;
+    transition: 0.2s;
+    border: 1px solid #ccc;
+}
+
+.staff-showtime-seat-box:hover {
+    transform: scale(1.1);
+}
+
+/* Loại ghế */
+.staff-showtime-standard {
+    background-color: #22c55e;
+}
+
+.staff-showtime-vip {
+    background-color: #facc15;
+}
+
+.staff-showtime-couple {
+    background-color: #f472b6;
+}
+
+/* Trạng thái */
+.staff-showtime-sold {
+    background-color: #ef4444 !important;
+    color: #fff !important;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.staff-showtime-unavailable {
+    background-color: #9ca3af !important;
+    color: #fff !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Hàng ghế và bố cục */
+.staff-showtime-seat-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 6px 0;
+}
+
+.staff-showtime-seat-row-label {
+    width: 20px;
+    text-align: center;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.staff-showtime-seat-group {
+    display: flex;
+    justify-content: center;
+}
+
+.staff-showtime-aisle {
+    width: 40px;
+}
+
+/* Ghi chú */
+.staff-showtime-seat-legend {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+    color: black;
+}
+
+/* Ghi chú ghế (legend) */
+.staff-showtime-legend-box {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    margin-right: 6px;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+}
+
+/* 🎨 Màu tương ứng từng loại ghế cho Legend */
+.staff-showtime-legend-box.staff-showtime-standard {
+    background-color: #4caf50;
+}
+
+.staff-showtime-legend-box.staff-showtime-vip {
+    background-color: #ffeb3b;
+}
+
+.staff-showtime-legend-box.staff-showtime-couple {
+    background-color: #ff7eb6;
+}
+
+.staff-showtime-legend-box.staff-showtime-sold {
+    background-color: #f44336;
+}
+
+.staff-showtime-legend-box.staff-showtime-unavailable {
+    background-color: #9e9e9e;
+}

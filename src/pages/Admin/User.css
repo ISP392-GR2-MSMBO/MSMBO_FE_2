@@ -1,0 +1,302 @@
+/* =================================== */
+/* 1. Base Layout & Typography */
+/* =================================== */
+.admin-user-page {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    color:black;
+}
+
+.admin-user-header h2 {
+    color: #343a40;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+/* =================================== */
+/* 2. Tabs (Khách hàng / Nhân viên) */
+/* =================================== */
+.tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.tabs .tab {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    color: #6c757d;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+}
+
+.tabs .tab:hover {
+    color: #007bff;
+}
+
+.tabs .tab.active {
+    color: #007bff;
+    border-bottom: 3px solid #007bff;
+    font-weight: bold;
+}
+
+/* =================================== */
+/* 3. Controls (Search & Add Button) */
+/* =================================== */
+.admin-user-controls {
+    display: flex;
+    justify-content: space-between;
+          align-items: right;
+ gap: 100px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.admin-user-search-box {
+    padding: 10px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    width: 300px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+        align-items: center;
+}
+
+.admin-user-search-box:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.admin-user-add-btn {
+    background-color: #28a745; /* Green for success/add */
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.admin-user-add-btn:hover {
+    background-color: #1e7e34;
+}
+
+/* =================================== */
+/* 4. Table Styling */
+/* =================================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden; /* Dùng để border-radius hoạt động */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+table thead tr {
+    background-color: #e9ecef;
+    color: #495057;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+table th,
+table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 14px;
+}
+
+table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Input fields inside table rows for editing */
+table td input {
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+/* =================================== */
+/* 5. Action Buttons (Edit/Delete/Save/Cancel) */
+/* =================================== */
+.admin-user-edit-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: background-color 0.2s;
+}
+
+.admin-user-edit-btn:hover {
+    background-color: #0056b3;
+}
+
+.admin-user-delete-btn {
+    background-color: #dc3545; /* Red for delete/danger */
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.admin-user-delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* =================================== */
+/* 6. Popup (Thêm người dùng mới) */
+/* =================================== */
+.admin-user-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.admin-user-popup {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.admin-user-popup h3 {
+    margin-top: 0;
+    color: #007bff;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.admin-user-popup input,
+.admin-user-popup select {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.admin-user-popup-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.admin-user-popup .admin-user-add-btn {
+    /* Sử dụng lại add-btn nhưng chỉnh kích thước */
+    padding: 10px 20px;
+}
+
+.admin-user-popup .admin-user-delete-btn {
+    /* Sử dụng delete-btn cho nút Đóng */
+    background-color: #6c757d;
+}
+
+.admin-user-popup .admin-user-delete-btn:hover {
+    background-color: #5a6268;
+}
+
+/* =================================== */
+/* 7. Responsive & Utility */
+/* =================================== */
+@media (max-width: 768px) {
+    .admin-user-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .admin-user-search-box {
+        width: 100%;
+    }
+
+    .admin-user-page {
+        padding: 10px;
+    }
+
+    table th, table td {
+        padding: 8px 10px;
+    }
+}
+/* ================= Dropdown lọc role ================= */
+.admin-user-controls select {
+    padding: 6px 10px;
+    margin-right: 0px;      /* cách search box 1 chút */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.admin-user-controls select:hover {
+    border-color: #888;
+}
+
+.admin-user-controls select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0,123,255,0.5);
+}
+.admin-user-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.pagination {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+}
+
+.pagination button {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: #007bff;
+  color: white;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

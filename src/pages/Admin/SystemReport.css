@@ -1,0 +1,173 @@
+.admin-report-page {
+  background: #f7f8fa;
+  min-height: 100vh;
+  padding: 24px;
+  font-family: "Inter", sans-serif;
+  color:black;
+}
+
+.admin-report-page h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #1a1f36;
+  font-weight: 600;
+}
+
+.admin-subtext {
+  margin-top: -10px;
+  margin-bottom: 16px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* -------- TABLE -------- */
+.admin-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.admin-report-table th,
+.admin-report-table td {
+  border-bottom: 1px solid #ddd;
+  padding: 12px;
+ text-align: center; }
+
+.admin-report-table tr:hover {
+  background: #f1f5f9;
+}
+
+/* -------- FILTER TABS -------- */
+.admin-status-tabs {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding-bottom: 4px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.admin-status-tab {
+  padding: 10px 22px;
+  border-radius: 8px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  background: #f3f4f6;
+  cursor: pointer;
+  transition: 0.25s ease;
+  color: #374151;
+}
+
+.admin-status-tab:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+/* Tab đang chọn */
+.admin-status-tab.active {
+  background: #3766cd;
+  color: white;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+  transform: translateY(-2px);
+}
+
+/* -------- STATUS BADGES -------- */
+.admin-status-badge {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+/* -------- BUTTONS -------- */
+.admin-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  margin-right: 6px;
+}
+
+/* màu từng nút */
+.admin-btn.in-progress {
+  background: #2563eb;
+  color: white;
+}
+
+.admin-btn.reject {
+  background: #dc2626;
+  color: white;
+}
+
+.admin-btn.resolved {
+  background: #059669;
+  color: white;
+}
+
+.admin-btn.archive {
+  background-color: #777;
+  color: white;
+}
+
+.admin-btn.archive:hover {
+  background-color: #e31b1b;
+}
+
+/* Văn bản trạng thái kết quả */
+.admin-done-text {
+  color: #059669;
+  font-weight: 600;
+}
+
+.admin-reject-text {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* -------- POPUP -------- */
+.admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-modal {
+  background: white;
+  padding: 18px 24px;
+  border-radius: 8px;
+  width: 420px;
+}
+
+.admin-close-btn {
+  margin-top: 14px;
+  background: #111827;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.admin-pagination {
+    margin-top: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+.admin-pagination button {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: #eee;
+}
+
+.admin-pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

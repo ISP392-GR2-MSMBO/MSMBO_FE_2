@@ -1,0 +1,93 @@
+/* 🎬 Tổng thể */
+.phim-sap-chieu-wrapper {
+    background-color: #000;
+    color: #fff;
+    padding: 60px 0;
+    font-family: "Baloo 2", sans-serif;
+}
+
+.phim-sap-chieu-wrapper__title {
+    text-align: center;
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+}
+
+/* 🎞️ Khung từng phim */
+.phim-sap-chieu-wrapper__movie-box {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    width: 80%;
+    margin: 0 auto 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(244, 49, 5, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.phim-sap-chieu-wrapper__movie-box:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 25px rgba(255, 204, 0, 0.3);
+}
+
+/* 🎥 Poster phim */
+.phim-sap-chieu-wrapper__poster {
+    flex: 0 0 250px;
+}
+
+.phim-sap-chieu-wrapper__poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+/* 🧾 Thông tin phim */
+.phim-sap-chieu-wrapper__movie-info {
+    padding: 25px 30px;
+    flex: 1;
+}
+
+.phim-sap-chieu-wrapper__movie-title {
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.phim-sap-chieu-wrapper__movie-description {
+    font-size: 1rem;
+    color: #ddd;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.phim-sap-chieu-wrapper__release-date {
+    font-size: 1.1rem;
+    color: #fff;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+    .phim-sap-chieu-wrapper__movie-box {
+        flex-direction: column;
+        width: 90%;
+    }
+
+    .phim-sap-chieu-wrapper__poster {
+        flex: none;
+    }
+
+    .phim-sap-chieu-wrapper__poster img {
+        border-radius: 20px 20px 0 0;
+    }
+
+    .phim-sap-chieu-wrapper__movie-info {
+        text-align: center;
+    }
+}

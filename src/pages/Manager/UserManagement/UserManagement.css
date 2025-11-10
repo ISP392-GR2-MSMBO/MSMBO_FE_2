@@ -1,0 +1,447 @@
+/* ==== TOÀN BỘ TRANG ==== */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Poppins", sans-serif;
+}
+
+/* Giữ màu trắng cho vùng container của trang quản lý người dùng */
+.user-management-container {
+    background-color: #fff;
+}
+
+/* ==== CONTAINER CHUNG ==== */
+.user-management-container,
+.movie-management-container {
+    width: 90%;
+    margin: 40px auto;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    font-family: "Poppins", sans-serif;
+    color: #000;
+    /* ✅ chữ đen */
+}
+
+/* ==== TIÊU ĐỀ ==== */
+.user-management-container h2,
+.movie-management-container h2 {
+    text-align: center;
+    font-size: 26px;
+    color: #000;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* ==== ROLE SWITCH BUTTONS ==== */
+.role-switch {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.role-switch button {
+    background-color: #e3f2fd;
+    border: 1px solid #90caf9;
+    color: #000;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.role-switch button:hover {
+    background-color: #bbdefb;
+}
+
+.role-switch button.active {
+    background-color: #42a5f5;
+    color: #fff;
+    border: 1px solid #1e88e5;
+    box-shadow: 0 0 8px rgba(66, 165, 245, 0.4);
+}
+
+/* ==== Ô TÌM KIẾM ==== */
+.search-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #90caf9;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #42a5f5;
+    box-shadow: 0 0 4px rgba(66, 165, 245, 0.3);
+}
+
+/* ==== BẢNG ==== */
+.user-table,
+.movie-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #e3f2fd;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.user-table thead,
+.movie-table thead {
+    background-color: #90caf9;
+    color: #000;
+    font-weight: bold;
+}
+
+.user-table th,
+.user-table td,
+.movie-table th,
+.movie-table td {
+    text-align: center;
+    padding: 12px 10px;
+    font-size: 14px;
+    border-bottom: 1px solid #bbdefb;
+    color: #000;
+}
+
+/* Khi bảng không có cột hành động (Staff, Customer) */
+.user-table td:last-child:only-child {
+    text-align: center;
+}
+
+/* ==== NÚT HÀNH ĐỘNG ==== */
+.edit-btn,
+.delete-btn,
+.save-btn,
+.approve-btn,
+.cancel-btn {
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin: 0 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    color: #fff;
+}
+
+.edit-btn {
+    background-color: #1976d2;
+}
+
+.edit-btn:hover {
+    background-color: #1565c0;
+}
+
+.save-btn {
+    background-color: #2e7d32;
+}
+
+.save-btn:hover {
+    background-color: #1b5e20;
+}
+
+.cancel-btn {
+    background-color: #757575;
+}
+
+.cancel-btn:hover {
+    background-color: #616161;
+}
+
+.delete-btn {
+    background-color: #e53935;
+}
+
+.delete-btn:hover {
+    background-color: #c62828;
+}
+
+.approve-btn {
+    background-color: #43a047;
+}
+
+.approve-btn:hover {
+    background-color: #2e7d32;
+}
+
+/* ==== NÚT QUAY LẠI ==== */
+.back-btn {
+    margin-top: 20px;
+    display: inline-block;
+    background-color: #64b5f6;
+    color: #000;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    background-color: #42a5f5;
+    transform: translateY(-2px);
+}
+
+/* ==== POPUP FORM ==== */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+}
+
+.popup-content {
+    background-color: #fff;
+    color: #000;
+    padding: 30px;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Các ô input trong popup */
+.popup-content input,
+.popup-content select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #90caf9;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.popup-content input:focus,
+.popup-content select:focus {
+    border-color: #42a5f5;
+    box-shadow: 0 0 4px rgba(66, 165, 245, 0.3);
+}
+
+/* Nút trong popup */
+.popup-content button {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.popup-content .save-btn {
+    background-color: #2e7d32;
+    color: white;
+}
+
+.popup-content .delete-btn {
+    background-color: #e53935;
+    color: white;
+}
+
+/* ==== STATUS ==== */
+.status-now {
+    color: #00b300;
+    font-weight: bold;
+}
+
+.status-coming {
+    color: #e6b800;
+    font-weight: bold;
+}
+
+.status-ended {
+    color: #cc0000;
+    font-weight: bold;
+}
+
+/* ==== LOADING ==== */
+.loading {
+    text-align: center;
+    font-size: 20px;
+    margin-top: 50px;
+    color: #000;
+}
+
+/* ==== HIỆU ỨNG HOVER TRÊN DÒNG ==== */
+.user-table tbody tr:hover {
+    background-color: #bbdefb;
+    transition: 0.2s ease;
+}
+
+/* ==== RESPONSIVE ==== */
+@media (max-width: 768px) {
+    .user-management-container {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .role-switch {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .search-input {
+        font-size: 13px;
+    }
+
+    .user-table th,
+    .user-table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+
+/* ==== Popup Overlay ==== */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* nền mờ */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* ==== Popup Content ==== */
+.popup-content {
+    background-color: #fff;
+    padding: 30px 25px;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.popup-content h3 {
+    margin-bottom: 20px;
+    text-align: center;
+    color: #111827;
+}
+
+/* ==== Form Labels & Inputs ==== */
+.popup-content label {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.popup-content input,
+.popup-content select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    margin-top: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.popup-content input:focus,
+.popup-content select:focus {
+    border-color: #ec4899;
+    box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.2);
+}
+
+/* ==== Popup Buttons ==== */
+.popup-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.popup-buttons button {
+    flex: 1;
+    padding: 10px 0;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+/* Nút Tạo người dùng - màu xanh */
+.popup-buttons button:first-child {
+    margin-right: 10px;
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+    /* gradient xanh */
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.popup-buttons button:first-child:hover {
+    background: linear-gradient(90deg, #2563eb, #3b82f6);
+    /* đổi gradient khi hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+.popup-buttons button:first-child:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* ==== Responsive ==== */
+@media (max-width: 500px) {
+    .popup-content {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .popup-buttons button:first-child {
+        margin-right: 8px;
+    }
+}
+
+/* ==== Nút Tạo Người Dùng (Add User) ==== */
+.add-btn {
+    background: linear-gradient(90deg, #3b82f6, #2563eb);
+    /* gradient xanh */
+    color: #fff;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+}
+
+.add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4);
+    background: linear-gradient(90deg, #2563eb, #3b82f6);
+    /* đổi gradient khi hover */
+}
+
+.add-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+}

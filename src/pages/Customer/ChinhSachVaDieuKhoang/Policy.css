@@ -1,0 +1,57 @@
+/* src/pages/Customer/ChinhSachVaDieuKhoang/Policy.css - DARK MODE */
+
+.policy-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #1a1a1a;
+    /* ✅ Nền Đen */
+    color: #ffffff;
+    /* ✅ Chữ Trắng */
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    /* Shadow đậm hơn */
+    line-height: 1.6;
+}
+
+.policy-title {
+    color: #e50914;
+    /* ✅ Tiêu đề chính màu Đỏ (như logo) */
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #333;
+    /* Đường kẻ tối hơn */
+    padding-bottom: 15px;
+}
+
+.policy-content h2 {
+    color: #4CAF50;
+    /* ✅ Tiêu đề phụ màu Xanh (Đã chuyển từ #007bff sang màu xanh lá cây đậm hơn để nổi bật hơn trên nền tối) */
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-size: 1.5em;
+}
+
+.policy-content p,
+.policy-content li {
+    color: #f0f0f0;
+    /* Chữ thường màu trắng/xám nhạt */
+}
+
+.policy-content ul,
+.policy-content ol {
+    margin-left: 20px;
+    padding-left: 0;
+}
+
+.policy-content li {
+    margin-bottom: 5px;
+}
+
+.last-updated {
+    margin-top: 40px;
+    text-align: right;
+    font-style: italic;
+    color: #aaaaaa;
+    /* Màu chữ xám nhạt */
+}

@@ -56,17 +56,24 @@ const MovieListSlider = ({ movies }) => {
                             />
                         </div>
 
-                        {/* Movie Info */}
-                        <h4 className="mt-2 text-center font-semibold text-white">{movie.movieName}</h4>
+                        <h4
+                            style={{
+                                marginTop: "15px",
+                                fontSize: "1.5rem",
+                                fontWeight: 700,
+                                textAlign: "center",
+                                color: "#fff"
+                            }}
+                        >
+                            {movie.movieName}
+                        </h4>
                         <p className="text-sm text-center text-gray-300">Thể loại: {movie.genre}</p>
                         <p className="text-sm text-center text-gray-300">Thời lượng: {movie.duration} phút</p>
 
-                        {/* Action Buttons */}
                         <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginTop: "10px" }}>
-                            {/* Nút Mua vé */}
                             <button
                                 style={{
-                                    backgroundColor: "#ec4899",
+                                    backgroundColor: "#e50914",
                                     color: "#fff",
                                     padding: "8px 16px",
                                     borderRadius: "8px",
@@ -82,7 +89,6 @@ const MovieListSlider = ({ movies }) => {
                                 🎟 Mua vé
                             </button>
 
-                            {/* Nút Trailer */}
                             {trailerUrl ? (
                                 <button
                                     style={{

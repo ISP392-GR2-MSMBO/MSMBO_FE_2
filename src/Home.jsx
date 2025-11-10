@@ -4,56 +4,69 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import MovieListSlider from "./pages/Customer/MovieList";
+// 💡 Cần import movieApi để gọi API
+import { movieApi } from "./api/movieApi";
 
-// 🎬 Danh sách banner
-const banners = [
-    {
-        id: 1,
-        image:
-            "https://designercomvn.s3.ap-southeast-1.amazonaws.com/wp-content/uploads/2017/07/26020157/poster-phim-kinh-di-1024x576.jpg",
-    },
-    {
-        id: 2,
-        image: "https://shortlink.vn/wp-content/uploads/2025/05/shortlink-vn-203.jpg",
-    },
-    {
-        id: 3,
-        image:
-            "https://ddcinema.vn/Areas/Admin/Content/Fileuploads/images/slider/quy%20an%20tang%203.jpg",
-    },
-];
+// ❌ LOẠI BỎ: const banners = [...]
 
 const Home = () => {
     const [movies, setMovies] = useState([]);
+    const [apiBanners, setApiBanners] = useState([]); // State mới cho banner động
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchNowShowing = async () => {
-            try {
-                const res = await fetch("http://localhost:8080/api/movie/status/now-showing");
-                const data = await res.json();
+    // --- Hàm Tải Banner từ API ---
+    const fetchBanners = async () => {
+        try {
+            // ✅ Lấy tất cả phim để lọc
+            const data = await movieApi.getMovies();
 
-                // Chỉ lấy phim "Now Showing" và đã được duyệt
-                const filtered = data.filter(
+            // Lọc các phim đủ điều kiện làm banner
+            const filteredBanners = data
+                .filter(
                     (m) =>
-                        m.status &&
-                        m.status.toLowerCase() === "now showing" &&
-                        m.approveStatus === "APPROVE" &&
-                        m.deleted !== true
-                );
+                        m.banner && // Phải có URL banner
+                        m.approveStatus === "APPROVE" && // Phải được duyệt
+                        m.deleted !== true // Phải không bị xóa
+                )
+                .slice(0, 5); // Giới hạn số lượng banner (ví dụ 5)
 
-                setMovies(filtered);
-            } catch (error) {
-                console.error("❌ Lỗi khi tải danh sách phim:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+            setApiBanners(filteredBanners);
+        } catch (error) {
+            console.error("❌ Lỗi khi tải danh sách banner:", error);
+            setApiBanners([]);
+        }
+    };
 
+    // --- Hàm Tải Phim Now Showing (Giữ nguyên logic lọc) ---
+    const fetchNowShowing = async () => {
+        try {
+            // 💡 TỐT HƠN NÊN DÙNG movieApi.getNowShowing() đã có logic lọc
+            const res = await fetch("https://api-movie6868.purintech.id.vn/api/movie/status/now-showing");
+            const data = await res.json();
+
+            const filtered = data.filter(
+                (m) =>
+                    m.status &&
+                    m.status.toLowerCase() === "now showing" &&
+                    m.approveStatus === "APPROVE" &&
+                    m.deleted !== true
+            );
+
+            setMovies(filtered);
+        } catch (error) {
+            console.error("❌ Lỗi khi tải danh sách phim:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        // ✅ Gọi cả hai hàm để tải dữ liệu
+        fetchBanners();
         fetchNowShowing();
     }, []);
 
-    // ⚙️ Cấu hình banner slider
+    // ⚙️ Cấu hình banner slider (Giữ nguyên)
     const bannerSettings = {
         dots: true,
         infinite: true,
@@ -68,22 +81,27 @@ const Home = () => {
     return (
         <div className="home px-4 md:px-8">
             {/* 🎬 Banner slider */}
-            <Slider {...bannerSettings} className="banner-slider mt-4">
-                {banners.map((banner) => (
-                    <div key={banner.id} className="banner-item">
-                        <img
-                            src={banner.image}
-                            alt="banner"
-                            style={{
-                                width: "100%",
-                                height: "450px",
-                                objectFit: "cover",
-                                borderRadius: "10px",
-                            }}
-                        />
-                    </div>
-                ))}
-            </Slider>
+            {/* Chỉ hiển thị Slider nếu có banner */}
+            {apiBanners.length > 0 && (
+                <Slider {...bannerSettings} className="banner-slider mt-4">
+                    {/* ✅ Dùng apiBanners động */}
+                    {apiBanners.map((banner) => (
+                        <div key={banner.movieID} className="banner-item">
+                            <img
+                                // ✅ Lấy URL từ trường 'banner' của object phim gốc
+                                src={banner.banner}
+                                alt={banner.movieName || "banner"}
+                                style={{
+                                    width: "100%",
+                                    height: "500px",
+                                    objectFit: "cover",
+                                    borderRadius: "10px",
+                                }}
+                            />
+                        </div>
+                    ))}
+                </Slider>
+            )}
 
             <h2 className="section-title text-center text-2xl font-bold mt-8">
                 🎬 Phim nổi bật

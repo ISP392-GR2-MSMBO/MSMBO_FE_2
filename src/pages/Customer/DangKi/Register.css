@@ -1,0 +1,103 @@
+/* Sử dụng tên class riêng biệt để tránh xung đột với Login.css, nhưng áp dụng style tối */
+
+.register-container {
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 30px;
+    background: #111;
+    color: white;
+    border-radius: 12px;
+    box-shadow: 0 40px 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.register-container h2 {
+    margin-bottom: 25px;
+    font-size: 30px;
+    color: #fff;
+    font-weight: 700;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: -5px;
+}
+
+.register-form input {
+    padding: 12px 15px;
+    border-radius: 8px;
+    /* Giữ nguyên viền và bo góc */
+    border: 1px solid #333;
+
+    /* === THAY ĐỔI QUAN TRỌNG: Màu nền trắng và chữ đen === */
+    background: white;
+    color: #333;
+    /* Màu chữ đen */
+    /* ====================================================== */
+
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+/* Cần đảm bảo placeholder cũng có màu dễ nhìn trên nền trắng */
+/* Target placeholder của hầu hết các trình duyệt */
+.register-form input::placeholder {
+    color: #999;
+    /* Màu xám nhạt cho placeholder */
+    opacity: 1;
+    /* Đảm bảo hiển thị */
+}
+
+
+.register-form input:focus {
+    outline: none;
+    border-color: #f1356d;
+    box-shadow: 0 0 5px rgba(241, 53, 109, 0.5);
+}
+
+/* Style cho NÚT Đăng ký */
+.register-form .login-btn {
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #f1356d;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.register-form .login-btn:hover:not(:disabled) {
+    background-color: #e02a60;
+    transform: translateY(-1px);
+}
+
+.register-form .login-btn:disabled {
+    background-color: #333;
+    color: #999;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.register-link {
+    margin-top: 20px;
+    font-size: 15px;
+    color: #ccc;
+}
+
+.register-link a {
+    color: #f1356d;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.register-link a:hover {
+    color: #ff6699;
+    text-decoration: underline;
+}

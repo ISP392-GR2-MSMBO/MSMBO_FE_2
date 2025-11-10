@@ -16,7 +16,7 @@
     text-align: center;
     font-size: 36px;
     font-weight: 800;
-    color: #ffcc00;
+    color: #fff;
     margin-bottom: 40px;
 }
 
@@ -76,7 +76,7 @@
 }
 
 .phim-movie-title {
-    color: #f1356d;
+    color: #fff;
     font-size: 24px;
     font-weight: 700;
     text-transform: uppercase;
@@ -121,10 +121,10 @@
 }
 
 .phim-buy-btn {
-    background-color: #ffcc00;
-    color: #000;
+    background-color: #e50914;
+    color: #fff;
 }
 
 .phim-buy-btn:hover {
-    background-color: #f39c12;
+    background-color: #e50914;
 }

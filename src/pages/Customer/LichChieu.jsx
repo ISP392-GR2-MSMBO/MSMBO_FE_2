@@ -70,6 +70,7 @@ const LichChieu = () => {
     );
 
 
+
     return (
         <div className="lichchieu-page">
             <h1 className="lichchieu-title">🎬 Lịch Chiếu Phim</h1>

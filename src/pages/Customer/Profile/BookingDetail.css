@@ -1,0 +1,261 @@
+/* src/pages/Customer/Profile/BookingDetail.css (FINAL CSS ĐÃ XÓA CHI TIẾT GHẾ) */
+
+.detail-page-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #1a1a1a;
+    color: #f0f0f0;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    min-height: 70vh;
+}
+
+.detail-title {
+    color: #ff4757;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 2.2em;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+}
+
+/* --- Summary Box (Thông tin chung) --- */
+.summary-box {
+    background-color: #242424;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    border: 1px solid #333;
+}
+
+.summary-row {
+    margin: 10px 0;
+    font-size: 1.05em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #333;
+    padding-bottom: 5px;
+}
+
+.summary-row p:first-child {
+    font-weight: 500;
+    color: #ccc;
+}
+
+.summary-row p:last-child {
+    font-weight: bold;
+    color: #fff;
+    text-align: right;
+}
+
+.summary-box .summary-row:last-of-type {
+    border-bottom: none;
+}
+
+.summary-box .total-price {
+    font-size: 1.4em;
+    color: #4CAF50;
+    padding-top: 10px;
+    border-top: 1px solid #333;
+    margin-top: 15px;
+}
+
+.summary-box .total-price p:last-child {
+    color: #4CAF50;
+}
+
+/* --- Status Tag --- */
+.status {
+    font-weight: bold;
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #1a1a1a;
+    background-color: #ccc;
+    font-size: 0.9em;
+}
+
+.status-confirmed {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.status-active,
+.status-completed {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.status-pending {
+    background-color: #ffc107;
+    color: #1a1a1a;
+}
+
+.status-cancelled {
+    background-color: #e50914;
+    color: white;
+}
+
+/* --- Back Button --- */
+.back-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 30px;
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #ff4757;
+}
+
+/* ------------------------------------------- */
+/* --- CSS CHO DANH SÁCH VÉ DẠNG BẢNG (MỚI) --- */
+/* ------------------------------------------- */
+
+.booking-list-table-container {
+    overflow-x: auto;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.booking-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #242424;
+    color: #f0f0f0;
+}
+
+.booking-table thead th {
+    background-color: #ff4757;
+    color: white;
+    padding: 15px 10px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.booking-table tbody tr {
+    border-bottom: 1px solid #333;
+    transition: background-color 0.3s;
+}
+
+.booking-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.booking-table tbody tr:hover {
+    background-color: #333;
+}
+
+.booking-table td {
+    padding: 12px 10px;
+    vertical-align: middle;
+}
+
+.booking-table td[data-label="Phim"] {
+    font-weight: bold;
+    color: #ffc107;
+}
+
+.table-total-price {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.table-detail-btn {
+    padding: 6px 10px;
+    font-size: 0.9em;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.table-detail-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Thêm media query để cải thiện hiển thị trên thiết bị nhỏ (tùy chọn) */
+@media screen and (max-width: 600px) {
+    .booking-table thead {
+        display: none;
+    }
+
+    .booking-table,
+    .booking-table tbody,
+    .booking-table tr,
+    .booking-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .booking-table tr {
+        margin-bottom: 15px;
+        border: 1px solid #333;
+        border-radius: 6px;
+        background-color: #242424;
+    }
+
+    .booking-table td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+
+    .booking-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: 50%;
+        padding-right: 10px;
+        white-space: nowrap;
+        text-align: left;
+        font-weight: bold;
+        color: #ff4757;
+    }
+}
+
+/* --- Bổ sung CSS cho Phân trang (Ant Design) --- */
+
+.pagination-container {
+    margin-top: 30px;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.custom-pagination-dark.ant-pagination .ant-pagination-item {
+    background-color: #333;
+    border-color: #555;
+}
+
+.custom-pagination-dark.ant-pagination .ant-pagination-item a {
+    color: #f0f0f0;
+}
+
+.custom-pagination-dark.ant-pagination .ant-pagination-item-active {
+    background-color: #ff4757 !important;
+    border-color: #ff4757;
+}
+
+.custom-pagination-dark.ant-pagination .ant-pagination-item-active a {
+    color: white;
+}
+
+.custom-pagination-dark.ant-pagination .ant-pagination-prev .ant-pagination-item-link,
+.custom-pagination-dark.ant-pagination .ant-pagination-next .ant-pagination-item-link {
+    background-color: #333;
+    border-color: #555;
+    color: #f0f0f0;
+}

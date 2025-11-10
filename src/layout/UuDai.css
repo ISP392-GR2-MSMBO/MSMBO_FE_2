@@ -1,0 +1,54 @@
+/* Container chính của toàn bộ trang ưu đãi */
+.promotion-page {
+    padding: 0;
+}
+
+/* Style cho container chứa mỗi slide/mục ưu đãi */
+.promotion-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Điều chỉnh chiều cao theo ý muốn của bạn */
+    height: 60vh;
+    background-color: #000;
+    /* Đặt màu nền đen cho mỗi slide */
+    color: white;
+    padding: 40px;
+    margin-bottom: 20px;
+    /* Khoảng cách giữa các slide */
+}
+
+/* Container chứa hình ảnh */
+.promo-image-container {
+    flex: 0 0 300px;
+    margin-right: 50px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Hình ảnh ưu đãi */
+.promo-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Container chứa chi tiết text */
+.promo-details {
+    flex: 1;
+    max-width: 500px;
+    text-align: left;
+}
+
+/* Tiêu đề ưu đãi */
+.promo-title {
+    font-size: 2em;
+    color: red;
+    margin-bottom: 15px;
+}
+
+/* Ngày áp dụng */
+.promo-date {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    font-weight: bold;
+}

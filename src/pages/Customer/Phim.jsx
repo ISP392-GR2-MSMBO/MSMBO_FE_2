@@ -7,11 +7,12 @@ const Phim = () => {
     const [movies, setMovies] = useState([]);
     const [loading, setLoading] = useState(true);
 
+
     useEffect(() => {
         const fetchMovies = async () => {
             try {
                 const res = await fetch(
-                    "http://localhost:8080/api/movie/status/now-showing"
+                    "https://api-movie6868.purintech.id.vn/api/movie/status/now-showing"
                 );
                 const data = await res.json();
 
@@ -46,13 +47,11 @@ const Phim = () => {
                 <h2 className="phim-section-title">🎬 Phim Đang Chiếu</h2>
 
                 {movies.map((movie) => {
-                    // ✅ Lấy poster ưu tiên từ admin upload
                     const posterUrl =
                         movie.poster || localStorage.getItem(`poster_${movie.movieID}`) || movie.image || "/default-poster.jpg";
 
                     return (
                         <div key={movie.movieID || movie.id} className="phim-movie-row">
-                            {/* Poster */}
                             <div className="phim-movie-left">
                                 <div className="phim-poster-wrapper">
                                     <img
@@ -69,7 +68,6 @@ const Phim = () => {
                                 </div>
                             </div>
 
-                            {/* Thông tin phim */}
                             <div className="phim-movie-right">
                                 <h3 className="phim-movie-title">{movie.movieName || movie.title}</h3>
                                 {movie.releaseDate && (

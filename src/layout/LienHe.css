@@ -1,173 +1,551 @@
-.lienhe-page {
-    padding: 40px;
+/* =================================================== */
+/* 🛠️ PHẦN 1: BÁO CÁO CỦA KHÁCH HÀNG (CUSTOMER REPORT) */
+/* (Dùng tiền tố cus- để tránh xung đột với Form Tối ưu) */
+/* =================================================== */
+.customer-report-page {
+    min-height: 100vh;
     background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: #fff;
-    font-family: Arial, sans-serif;
-}
-
-.lienhe-page .cinema-info {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.lienhe-page .cinema-info h2 {
-    color: red;
-    font-size: 28px;
-    font-weight: bold;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8),
-        0 0 20px rgba(255, 0, 0, 0.6),
-        0 0 30px rgba(255, 0, 0, 0.4);
-}
-
-.lienhe-page .three-columns {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 25px;
-    align-items: start;
-}
-
-/* Form */
-.lienhe-page .feedback-form-wrapper {
-    background: #1e1e1e;
+    font-family: "Segoe UI", Arial, sans-serif;
     padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
-.lienhe-page .feedback-form input,
-.lienhe-page .feedback-form textarea {
+/* Khung chứa form Báo cáo Khách hàng */
+.cus-report-form-card {
+    /* <--- Đã sửa tên */
+    background: #111;
+    padding: 60px 50px;
+    border-radius: 18px;
     width: 100%;
-    margin-bottom: 12px;
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    outline: none;
-}
-
-.lienhe-page .feedback-form button {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: #ff0055;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.lienhe-page .feedback-form button:hover {
-    background: #ff0055;
-}
-
-.lienhe-page .feedback-form-wrapper h2 {
-    color: red;
-    font-size: 26px;
-    font-weight: bold;
-    text-transform: uppercase;
-    margin-bottom: 15px;
-    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8),
-        0 0 20px rgba(255, 0, 0, 0.6),
-        0 0 30px rgba(255, 0, 0, 0.4);
-}
-
-/* Slider */
-.lienhe-page .poster-slider {
-    position: relative;
+    max-width: 700px;
     text-align: center;
-    overflow: hidden;
+    border: 1px solid rgb(255, 0, 0);
 }
 
-.lienhe-page .poster-wrapper {
+/* Tiêu đề Báo cáo Khách hàng */
+.cus-report-title {
+    /* <--- Đã sửa tên */
+    color: #fff;
+    font-size: 30px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+}
+
+/* Label Báo cáo Khách hàng */
+.cus-report-label {
+    /* <--- Đã sửa tên */
+    display: block;
+    text-align: left;
+    margin-bottom: 10px;
+    font-size: 17px;
+    font-weight: 500;
+    color: #fff;
+}
+
+/* Ô nhập Báo cáo Khách hàng */
+.cus-report-textarea {
+    /* <--- Đã sửa tên */
     width: 100%;
-    overflow: hidden;
+    background: #fff;
+    border: 1px solid #444;
+    border-radius: 10px;
+    padding: 16px;
+    resize: none;
+    font-size: 17px;
+    outline: none;
+    transition: border 0.2s ease;
 }
 
-.lienhe-page .poster-track {
-    display: flex;
-    transition: transform 0.6s ease-in-out;
+.cus-report-textarea:focus {
+    /* <--- Đã sửa tên */
+    border-color: #ff0055;
 }
 
-.lienhe-page .poster-container {
-    min-width: 100%;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.lienhe-page .poster-img {
-    width: 85%;
-    border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
-    transition: transform 0.4s ease;
-}
-
-.lienhe-page .poster-container:hover .poster-img {
-    transform: scale(1.05);
-}
-
-/* Overlay phủ poster */
-.lienhe-page .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
+/* Nút gửi Báo cáo Khách hàng */
+.cus-report-button {
+    /* <--- Đã sửa tên */
     width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.4);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.lienhe-page .poster-container:hover .overlay {
-    opacity: 1;
-}
-
-/* Nút mua vé */
-.lienhe-page .buy-btn {
-    padding: 12px 25px;
+    margin-top: 20px;
+    padding: 16px;
+    border: none;
+    border-radius: 10px;
+    background: #e50914;
+    color: #fff;
     font-size: 18px;
-    background: #ff0055;
-    color: #111;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Thông báo lỗi Báo cáo Khách hàng */
+.cus-report-message.error {
+    /* <--- Đã sửa tên */
+    margin-top: 15px;
+    color: #fff;
+    font-size: 16px;
+}
+
+
+/* =================================================== */
+/* 🛠️ PHẦN 2: TRANG QUẢN LÝ VÀ FORM TẠO BÁO CÁO MỚI (MANAGER/OPTIMIZED) */
+/* (Giữ nguyên các class gốc) */
+/* =================================================== */
+
+/* === Toàn Trang Quản Lý === */
+.manager-page {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #000;
+    background-color: #f9f9f9;
+}
+
+/* === Tiêu đề chính Trang Quản Lý === */
+.manager-page h2 {
+    color: #007bff;
+    border-bottom: 3px solid #007bff;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.subtext {
+    color: #555;
+    font-size: 16px;
+}
+
+/* Box Container cho nội dung chính */
+.main-report-content-box {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 0;
+}
+
+/* === Nút điều khiển trạng thái === */
+.manager-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 0;
+    flex-wrap: wrap;
+}
+
+.control-btn {
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    color: #000;
+    transition: all 0.3s;
+}
+
+.control-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.control-btn.active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+}
+
+/* === Phần danh sách báo cáo === */
+.report-queue-container {
+    margin-top: 0;
+}
+
+.report-queue-container h3 {
+    color: #000;
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-size: 20px;
+    text-align: left;
+}
+
+/* === Bảng báo cáo === */
+.manager-report-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.manager-report-table th,
+.manager-report-table td {
+    padding: 12px;
+    color: #000;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+}
+
+.manager-report-table th {
+    background-color: #e9ecef;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 14px;
+    border-top: none;
+}
+
+.manager-report-table td {
+    font-size: 14px;
+}
+
+.manager-report-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+
+/* === Nút hành động trong bảng (Xem mô tả) === */
+.btn-action {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #fff;
+    background-color: #17a2b8;
+    transition: transform 0.2s, background-color 0.3s;
+    font-size: 13px;
+}
+
+.btn-action:hover {
+    transform: translateY(-1px);
+    background-color: #138496;
+}
+
+/* === Nút Sửa Trạng Thái (Mở Modal) === */
+.btn-status-edit {
+    background-color: #ffc107;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    font-size: 13px;
+    transition: background-color 0.2s;
+}
+
+.btn-status-edit:hover {
+    background-color: #e0a800;
+}
+
+/* === Modal Popup (Chung) === */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal {
+    background-color: #fff;
+    padding: 30px 35px;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    color: #000;
+    position: relative;
+    animation: fadeInUp 0.3s ease;
+}
+
+/* Modal Xem Mô Tả: Đảm bảo mô tả màu đen */
+.modal p {
+    color: #000;
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translateY(40px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close-btn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin-top: 15px;
+    float: right;
+}
+
+.close-btn:hover {
+    background-color: #0056b3;
+}
+
+/* === Modal Sửa Trạng Thái (Modal Status Edit) === */
+.modal-status-edit {
+    max-width: 450px;
+    text-align: center;
+}
+
+/* Điều chỉnh để ID và Trạng thái hiện tại nổi bật, căn giữa */
+.modal-report-id,
+.modal-current-status {
+    font-size: 16px;
+    margin: 5px 0;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.modal-report-id {
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.modal-report-id .highlight-id {
+    font-weight: 700;
+    color: #000;
+    font-size: 20px;
+}
+
+.modal-current-status {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    text-transform: capitalize;
+}
+
+.status-selection-group {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    text-align: left;
+}
+
+.status-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+.status-radio-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.status-radio-item input[type="radio"] {
+    margin-right: 8px;
+}
+
+/* === Style cho label trạng thái (như button) === */
+.status-btn {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+/* === Nút hành động trong Modal === */
+.modal-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn-save-status {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.btn-save-status:hover:not(:disabled) {
+    background-color: #1e7e34;
+}
+
+.btn-save-status:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.btn-cancel {
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.btn-cancel:hover {
+    background-color: #c82333;
+}
+
+
+/* === Màu chữ trạng thái === */
+.status-pending,
+.status-btn-pending {
+    font-weight: 600;
+    color: #ff9800;
+}
+
+.status-in_progress,
+.status-btn-in_progress {
+    font-weight: 600;
+    color: #007bff;
+}
+
+.status-resolved,
+.status-btn-resolved {
+    font-weight: 600;
+    color: #28a745;
+}
+
+.status-rejected,
+.status-btn-rejected {
+    font-weight: 600;
+    color: #dc3545;
+}
+
+.status-archived,
+.status-btn-archived {
+    font-weight: 600;
+    color: #6c757d;
+}
+
+/* === Form tạo báo cáo TỐI ƯU GIAO DIỆN (Sử dụng cho trang Manager) === */
+.create-report-container {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Đây là các class bị trùng đã được giữ lại cho Form Tối ưu/Manager */
+.report-form-card {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+    border: 1px solid #e0e0e0;
+}
+
+.report-title {
+    color: #343a40;
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-size: 24px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.report-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #495057;
+    font-size: 16px;
+}
+
+.report-textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    color: #343a40;
+    font-size: 15px;
+    resize: vertical;
+    background-color: #f8f9fa;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    min-height: 150px;
+}
+
+.report-textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+    background-color: #fff;
+}
+
+.report-button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
     border: none;
     border-radius: 8px;
+    margin-top: 20px;
     cursor: pointer;
-    transition: 0.3s ease;
-    z-index: 2;
+    font-weight: 600;
+    width: 100%;
+    font-size: 18px;
+    transition: background-color 0.2s, transform 0.2s;
 }
 
-.lienhe-page .buy-btn:hover {
-    background: #ff0055;
-    transform: scale(1.1);
+.report-button:hover:not(:disabled) {
+    background-color: #0056b3;
+    transform: translateY(-1px);
 }
 
-/* Mũi tên */
-.lienhe-page .arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.6);
-    border: none;
-    color: #fff;
-    font-size: 28px;
-    cursor: pointer;
-    padding: 12px 16px;
-    border-radius: 50%;
-    transition: background 0.3s;
-    z-index: 10;
+.report-button:disabled {
+    background-color: #adb5bd;
+    cursor: not-allowed;
+    box-shadow: none;
 }
 
-.lienhe-page .arrow:hover {
-    background: rgba(0, 0, 0, 0.9);
+/* Tối ưu thông báo */
+.report-message {
+    margin-top: 15px;
+    font-weight: 600;
+    padding: 10px 15px;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 15px;
 }
 
-.lienhe-page .left {
-    left: 15px;
+/* Thông báo thành công */
+.report-message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }
 
-.lienhe-page .right {
-    right: 15px;
+/* Thông báo lỗi/cảnh báo */
+.report-message.error,
+.report-message.warning {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
 }

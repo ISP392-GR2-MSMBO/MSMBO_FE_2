@@ -1,18 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { movieApi } from "../../api/movieApi";
 import { showtimeApi } from "../../api/showtimeApi";
 import "../../layout/MovieDetail.css";
 
+const getAgeRatingClass = (age) => {
+    if (!age) return "";
+    // Xử lý các định dạng như "13+" hoặc chỉ số "18"
+    const ageStr = String(age).toLowerCase().replace('+', '');
+    const ageNum = parseInt(ageStr, 10);
+
+    if (ageNum >= 18) return "age-rating-t18";
+    if (ageNum >= 16) return "age-rating-t16";
+    if (ageNum >= 13) return "age-rating-t13";
+    if (ageNum <= 12) return "age-rating-p";
+
+    return "";
+};
+
 const MovieDetail = () => {
     const { name } = useParams();
+    const history = useHistory();
+
     const [movie, setMovie] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [approvedShowtimes, setApprovedShowtimes] = useState([]);
-    const [selectedDate, setSelectedDate] = useState(
-        new Date().toLocaleDateString("en-CA") // ✅ dùng giờ địa phương VN, không bị lệch
-    );
+
+    // Khởi tạo ngày hiện tại theo định dạng YYYY-MM-DD
+    const todayDateString = new Date().toLocaleDateString("en-CA");
+    const [selectedDate, setSelectedDate] = useState(todayDateString);
 
     useEffect(() => {
         const fetchMovie = async () => {
@@ -54,7 +71,7 @@ const MovieDetail = () => {
     if (error) return <p>{error}</p>;
     if (!movie) return <p>Không tìm thấy phim.</p>;
 
-    // ==== Lấy danh sách 5 ngày liên tiếp (hôm nay -> 4 ngày sau) ====
+
     const nextDays = Array.from({ length: 7 }, (_, i) => {
         const date = new Date();
         date.setDate(date.getDate() + i);
@@ -70,18 +87,41 @@ const MovieDetail = () => {
                         day: "2-digit",
                         month: "2-digit",
                     }),
-            value: date.toLocaleDateString("en-CA"), // ✅ giờ VN
+            value: date.toLocaleDateString("en-CA"),
         };
     });
 
-    // ==== Lọc lịch chiếu theo ngày và sắp xếp theo giờ ====
+    const now = new Date();
+    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const isToday = selectedDate === todayDateString;
+
     const showtimesForSelectedDate = approvedShowtimes
         .filter((s) => s.date === selectedDate)
+        .filter((s) => {
+            // 2. Lọc theo thời gian thực (chỉ áp dụng cho ngày hôm nay)
+            if (isToday) {
+                // Giữ lại suất chiếu nếu giờ bắt đầu >= giờ hiện tại
+                return s.startTime >= currentTime;
+            }
+            // Nếu không phải hôm nay, giữ lại tất cả
+            return true;
+        })
         .sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+
+    // ==== Hàm xử lý khi click vào giờ chiếu (Truyền state) ====
+    const handleSelectShowtime = (showtime) => {
+        const dataToPass = {
+            movie: movie,
+            showtime: showtime,
+        };
+
+        history.push(`/book/${showtime.showtimeID}`, { state: dataToPass });
+    };
+
 
     return (
         <div className="movie-detail-page">
-            {/* ===== Trailer ===== */}
             <div className="trailer-section">
                 {movie.trailer ? (
                     <iframe
@@ -94,7 +134,6 @@ const MovieDetail = () => {
                 )}
             </div>
 
-            {/* ===== Thông tin phim ===== */}
             <div className="detail-container">
                 <div className="poster">
                     <img
@@ -103,7 +142,14 @@ const MovieDetail = () => {
                     />
                 </div>
                 <div className="info">
-                    <h1 className="title">{movie.movieName}</h1>
+                    <h1 className="title">
+                        {movie.movieName}
+                        {movie.age && (
+                            <span className={`age-rating ${getAgeRatingClass(movie.age)}`}>
+                                {`T${String(movie.age).replace('+', '')}`}
+                            </span>
+                        )}
+                    </h1>
                     <p>
                         <strong>🎭 Thể loại:</strong> {movie.genre || "Không rõ"}
                     </p>
@@ -128,23 +174,19 @@ const MovieDetail = () => {
                 </div>
             </div>
 
-            {/* ===== Mô tả ===== */}
             <div className="description-section">
                 <h2>Nội dung phim</h2>
                 <p>{movie.description || "Nội dung phim đang được cập nhật."}</p>
             </div>
 
-            {/* ===== Lịch chiếu ===== */}
             <div className="showtime-section">
                 <h2>Lịch Chiếu</h2>
 
-                {/* --- Thanh chọn ngày --- */}
                 <div className="date-tabs">
                     {nextDays.map((day) => (
                         <button
                             key={day.value}
-                            className={`date-tab ${selectedDate === day.value ? "active" : ""
-                                }`}
+                            className={`date-tab ${selectedDate === day.value ? "active" : ""}`}
                             onClick={() => setSelectedDate(day.value)}
                         >
                             {day.label}
@@ -152,11 +194,14 @@ const MovieDetail = () => {
                     ))}
                 </div>
 
-                {/* --- Hiển thị các suất chiếu theo phòng --- */}
                 {showtimesForSelectedDate.length > 0 ? (
-                    <div className="showtime-grid">
+                    <div className="showtime-grid single-grid">
                         {showtimesForSelectedDate.map((st) => (
-                            <button key={st.showtimeID} className="showtime-btn">
+                            <button
+                                key={st.showtimeID}
+                                className="showtime-btn"
+                                onClick={() => handleSelectShowtime(st)}
+                            >
                                 {st.startTime}
                             </button>
                         ))}

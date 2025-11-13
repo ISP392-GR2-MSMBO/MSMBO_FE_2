@@ -1,6 +1,6 @@
+// src/components/staff/Movie.jsx
 import React, { useEffect, useState } from "react";
 import { movieApi } from "../../../api/movieApi";
-import { Pagination } from 'antd'; // Import component Pagination
 import "./Movie.css";
 
 const Movies = () => {
@@ -17,11 +17,6 @@ const Movies = () => {
     const [editMovieID, setEditMovieID] = useState(null);
     const [showImagePopup, setShowImagePopup] = useState(null);
     const [errorMessages, setErrorMessages] = useState([]);
-
-    // 🆕 State cho Phân trang
-    const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10); // Mặc định 10 mục mỗi trang
-    const PAGE_SIZE_OPTIONS = [10, 20, 50];
 
     const genres = ["Action", "Comedy", "Drama", "Horror", "Romance", "Sci-Fi", "Animation"];
     const ages = ["All", "13+", "16+", "18+"];
@@ -68,9 +63,6 @@ const Movies = () => {
                 const updatedMovies = await movieApi.getMovies();
                 setMovies(updatedMovies);
                 setFilteredMovies(updatedMovies);
-                // Sau khi cập nhật, reset lại trang về 1
-                setCurrentPage(1);
-
             }
 
         } catch (err) {
@@ -108,10 +100,7 @@ const Movies = () => {
     const handleSearch = (e) => {
         const value = e.target.value.toLowerCase().trim();
         setSearchTerm(value);
-        const filtered = movies.filter((m) => m.movieName.toLowerCase().includes(value));
-        setFilteredMovies(filtered);
-        // Reset trang về 1 khi tìm kiếm
-        setCurrentPage(1);
+        setFilteredMovies(movies.filter((m) => m.movieName.toLowerCase().includes(value)));
     };
 
     const resetForm = () => {
@@ -137,7 +126,7 @@ const Movies = () => {
         setEditMode(false);
         setEditMovieID(null);
         resetForm();
-        setErrorMessages([]);
+        setErrorMessages([]); // reset lỗi trước khi lưu
 
         setShowPopup(true);
     };
@@ -150,14 +139,14 @@ const Movies = () => {
             duration: movie.duration ? Number(movie.duration) : "",
         };
         setFormData(movieData);
-        setErrorMessages([]);
+        setErrorMessages([]); // reset lỗi trước khi lưu
 
         setShowPopup(true);
     };
 
     const handleSave = async (e) => {
         e.preventDefault();
-        setErrorMessages([]);
+        setErrorMessages([]); // reset lỗi trước khi lưu
 
         try {
             const movieDataToSave = {
@@ -200,14 +189,13 @@ const Movies = () => {
             setFilteredMovies(updatedMovies);
             setShowPopup(false);
             resetForm();
-            // Reset trang về 1 sau khi thêm/sửa thành công
-            setCurrentPage(1);
 
         } catch (error) {
             console.error("❌ Lỗi khi lưu phim:", error);
 
             const backendError = error.response?.data;
 
+            // ✅ Backend trả về { code, message }
             if (backendError?.code && backendError?.message) {
                 switch (backendError.code) {
                     case 2001:
@@ -222,11 +210,13 @@ const Movies = () => {
                 return;
             }
 
+            // ✅ Backend trả về nhiều lỗi dạng details
             if (backendError?.details) {
                 setErrorMessages(Object.values(backendError.details));
                 return;
             }
 
+            // ✅ Lỗi kết nối hoặc lỗi không xác định
             setErrorMessages(["🚨 Không thể kết nối đến server. Vui lòng thử lại!"]);
         }
     };
@@ -239,27 +229,11 @@ const Movies = () => {
                 setMovies(updated);
                 setFilteredMovies(updated);
                 alert("🗑️ Xóa phim thành công!");
-                // Sau khi xóa, kiểm tra nếu trang hiện tại không còn dữ liệu thì quay lại trang trước
-                if (moviesOnCurrentPage.length === 1 && currentPage > 1) {
-                    setCurrentPage(currentPage - 1);
-                }
             } catch {
                 alert("❌ Lỗi khi xoá phim!");
             }
         }
     };
-
-    // ✅ HÀM XỬ LÝ PHÂN TRANG ĐÃ ĐƯỢC SỬA: Cập nhật cả page và size
-    const handlePageChange = (page, size) => {
-        setCurrentPage(page);
-        setPageSize(size); // Đảm bảo cập nhật pageSize khi người dùng thay đổi số mục/trang
-    };
-
-    // Logic để cắt mảng movies theo trang hiện tại (tính toán trước khi render)
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    const moviesOnCurrentPage = filteredMovies.slice(startIndex, endIndex);
-
 
     if (loading) return <p>Đang tải...</p>;
     if (error) return <p>{error}</p>;
@@ -312,9 +286,8 @@ const Movies = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {/* 🔄 Sử dụng moviesOnCurrentPage */}
-                    {moviesOnCurrentPage.length > 0 ? (
-                        moviesOnCurrentPage.map((m) => (
+                    {filteredMovies.length > 0 ? (
+                        filteredMovies.map((m) => (
                             <tr key={m.movieID}>
                                 <td>{m.movieID}</td>
                                 <td>{m.movieName}</td>
@@ -336,6 +309,7 @@ const Movies = () => {
                                 <td>{m.duration} phút</td>
                                 <td>{m.age}</td>
                                 <td>{m.director}</td>
+                                {/* ✅ Đã sửa desc-cell thành staff-desc-cell */}
                                 <td className="staff-desc-cell" onClick={() => setShowActorPopup(m.actress)}>
                                     {m.actress || "—"}
                                 </td>
@@ -356,6 +330,7 @@ const Movies = () => {
                                         {m.approveStatus || "—"}
                                     </span>
                                 </td>
+                                {/* ✅ Đã sửa desc-cell thành staff-desc-cell */}
                                 <td className="staff-desc-cell" onClick={() => setShowDescPopup(m.description)}>
                                     {m.description || "—"}
                                 </td>
@@ -375,27 +350,11 @@ const Movies = () => {
                             </tr>
                         ))
                     ) : (
-                        <tr><td colSpan="15" style={{ textAlign: "center" }}>Không có phim nào phù hội.</td></tr>
+                        <tr><td colSpan="15" style={{ textAlign: "center" }}>Không có phim nào phù hợp.</td></tr>
                     )}
                 </tbody>
             </table>
-
-            {/* ✅ Phân trang Ant Design */}
-            <div style={{ padding: '20px', textAlign: 'right' }}>
-                <Pagination
-                    current={currentPage}
-                    pageSize={pageSize}
-                    total={filteredMovies.length} // Tổng số lượng phim sau khi filter
-                    showSizeChanger
-                    pageSizeOptions={PAGE_SIZE_OPTIONS}
-                    onChange={handlePageChange}
-                    onShowSizeChange={handlePageChange}
-                    showTotal={(total, range) => `${range[0]}-${range[1]} / ${total} phim`}
-                />
-            </div>
-            {/* End Phân trang */}
-
-            {/* 🔥🔥🔥 Popup Thêm/Sửa Phim 🔥🔥🔥 */}
+            {/* 🔥🔥🔥 ĐÃ CHỈNH SỬA: Popup Thêm/Sửa Phim (Dùng Input có gợi ý) 🔥🔥🔥 */}
             {showPopup && (
                 <div className="staff-popup-overlay" onClick={() => setShowPopup(false)}>
                     <div className="staff-popup-content" onClick={(e) => e.stopPropagation()}>
@@ -432,8 +391,20 @@ const Movies = () => {
                             <datalist id="language-list">{languages.map((l) => (<option key={l} value={l} />))}</datalist>
 
                             <label>Trạng thái *</label>
-                            <input type="text" name="status" value={formData.status || ""} onChange={handleChange} list="status-list" required />
-                            <datalist id="status-list">{statuses.map((s) => (<option key={s} value={s} />))}</datalist>
+                            <select
+                                name="status"
+                                value={formData.status || ""}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">-- Chọn trạng thái --</option>
+                                {statuses.map((s) => (
+                                    <option key={s} value={s}>
+                                        {s}
+                                    </option>
+                                ))}
+                            </select>
+
 
                             <label>Trailer (URL) *</label>
                             <input type="url" name="trailer" value={formData.trailer || ""} onChange={handleChange} required />
@@ -455,8 +426,10 @@ const Movies = () => {
 
                             <div className="staff-form-actions">
                                 {errorMessages.length > 0 && (
+                                    // ✅ Đã sửa error-box thành staff-error-box-popup
                                     <div className="staff-error-box-popup">
                                         {errorMessages.map((err, i) => (
+                                            // ✅ Đã sửa error-text thành staff-error-text-popup
                                             <p key={i} className="staff-error-text-popup">{err}</p>
                                         ))}
                                     </div>
@@ -471,7 +444,6 @@ const Movies = () => {
                 </div>
             )}
             {/* End Popup Thêm/Sửa Phim */}
-
             {/* Popup Mô tả */}
             {showDescPopup && (
                 <div className="staff-popup-overlay" onClick={() => setShowDescPopup(null)}>

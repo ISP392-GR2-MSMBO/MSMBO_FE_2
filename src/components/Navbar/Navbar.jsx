@@ -2,10 +2,14 @@ import { Link, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { movieApi } from "../../api/movieApi";
 import { useLocalStorage } from "../../hook/useLocalStorage";
+import { message } from "antd"; // ✅ Import message từ antd
 import "../../index.css";
 
 const Navbar = () => {
     const history = useHistory();
+    // ✅ Khởi tạo message API từ Ant Design
+    const [messageApi, contextHolder] = message.useMessage();
+
     const [allMovies, setAllMovies] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredMovies, setFilteredMovies] = useState([]);
@@ -70,13 +74,27 @@ const Navbar = () => {
         history.push(`/movies/${encodeURIComponent(movieName)}`);
     };
 
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter" && filteredMovies.length > 0) {
+    const handleSearchClick = () => {
+        if (filteredMovies.length > 0) {
             handleSelectMovie(filteredMovies[0].movieName);
+        } else if (searchTerm.trim() !== "") {
+            messageApi.error(`Không tìm thấy phim cho từ khóa: "${searchTerm}"`);
+            setSearchTerm("");
+            setFilteredMovies([]);
+            setShowResults(false);
+        } else {
+            messageApi.warning(" Vui lòng nhập từ khóa tìm kiếm.");
         }
     };
 
-    // ✅ Đăng xuất
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            handleSearchClick();
+            e.preventDefault();
+        }
+    };
+
+    //  Đăng xuất
     const handleLogout = () => {
         setUser(null);
         localStorage.removeItem("token");
@@ -112,6 +130,7 @@ const Navbar = () => {
         history.push("/staff");
         setShowUserMenu(false);
     };
+
     // ✅ Lời chào
     const renderGreeting = () => {
         if (!user || !user.roleID || !user.userName) return null;
@@ -130,8 +149,11 @@ const Navbar = () => {
     const isManager = user && user.roleID === "MA";
     const isAdmin = user && user.roleID === "AD";
     const isStaff = user && user.roleID === "ST";
+
     return (
         <header className="navbar">
+            {contextHolder}
+
             {/* Logo + Thanh tìm kiếm */}
             <div
                 className="logo-bar"
@@ -163,6 +185,7 @@ const Navbar = () => {
                         placeholder="🔍 Tìm phim đang chiếu..."
                         value={searchTerm}
                         onChange={handleSearchChange}
+                        // Giữ lại onFocus để gợi ý hiện ra khi click vào input
                         onFocus={() => setShowResults(true)}
                         onKeyDown={handleKeyDown}
                         style={{
@@ -177,11 +200,8 @@ const Navbar = () => {
                         }}
                     />
                     <button
-                        onClick={() => {
-                            if (filteredMovies.length > 0) {
-                                handleSelectMovie(filteredMovies[0].movieName);
-                            }
-                        }}
+                        // ✅ Gọi hàm xử lý tìm kiếm
+                        onClick={handleSearchClick}
                         style={{
                             padding: "10px 12px",
                             borderRadius: "6px",
@@ -248,6 +268,7 @@ const Navbar = () => {
                         </ul>
                     )}
 
+                    {/* Hiển thị thông báo không tìm thấy trong danh sách gợi ý */}
                     {showResults && filteredMovies.length === 0 && searchTerm.trim() !== "" && (
                         <ul
                             className="search-results"
@@ -324,10 +345,9 @@ const Navbar = () => {
                                         <button onClick={handleViewHistory} className="dropdown-btn">
                                             📜 Lịch sử Giao dịch
                                         </button>
-                                        {/* Kiểm tra nếu bất kỳ vai trò đặc biệt nào được kích hoạt */}
+
                                         {(isManager || isAdmin || isStaff) && (
                                             <>
-                                                {/* Chỉ một lần phân cách */}
                                                 <hr className="dropdown-divider" />
 
                                                 {isAdmin && (

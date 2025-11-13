@@ -557,7 +557,6 @@ const UserManagement = () => {
                                 <option value="AD">Admin</option>
                                 <option value="MA">Manager</option>
                                 <option value="ST">Staff</option>
-                                <option value="CUS">Customer</option> {/* Thêm Customer nếu cần tạo CUS qua popup */}
                             </select>
                         </label>
                         <div className="popup-buttons">

@@ -1,30 +1,41 @@
+/* --- BIẾN CSS ĐƯỢC THÊM (Rất quan trọng cho logic ghế đôi) --- */
+:root {
+    --seat-size: 42px;
+    --seat-spacing: 8px;
+    --seat-border-radius: 8px;
+
+    /* Định nghĩa màu */
+    --color-standard: #007bff;
+    --color-vip: #e50914;
+    --color-couple: #ff69b4;
+
+    /* 🌟 FIX: Màu nền ghế AVAILABLE là TRẮNG */
+    --color-available: #FFFFFF;
+
+    --color-unavailable: #d3d3d3;
+    --color-managed-highlight: rgba(0, 123, 255, 0.8);
+}
+
 /* Thêm style cho phần nội dung chính (sơ đồ + bảng) */
 .seat-layout-main-content {
     display: flex;
     justify-content: center;
-    /* Căn giữa chung */
     gap: 30px;
-    /* Khoảng cách giữa sơ đồ và bảng */
     margin-top: 20px;
 }
 
 /* 🟩 khung ngoài bao trọn cả sơ đồ + chú thích */
 .seat-layout-wrapper {
-    /* Loại bỏ margin-left cũ và căn chỉnh lại để vừa với flex container */
     margin-left: 0;
     display: flex;
-    /* Đảm bảo wrapper vẫn là flex để căn nội dung của nó */
     justify-content: center;
 }
 
 /* 🟦 khung vuông chứa toàn bộ */
 .seat-layout {
-    /* Giữ nguyên kích thước hoặc điều chỉnh nếu cần */
     width: 640px;
     height: auto;
-    /* Điều chỉnh thành auto để phù hợp với nội dung */
     min-height: 700px;
-    /* ... các style khác giữ nguyên ... */
     background: #f9f9f9;
     border: 2px solid #ccc;
     border-radius: 16px;
@@ -38,30 +49,25 @@
 
 /* --- Thêm style cho trạng thái mới: UNAVAILABLE (Vô hiệu hóa) --- */
 .unavailable {
-    background-color: #d3d3d3;
-    /* Màu xám */
+    background-color: var(--color-unavailable);
     border-color: #a9a9a9 !important;
-    /* Viền xám đậm */
     cursor: not-allowed !important;
 }
 
 .unavailable:hover {
     transform: none;
-    /* Không zoom khi hover */
     box-shadow: none;
 }
 
 /* --- Thêm style cho Ghế đang được quản lý (Managed Highlight) --- */
 .managed-highlight {
-    box-shadow: 0 0 10px 2px rgba(0, 123, 255, 0.8) !important;
-    /* Ánh sáng xanh nổi bật */
+    box-shadow: 0 0 10px 2px var(--color-managed-highlight) !important;
 }
 
 
 /* --- Thêm style cho Bảng quản lý (Management Table) --- */
 .management-table-container {
     width: 400px;
-    /* Kích thước bảng cố định */
     background: #fff;
     border: 2px solid #ccc;
     border-radius: 16px;
@@ -107,19 +113,9 @@
     font-size: 12px;
 }
 
-.status-empty {
+.status-available {
     background-color: #e6ffe6;
     color: #008000;
-}
-
-.status-booked {
-    background-color: #ffe6e6;
-    color: #e50914;
-}
-
-.status-sold {
-    background-color: #e0f7ff;
-    color: #007bff;
 }
 
 .status-unavailable {
@@ -151,13 +147,6 @@
 .remove-button:hover {
     background-color: #5a6268;
 }
-
-/* Cập nhật chú thích */
-.legend-box.unavailable {
-    background-color: #d3d3d3;
-    border-color: #a9a9a9;
-}
-
 
 /* Giữ lại các style đã có như .seat-management-container, .room-selector, .seat-item, v.v. */
 .seat-management-container {
@@ -217,18 +206,18 @@
 
 .seat-group {
     display: flex;
-    gap: 8px;
+    gap: var(--seat-spacing);
 }
 
 .aisle {
     width: 60px;
 }
 
-/* ghế */
+/* --- GHẾ ĐƠN VÀ CHUNG --- */
 .seat-item {
-    width: 42px;
-    height: 42px;
-    border-radius: 8px;
+    width: var(--seat-size);
+    height: var(--seat-size);
+    border-radius: var(--seat-border-radius);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -237,31 +226,29 @@
     cursor: pointer;
     transition: 0.2s;
     font-size: 14px;
+    /* Ẩn nội dung gốc (số ghế) */
+    color: transparent;
+    /* FIX lỗi cắt chữ: Thêm position: relative để ::after định vị đúng */
+    position: relative;
 }
 
-.standard {
-    border-color: #007bff;
-}
+/* 🌟 Bổ sung để hiển thị số/tên ghế bằng ::after cho TẤT CẢ ghế */
+.seat-item::after {
+    content: attr(data-seat-number);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    font-weight: 600;
 
-.vip {
-    border-color: #e50914;
-}
+    /* 🌟 FIX: Màu chữ là ĐEN */
+    color: #333333;
 
-.couple {
-    border-color: #ff69b4;
-}
-
-.empty {
-    background-color: #fff;
-}
-
-.booked {
-    background-color: #ffb3b3;
-}
-
-.sold {
-    background-color: #fff;
-    /* đã sửa màu sold từ trắng sang vàng nhạt để dễ phân biệt */
+    display: block;
+    /* FIX lỗi cắt chữ: đảm bảo không bị giới hạn chiều rộng/cao */
+    line-height: 1;
+    white-space: nowrap;
 }
 
 .seat-item:hover {
@@ -269,20 +256,84 @@
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
 }
 
-/* ghế đôi */
+/* Màu viền theo loại ghế */
+.standard {
+    border-color: var(--color-standard);
+}
+
+.vip {
+    border-color: var(--color-vip);
+}
+
+.couple {
+    border-color: var(--color-couple);
+}
+
+/* Màu nền theo trạng thái */
+.seat-item.available {
+    /* 🌟 FIX: Nền màu TRẮNG */
+    background-color: var(--color-available);
+    color: transparent;
+}
+
+.seat-item.unavailable {
+    background-color: var(--color-unavailable);
+    color: transparent;
+}
+
+
+/* --- CẬP NHẬT LOGIC GHẾ ĐÔI --- */
+
 .seat-couple {
     display: flex;
     gap: 0;
-    margin: 0 8px;
+    margin: 0;
+    margin-right: var(--seat-spacing);
 }
 
-.seat-item.couple {
-    border-radius: 6px 0 0 6px;
+/* 🌟 THAY ĐỔI: ẨN GHẾ CHẴN */
+.seat-couple .seat-item.couple.couple-end-hidden {
+    display: none !important;
 }
 
-.seat-couple .seat-item.couple:last-child {
-    border-radius: 0 6px 6px 0;
+/* Ẩn nội dung số ghế (chữ số) của tất cả ghế đôi */
+.seat-couple .seat-item.couple {
+    font-size: 0;
+    position: relative;
+    padding: 0;
+    height: var(--seat-size);
+    margin: 0;
+    border-radius: var(--seat-border-radius);
 }
+
+/* GHẾ ĐẦU TIÊN CỦA CẶP (SỐ LẺ) - Ghế đại diện */
+.seat-couple .seat-item.couple.couple-start {
+    width: calc(2 * var(--seat-size) + var(--seat-spacing));
+    border-radius: var(--seat-border-radius);
+    border-right: 2px solid var(--color-couple);
+}
+
+/* 🌟 THAY ĐỔI QUAN TRỌNG: Hiển thị SỐ GHẾ LẺ (data-seat-number) */
+.seat-couple .seat-item.couple.couple-start::after {
+    content: attr(data-seat-number);
+
+    font-size: 14px;
+    font-weight: 600;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    /* 🌟 FIX: Màu chữ là ĐEN */
+    color: #333333;
+
+    display: block;
+    width: 100%;
+    text-align: center;
+    line-height: 1;
+    /* FIX lỗi cắt chữ */
+}
+
 
 /* màn hình */
 .screen {
@@ -296,8 +347,6 @@
 }
 
 /* chú thích đưa vào trong */
-/* --- Cập nhật cho phần chú thích --- */
-
 .legend {
     display: flex;
     flex-direction: column;
@@ -310,34 +359,15 @@
     padding: 12px;
     border: 1px solid #ccc;
     width: 90%;
-    /* THÊM: Căn giữa nội dung theo chiều ngang (nếu .legend-group không chiếm hết chiều rộng) */
     align-items: center;
 }
 
-/* Nhóm trạng thái (Khả dụng, Vô hiệu hóa) */
-.legend-group.status-group {
+.legend-group {
     display: flex;
-    /* === THAY ĐỔI: Căn giữa các mục trạng thái === */
     justify-content: center;
     align-items: center;
     gap: 20px;
-    /* Đảm bảo loại bỏ các offset thủ công cũ */
-    padding-right: 0;
 }
-
-/* Nhóm loại ghế (Ghế thường, VIP, Đôi) */
-.legend-group.type-group {
-    display: flex;
-    /* === THAY ĐỔI: Căn giữa các mục loại ghế === */
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-
-    /* Đảm bảo loại bỏ các offset thủ công cũ */
-    padding-left: 0;
-    margin-left: 0;
-}
-
 
 .legend-box {
     display: inline-block;
@@ -351,38 +381,29 @@
 
 /* Sửa lại màu nền cho các legend-box trạng thái */
 .legend-box.available {
-    background-color: #fff;
-    /* Khả dụng: màu trắng nền */
+    background-color: var(--color-available);
+    border-color: #008000;
 }
 
 .legend-box.unavailable {
-    background-color: #d3d3d3;
-    /* Vô hiệu hóa: màu xám nền */
+    background-color: var(--color-unavailable);
     border-color: #a9a9a9;
 }
 
-/* Ghế Thường, VIP, Đôi chỉ nên có viền (background trong suốt) */
+/* Ghế Thường, VIP, Đôi chỉ nên có viền */
 .legend-box.standard {
-    border-color: #007bff;
+    border-color: var(--color-standard);
     background: transparent;
 }
 
 .legend-box.vip {
-    border-color: #e50914;
+    border-color: var(--color-vip);
     background: transparent;
 }
 
 .legend-box.couple {
-    border-color: #ff69b4;
+    border-color: var(--color-couple);
     background: transparent;
-}
-
-/* Loại bỏ các trạng thái không cần thiết (booked/sold/empty) nếu chúng còn ảnh hưởng */
-.legend-box.empty,
-.legend-box.booked,
-.legend-box.sold {
-    /* Đảm bảo chúng không làm hỏng hiển thị */
-    background: none;
 }
 
 

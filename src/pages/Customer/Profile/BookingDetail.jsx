@@ -3,7 +3,21 @@ import { useParams, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Pagination } from 'antd';
 import { bookingApi, getCurrentUserId } from "../../../api/bookingApi";
+import { seatApi } from "../../../api/seatApi";
+import { promotionApi } from "../../../api/promotionApi";
 import "./BookingDetail.css";
+
+// ======================================
+// HÀM HELPER ĐỂ CHUYỂN ĐỔI TÊN LOẠI GHẾ HIỂN THỊ
+// ======================================
+const formatSeatType = (type) => {
+    const upperType = String(type || '').toUpperCase();
+
+    if (upperType.includes('VIP')) return 'Ghế VIP';
+    if (upperType.includes('COUPLE') || upperType.includes('DOUBLE')) return 'Ghế đôi';
+
+    return 'Ghế thường'; // Mặc định là 'Ghế thường' (Standard)
+};
 
 const BookingDetail = () => {
     const { bookingId } = useParams();
@@ -11,6 +25,7 @@ const BookingDetail = () => {
     const [bookings, setBookings] = useState([]);
     const [booking, setBooking] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [promotionMap, setPromotionMap] = useState({});
     const userId = getCurrentUserId();
 
     // ======================================
@@ -33,12 +48,56 @@ const BookingDetail = () => {
             try {
                 setLoading(true);
                 if (bookingId) {
-                    const data = await bookingApi.getBookingById(Number(bookingId));
-                    setBooking(data);
+                    const bookingData = await bookingApi.getBookingById(Number(bookingId));
+
+                    const seats = bookingData.seats || [];
+
+                    // --- B1: Tải chi tiết Ghế (Seat Type) ---
+                    let seatsWithDetails = seats;
+                    if (seats.length > 0) {
+                        const seatDetailsPromises = seats.map(seat =>
+                            seatApi.getSeatById(seat.seatID)
+                                .catch(error => ({ type: 'UNKNOWN', seatID: seat.seatID }))
+                        );
+
+                        const seatDetails = await Promise.all(seatDetailsPromises);
+
+                        seatsWithDetails = seats.map(seat => {
+                            const detail = seatDetails.find(d => d.seatID === seat.seatID);
+                            return {
+                                ...seat,
+                                typeFromSeatApi: detail?.type || 'Standard',
+                            };
+                        });
+                    }
+
+                    // --- B2: Tải chi tiết Khuyến mãi (Promotion Name) ---
+                    const promotionIds = seatsWithDetails
+                        .map(seat => seat.promotionID)
+                        .filter((id, index, self) => id > 0 && self.indexOf(id) === index);
+
+                    const promotionDetailsPromises = promotionIds.map(id =>
+                        promotionApi.getPromotionById(id)
+                            .catch(error => ({ promotionID: id, name: 'Lỗi tải KM' }))
+                    );
+
+                    const promotionDetails = await Promise.all(promotionDetailsPromises);
+
+                    const promoMap = promotionDetails.reduce((map, promo) => {
+                        if (promo && promo.promotionID) {
+                            map[promo.promotionID] = promo.name;
+                        }
+                        return map;
+                    }, {});
+
+                    setPromotionMap(promoMap);
+
+                    // --- B3: Cập nhật State ---
+                    setBooking({ ...bookingData, seats: seatsWithDetails });
+
                 } else {
                     const data = await bookingApi.getBookingsByUserId(userId);
                     setBookings(data);
-                    // Đảm bảo quay về trang 1 khi danh sách mới được tải
                     setCurrentPage(1);
                 }
             } catch (error) {
@@ -53,21 +112,18 @@ const BookingDetail = () => {
     }, [bookingId, userId, history]);
 
     // ======================================
-    // 3. Logic Phân trang (LỌC VÀ SẮP XẾP) 
+    // 3. Logic Phân trang (Giữ nguyên)
     // ======================================
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
 
-    // **LỌC: Chỉ hiển thị các đơn hàng có trạng thái là 'CONFIRMED'**
     const confirmedBookings = bookings.filter(
         b => b.status?.toUpperCase() === 'CONFIRMED'
     );
 
-    // **SẮP XẾP: Theo ngày đặt giảm dần (mới nhất lên đầu)**
     const sortedBookings = confirmedBookings.sort((a, b) => new Date(b.bookingDate) - new Date(a.bookingDate));
 
-    // Tính toán phân trang
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
     const currentBookings = sortedBookings.slice(startIndex, endIndex);
@@ -77,9 +133,8 @@ const BookingDetail = () => {
     // ==============================
     if (loading) return <div className="detail-page-container">Đang tải dữ liệu...</div>;
 
-    // ==============================
-    // 5. Danh sách vé (Dạng Bảng có Phân trang - CHỈ HIỂN THỊ CONFIRMED)
-    // ==============================
+    // ... (Phần hiển thị danh sách vé giữ nguyên) ...
+
     if (!bookingId) {
         if (confirmedBookings.length === 0) {
             return <div className="detail-page-container">Bạn chưa có vé nào được xác nhận.</div>;
@@ -128,7 +183,6 @@ const BookingDetail = () => {
                     </table>
                 </div>
 
-                {/* Thêm component Phân trang - Dùng confirmedBookings.length */}
                 <div className="pagination-container">
                     <Pagination
                         current={currentPage}
@@ -150,20 +204,43 @@ const BookingDetail = () => {
         return <div className="detail-page-container">Không tìm thấy đơn hàng!</div>;
     }
 
-    // LỌC GHẾ: Hiển thị cả ghế 'CONFIRMED' và 'ACTIVE'
     const validSeats = booking.seats?.filter(seat => {
         const seatStatus = seat.status?.toUpperCase();
         return seatStatus === 'CONFIRMED' || seatStatus === 'ACTIVE';
     }) || [];
 
-    // TẠO MÃ GHẾ ĐÃ ĐẶT (Bao gồm mã ghế và Loại ghế)
-    const combinedSeatDetails = validSeats
-        .map(seat => {
-            const seatCode = `${seat.seatRow}${seat.seatNumber}`;
-            const seatType = seat.seatType || 'Standard'; // Sử dụng seatType nếu có, nếu không thì dùng 'Standard'
-            return `${seatCode} (${seatType})`;
-        })
-        .join(', ');
+    const appliedPromotions = new Set();
+    validSeats.forEach(seat => {
+        if (seat.promotionID && promotionMap[seat.promotionID]) {
+            appliedPromotions.add(promotionMap[seat.promotionID]);
+        }
+    });
+
+    // Chuỗi tên các khuyến mãi đã áp dụng (cho dòng tổng hợp)
+    const promotionText = appliedPromotions.size > 0
+        ? Array.from(appliedPromotions).join(', ')
+        : 'Không áp dụng';
+
+
+    const seatDetailsList = validSeats.flatMap((seat, index) => {
+        const seatCode = `${seat.seatRow}${seat.seatNumber}`;
+        const seatType = formatSeatType(
+            seat.typeFromSeatApi || seat.seatType || seat.type || 'Standard'
+        );
+
+
+        const elements = [
+            <b key={`code-${seat.seatID || index}`} className="seat-code-line">{seatCode} ({seatType})</b>
+        ];
+
+
+        if (index < validSeats.length - 1) {
+            elements.push(<br key={`br-${seat.seatID || index}`} />);
+        }
+
+        return elements;
+    });
+
 
     return (
         <div className="detail-page-container">
@@ -187,10 +264,18 @@ const BookingDetail = () => {
                     <p>{booking.bookingDate}</p>
                 </div>
 
-                {/* DÒNG GHẾ ĐÃ ĐẶT - HIỆN CHI TIẾT GHẾ + LOẠI */}
+                {/* DÒNG KHUYẾN MÃI TỔNG HỢP (Giữ nguyên) */}
                 <div className="summary-row">
+                    <p>🏷️ Khuyến mãi:</p>
+                    <p><b>{promotionText}</b></p>
+                </div>
+
+                <div className="summary-row" style={{ alignItems: 'flex-start' }}>
                     <p>🪑 Ghế đã đặt:</p>
-                    <p><b>{combinedSeatDetails || 'Chưa có ghế được xác nhận'}</b></p>
+                    {/* ⭐ HIỂN THỊ MẢNG JSX ĐÃ CHIA DÒNG */}
+                    <p style={{ textAlign: 'right', lineHeight: '1.4' }}>
+                        {seatDetailsList.length > 0 ? seatDetailsList : 'Chưa có ghế được xác nhận'}
+                    </p>
                 </div>
 
                 <div className="summary-row total-price">

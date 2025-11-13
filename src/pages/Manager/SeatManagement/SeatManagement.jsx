@@ -7,26 +7,20 @@ const SeatManagement = () => {
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [seats, setSeats] = useState([]);
     const [loading, setLoading] = useState(false);
-    // State mới để quản lý các ghế được thêm vào bảng bên phải
     const [managedSeats, setManagedSeats] = useState([]);
-    // State để ngăn chặn request kép khi đang cập nhật
     const [isUpdating, setIsUpdating] = useState(false);
 
-    // Lấy danh sách ghế theo phòng
     const fetchSeats = async (theaterId) => {
         try {
             setLoading(true);
             const data = await seatApi.getSeatsByRoom(theaterId);
-            // Ghi chú: Dữ liệu ghế trả về từ API cần phải dùng 2 trạng thái mới
-            // Nếu API vẫn trả về EMPTY/BOOKED/SOLD, bạn cần ánh xạ chúng về AVAILABLE ở đây.
             const mappedData = data.map(s => ({
                 ...s,
-                // Ánh xạ cũ: Ghế nào không phải UNAVAILABLE thì coi là AVAILABLE
                 status: s.status === "UNAVAILABLE" ? "UNAVAILABLE" : "AVAILABLE"
             }));
 
             setSeats(mappedData);
-            setManagedSeats([]); // Reset bảng khi chuyển phòng
+            setManagedSeats([]);
         } catch {
             toast.error("❌ Không thể tải danh sách ghế!");
         } finally {
@@ -39,37 +33,33 @@ const SeatManagement = () => {
         fetchSeats(roomId);
     };
 
-    /**
-     * HÀM CẬP NHẬT: Chuyển đổi trạng thái giữa AVAILABLE và UNAVAILABLE.
-     * Ghế luôn chuyển đổi trạng thái ngược lại (Ghế chỉ có 2 trạng thái).
-     */
     const handleSeatClick = async (seat) => {
-        // Ngăn hành động khi đang cập nhật
         if (isUpdating) return;
 
-        // Trạng thái tiếp theo luôn là ngược lại của trạng thái hiện tại
+        // 🚨 DEBUG: Log thông tin ghế được click
+        console.log("--- Click Event ---");
+        console.log("Ghế được click:", seat.row, seat.number, "ID:", seat.seatID, "Type:", seat.type);
+
         const nextStatus = seat.status === "AVAILABLE" ? "UNAVAILABLE" : "AVAILABLE";
 
         try {
             setIsUpdating(true);
 
-            // LOGIC GHẾ ĐÔI (Cập nhật trạng thái)
             if (seat.type && seat.type.toUpperCase() === "COUPLE") {
-
-                // 1. Tìm ghế đối tác
                 const partnerNumber = seat.number % 2 === 1 ? seat.number + 1 : seat.number - 1;
                 const partnerSeat = seats.find(
                     s => s.row === seat.row && s.number === partnerNumber
                 );
 
+                // 🚨 DEBUG: Log thông tin ghế đối tác
+                console.log("Ghế đối tác dự kiến:", partnerSeat ? `${partnerSeat.row}${partnerSeat.number}` : "Không tìm thấy");
+
                 if (partnerSeat) {
-                    // 2. Gửi request cập nhật cho cả hai ghế (song song)
                     await Promise.all([
                         seatApi.updateSeatStatus(seat.seatID, nextStatus),
                         seatApi.updateSeatStatus(partnerSeat.seatID, nextStatus)
                     ]);
 
-                    // Cập nhật State (cả hai ghế)
                     const updatedSeats = [seat.seatID, partnerSeat.seatID];
                     setSeats((prev) =>
                         prev.map((s) =>
@@ -86,16 +76,17 @@ const SeatManagement = () => {
                         )
                     );
 
-                    toast.success(`✅ Cặp ghế ${seat.row}${Math.min(seat.number, partnerNumber)}-${Math.max(seat.number, partnerNumber)} → ${nextStatus}`);
+                    const coupleName = `${seat.row}${Math.min(seat.number, partnerNumber)}-${Math.max(seat.number, partnerNumber)}`;
+                    toast.success(`✅ Cặp ghế ${coupleName} → ${nextStatus}`);
 
                 } else {
                     toast.warn("❌ Không tìm thấy ghế đối tác. Chỉ cập nhật ghế hiện tại.");
                     await seatApi.updateSeatStatus(seat.seatID, nextStatus);
                     setSeats((prev) => prev.map(s => s.seatID === seat.seatID ? { ...s, status: nextStatus } : s));
+                    setManagedSeats((prev) => prev.map(s => s.seatID === seat.seatID ? { ...s, status: nextStatus } : s));
                 }
 
             } else {
-                // Logic cho ghế đơn
                 await seatApi.updateSeatStatus(seat.seatID, nextStatus);
 
                 setSeats((prev) =>
@@ -119,11 +110,7 @@ const SeatManagement = () => {
         }
     };
 
-    /**
-     * HÀM handleManageSeat: GIỮ NGUYÊN LOGIC THÊM/XÓA CẶP GHẾ
-     */
     const handleManageSeat = (seat) => {
-        // 1. Xác định cả hai ghế cần quản lý
         let seatsToManage = [seat];
         let isCouple = seat.type && seat.type.toUpperCase() === "COUPLE";
 
@@ -134,50 +121,56 @@ const SeatManagement = () => {
             );
 
             if (partnerSeat) {
-                seatsToManage.push(partnerSeat);
+                if (seat.number % 2 === 1) {
+                    seatsToManage.push(partnerSeat);
+                } else {
+                    seatsToManage.unshift(partnerSeat);
+                }
             }
         }
 
-        // Tạo danh sách ID để tiện lọc
         const seatIDsToManage = seatsToManage.map(s => s.seatID);
 
-        // 2. Kiểm tra xem bất kỳ ghế nào trong tập hợp đã được quản lý chưa
         const isCurrentlyManaged = seatsToManage.some(s =>
             managedSeats.some(ms => ms.seatID === s.seatID)
         );
 
-        // Tạo tên để hiển thị trong thông báo toast
         const seatNames = isCouple
             ? `Cặp ghế ${seat.row}${Math.min(...seatsToManage.map(s => s.number))}-${Math.max(...seatsToManage.map(s => s.number))}`
             : `Ghế ${seat.row}${seat.number}`;
 
 
         if (isCurrentlyManaged) {
-            // Xóa khỏi bảng (cả cặp nếu là ghế đôi)
             setManagedSeats((prev) =>
                 prev.filter((s) => !seatIDsToManage.includes(s.seatID))
             );
             toast.info(`${seatNames} đã bị xóa khỏi bảng quản lý.`);
         } else {
-            // Thêm vào bảng (cả cặp nếu là ghế đôi). 
-            const newSeats = seatsToManage.filter(s =>
-                !managedSeats.some(ms => ms.seatID === s.seatID)
-            );
+            // Chỉ thêm ghế lẻ (ghế bắt đầu) vào managedSeats để tránh trùng lặp trong bảng
+            const newSeats = isCouple
+                ? seatsToManage.filter(s => s.number % 2 === 1)
+                : seatsToManage;
 
             setManagedSeats((prev) => [...prev, ...newSeats]);
             toast.info(`${seatNames} đã được thêm vào bảng quản lý.`);
         }
     };
 
-    /**
-     * HÀM TẮT/MỞ KHẢ DỤNG: Bây giờ hàm này trùng với handleSeatClick, 
-     * nên ta sẽ gọi lại handleSeatClick từ bảng quản lý.
-     */
     const toggleSeatAvailability = (seat) => {
-        handleSeatClick(seat);
+        if (seat.type && seat.type.toUpperCase() === "COUPLE") {
+            const partnerNumber = seat.number % 2 === 1 ? seat.number + 1 : seat.number - 1;
+            const partnerSeat = seats.find(
+                s => s.row === seat.row && s.number === partnerNumber
+            );
+
+            // Luôn gọi handleSeatClick với ghế lẻ (ghế đầu tiên) của cặp để đảm bảo logic cập nhật couple
+            handleSeatClick(seat.number % 2 === 1 ? seat : partnerSeat);
+
+        } else {
+            handleSeatClick(seat);
+        }
     };
 
-    // Hàm để nhóm ghế đôi (GIỮ NGUYÊN)
     const groupCouples = (rowSeats) => {
         const groups = [];
         for (let i = 0; i < rowSeats.length; i += 2) {
@@ -186,19 +179,27 @@ const SeatManagement = () => {
         return groups;
     };
 
-    // Component con để render một ghế (CẬP NHẬT: Loại bỏ class BOOKED/SOLD/EMPTY, chỉ giữ AVAILABLE/UNAVAILABLE)
     const SeatItem = ({ seat, onClick }) => {
         const isCouple = seat.type?.toLowerCase() === "couple";
-        const isManaged = managedSeats.some(s => s.seatID === seat.seatID);
+        // Kiểm tra xem ghế hiện tại hoặc ghế đối tác (nếu là ghế đôi số chẵn) có đang được quản lý không
+        const isManaged = isCouple && seat.number % 2 === 0
+            ? managedSeats.some(s => s.row === seat.row && s.number === seat.number - 1)
+            : managedSeats.some(s => s.seatID === seat.seatID);
 
         return (
             <div
                 key={seat.seatID}
-                // Sử dụng 'available' làm class chung cho ghế khả dụng
-                className={`seat-item ${seat.type?.toLowerCase() || ""} ${seat.status?.toLowerCase() || "available"} ${isCouple ? "couple" : ""} ${isManaged ? "managed-highlight" : ""}`}
+                data-seat-number={seat.number}
+                className={`seat-item 
+                                ${seat.type?.toLowerCase() || ""} 
+                                ${seat.status?.toLowerCase() || "available"} 
+                                ${isCouple ? "couple" : ""} 
+                                ${isManaged ? "managed-highlight" : ""}
+                                ${isCouple && seat.number % 2 === 1 ? "couple-start" : ""}
+                                ${isCouple && seat.number % 2 === 0 ? "couple-end-hidden" : ""}`}
                 onClick={() => onClick(seat)}
                 onContextMenu={(e) => {
-                    e.preventDefault(); // Ngăn menu chuột phải mặc định
+                    e.preventDefault();
                     handleManageSeat(seat);
                 }}
                 title={`Ghế ${seat.row}${seat.number} - ${seat.type} (${seat.status})\n(Click: Chuyển AVAILABLE/UNAVAILABLE, Chuột phải: Thêm/Xóa khỏi bảng)`}
@@ -208,7 +209,6 @@ const SeatManagement = () => {
         );
     };
 
-    // Component Bảng quản lý bên phải (CẬP NHẬT: Chỉ hiện nút chuyển đổi cho 2 trạng thái)
     const ManagementTable = () => (
         <div className="management-table-container">
             <h3>Danh sách Ghế đang quản lý ({managedSeats.length})</h3>
@@ -227,35 +227,43 @@ const SeatManagement = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {managedSeats.sort((a, b) => a.row.localeCompare(b.row) || a.number - b.number).map((seat) => (
-                            <tr key={seat.seatID}>
-                                <td>{seat.row}{seat.number}</td>
-                                <td>{seat.type}</td>
-                                <td>
-                                    <span className={`status-tag status-${seat.status?.toLowerCase()}`}>
-                                        {seat.status}
-                                    </span>
-                                </td>
-                                <td>
-                                    {/* Nút này luôn chuyển đổi giữa AVAILABLE và UNAVAILABLE */}
-                                    <button
-                                        className="action-button"
-                                        onClick={() => toggleSeatAvailability(seat)}
-                                        disabled={isUpdating}
-                                    >
-                                        {seat.status === "AVAILABLE" ? "Vô hiệu hóa" : "Kích hoạt"}
-                                    </button>
-                                    <button
-                                        className="action-button remove-button"
-                                        onClick={() => handleManageSeat(seat)}
-                                        title="Xóa khỏi bảng"
-                                        disabled={isUpdating}
-                                    >
-                                        &times;
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                        {managedSeats.sort((a, b) => a.row.localeCompare(b.row) || a.number - b.number).map((seat) => {
+
+                            // SỬA LỖI ĐỒNG NHẤT TÊN GHẾ ĐÔI TẠI ĐÂY
+                            const displayName = seat.type?.toUpperCase() === "COUPLE"
+                                // Hiển thị tên ghế lẻ và ghế chẵn của cặp (Ví dụ: H9-10)
+                                ? `${seat.row}${seat.number}`
+                                : `${seat.row}${seat.number}`;
+
+                            return (
+                                <tr key={seat.seatID}>
+                                    <td>{displayName}</td>
+                                    <td>{seat.type}</td>
+                                    <td>
+                                        <span className={`status-tag status-${seat.status?.toLowerCase()}`}>
+                                            {seat.status}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button
+                                            className="action-button"
+                                            onClick={() => toggleSeatAvailability(seat)}
+                                            disabled={isUpdating}
+                                        >
+                                            {seat.status === "AVAILABLE" ? "Vô hiệu hóa" : "Kích hoạt"}
+                                        </button>
+                                        <button
+                                            className="action-button remove-button"
+                                            onClick={() => handleManageSeat(seat)}
+                                            title="Xóa khỏi bảng"
+                                            disabled={isUpdating}
+                                        >
+                                            &times;
+                                        </button>
+                                    </td>
+                                </tr>
+                            )
+                        })}
                     </tbody>
                 </table>
             )}
@@ -283,28 +291,24 @@ const SeatManagement = () => {
                     <p className="seat-loading">Đang tải dữ liệu ghế...</p>
                 ) : seats.length > 0 ? (
                     <div className="seat-layout-main-content">
-                        {/* Khu vực sơ đồ ghế */}
                         <div className="seat-layout-wrapper">
                             <div className="seat-layout">
                                 <h3>Sơ đồ phòng {selectedRoom}</h3>
 
                                 <div className="seat-area">
-                                    {/* Logic render ghế giữ nguyên */}
                                     {["I", "H", "G", "F", "E", "D", "C", "B", "A"].map((row) => {
                                         let rowSeats = seats
                                             .filter((s) => s.row === row)
                                             .sort((a, b) => a.number - b.number);
 
-                                        // Logic bỏ ghế 5, 6 của hàng H
                                         if (row === "H") {
                                             rowSeats = rowSeats.filter(
                                                 (s) => s.number !== 5 && s.number !== 6
                                             );
                                         }
 
-                                        if (rowSeats.length === 0) return null; // Bỏ qua hàng không có ghế
+                                        if (rowSeats.length === 0) return null;
 
-                                        // Logic render Ghế Đôi hàng H
                                         if (row === "H") {
                                             const coupleGroups = groupCouples(rowSeats);
                                             return (
@@ -330,7 +334,6 @@ const SeatManagement = () => {
                                             );
                                         }
 
-                                        // Logic render Ghế Thường
                                         const left = rowSeats.filter((s) => s.number <= 5);
                                         const right = rowSeats.filter((s) => s.number >= 6);
 
@@ -356,13 +359,10 @@ const SeatManagement = () => {
                                 </div>
 
                                 <div className="legend">
-                                    {/* Nhóm 1: Trạng thái (Phân biệt màu nền) */}
                                     <div className="legend-group status-group">
                                         <div><span className="legend-box available"></span>Khả dụng (AVAILABLE)</div>
                                         <div><span className="legend-box unavailable"></span>Vô hiệu hóa (UNAVAILABLE)</div>
                                     </div>
-
-                                    {/* Nhóm 2: Loại ghế (Phân biệt màu viền) */}
                                     <div className="legend-group type-group">
                                         <div><span className="legend-box standard"></span>Ghế thường</div>
                                         <div><span className="legend-box vip"></span>Ghế VIP</div>
@@ -372,7 +372,6 @@ const SeatManagement = () => {
                             </div>
                         </div>
 
-                        {/* Khu vực bảng quản lý */}
                         <ManagementTable />
                     </div>
                 ) : (

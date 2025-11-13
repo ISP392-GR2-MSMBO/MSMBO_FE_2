@@ -74,15 +74,13 @@ export const bookingApi = {
         return response.data.map(seat => seat.seatID);
     },
 
-    // API Lấy danh sách booking theo UserID (Tùy chọn)
+    // API Lấy danh sách booking theo UserID 
     getBookingsByUserId: async (userId) => {
         const config = createAuthConfig();
         const response = await axios.get(`${API_BASE_URL}/bookings/user/${userId}`, config);
         return response.data;
     },
-
-
-    // ✅ HÀM ĐÃ BỔ SUNG: Lấy chi tiết booking theo BookingID
+    // Lấy chi tiết booking theo BookingID
     getBookingById: async (bookingId) => {
         const config = createAuthConfig();
         const response = await axios.get(`${API_BASE_URL}/bookings/${bookingId}`, config);
@@ -98,7 +96,6 @@ export const bookingApi = {
     deleteBookingById: async (bookingId) => {
         const config = createAuthConfig();
         if (!config.headers.Authorization) {
-            // Ném lỗi nếu không có token, vì API này thường yêu cầu xác thực
             throw new Error("Không có token xác thực. Vui lòng đăng nhập lại.");
         }
 

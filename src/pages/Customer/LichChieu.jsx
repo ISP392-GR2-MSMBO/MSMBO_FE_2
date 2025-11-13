@@ -10,6 +10,9 @@ const LichChieu = () => {
     const [showtimes, setShowtimes] = useState([]);
     const [selectedDate, setSelectedDate] = useState("");
 
+    // Khởi tạo ngày hiện tại theo định dạng YYYY-MM-DD (en-CA) để so sánh chuỗi
+    const todayDateString = new Date().toLocaleDateString("en-CA");
+
     // ===== Lấy dữ liệu phim & lịch chiếu =====
     useEffect(() => {
         const fetchData = async () => {
@@ -20,6 +23,7 @@ const LichChieu = () => {
                 const movieList = Array.isArray(movieRes) ? movieRes : movieRes.data || [];
                 const showtimeList = Array.isArray(showtimeRes) ? showtimeRes : showtimeRes.data || [];
 
+                // Lọc chỉ lấy các suất chiếu đã được duyệt và chưa bị xóa
                 const approvedShowtimes = showtimeList.filter(
                     (s) => s.approveStatus === "APPROVE" && !s.deleted
                 );
@@ -27,14 +31,14 @@ const LichChieu = () => {
                 setMovies(movieList);
                 setShowtimes(approvedShowtimes);
 
-                const localDate = new Date().toLocaleDateString("en-CA");
-                setSelectedDate(localDate);
+                // Thiết lập ngày mặc định là hôm nay
+                setSelectedDate(todayDateString);
             } catch (error) {
                 console.error("❌ Lỗi tải dữ liệu:", error);
             }
         };
         fetchData();
-    }, []);
+    }, [todayDateString]); // Thêm todayDateString vào dependency array nếu cần (mặc dù nó là hằng số)
 
     // ===== Danh sách 5 ngày =====
     const nextDays = Array.from({ length: 5 }, (_, i) => {
@@ -56,10 +60,29 @@ const LichChieu = () => {
         };
     });
 
-    // ===== Lọc lịch chiếu theo ngày =====
-    const showtimesFiltered = showtimes.filter((st) => st.date === selectedDate);
+    // ===== LOGIC LỌC LỊCH CHIẾU THEO NGÀY VÀ GIỜ THỰC TẾ =====
 
-    // ===== Lọc phim có suất chiếu trong ngày =====
+    const now = new Date();
+    // Lấy giờ hiện tại dưới dạng HH:MM (vd: "09:05") để so sánh chuỗi
+    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const isToday = selectedDate === todayDateString;
+
+    // 1. Lọc lịch chiếu theo ngày
+    let showtimesFiltered = showtimes
+        .filter((st) => st.date === selectedDate)
+        .filter((st) => {
+            // 2. Lọc theo thời gian thực (chỉ áp dụng cho ngày hôm nay)
+            if (isToday) {
+                // Giữ lại suất chiếu nếu giờ bắt đầu (st.startTime: "HH:MM") >= giờ hiện tại (currentTime: "HH:MM")
+                return st.startTime >= currentTime;
+            }
+            // Nếu không phải hôm nay, giữ lại tất cả
+            return true;
+        })
+        .sort((a, b) => a.startTime.localeCompare(b.startTime)); // Sắp xếp theo giờ tăng dần
+
+
+    // ===== Lọc phim có suất chiếu trong ngày (từ showtimes đã lọc) =====
     const moviesForDate = movies.filter((movie) =>
         showtimesFiltered.some(
             (st) =>
@@ -68,7 +91,7 @@ const LichChieu = () => {
                 st.movieID === movie._id
         )
     );
-
+    // -----------------------------------------------------------------
 
 
     return (
@@ -93,6 +116,7 @@ const LichChieu = () => {
             <div className="lichchieu-movie-list">
                 {moviesForDate.length > 0 ? (
                     moviesForDate.map((movie) => {
+                        // Lọc suất chiếu cho từng phim sau khi đã lọc theo ngày và giờ thực tế
                         const movieShowtimes = showtimesFiltered.filter(
                             (st) =>
                                 st.movieID === movie.movieID ||

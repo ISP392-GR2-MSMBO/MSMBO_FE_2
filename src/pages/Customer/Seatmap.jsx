@@ -194,7 +194,7 @@ const Seatmap = () => {
     }, [showtimeId, history, location.pathname]);
 
     // =========================================================================
-    // 2. LOGIC CHỌN/BỎ CHỌN GHẾ
+    // 2. LOGIC CHỌN/BỎ CHỌN GHẾ (ĐÃ SỬA LOGIC GHẾ ĐÔI ĐỂ CHỌN 1 GHẾ DUY NHẤT VÀ TÔ MÀU CẢ CẶP)
     // =========================================================================
     const toggleSeat = (seat) => {
         if (seat.status !== "AVAILABLE") return;
@@ -202,32 +202,35 @@ const Seatmap = () => {
         let newSelectedSeats = [...selectedSeats];
         const isCurrentlySelected = selectedSeats.some(s => s.seatID === seat.seatID);
 
-        if (seat.type && seat.type.toUpperCase() === "COUPLE") {
-            const partnerSeat = findPartnerSeat(seat, allSeats);
+        if (isCurrentlySelected) {
+            // BỎ CHỌN
+            newSelectedSeats = newSelectedSeats.filter(s => s.seatID !== seat.seatID);
 
-            if (!partnerSeat) {
-                toast.error("Lỗi dữ liệu: Không tìm thấy ghế đối tác!");
-                return;
-            }
-
-            const coupleIDs = [seat.seatID, partnerSeat.seatID];
-
-            if (isCurrentlySelected) {
-                newSelectedSeats = newSelectedSeats.filter(s => !coupleIDs.includes(s.seatID));
-            } else {
-                if (partnerSeat.status !== "AVAILABLE") {
-                    toast.error(`Ghế đối tác ${partnerSeat.row}${partnerSeat.number} không khả dụng!`);
-                    return;
+            // Nếu là ghế đôi, cần bỏ chọn cả ghế đối tác (để xóa tô màu)
+            if (seat.type && seat.type.toUpperCase() === "COUPLE") {
+                const partnerSeat = findPartnerSeat(seat, allSeats);
+                if (partnerSeat) {
+                    newSelectedSeats = newSelectedSeats.filter(s => s.seatID !== partnerSeat.seatID);
                 }
-                // Thêm cả hai ghế vào danh sách được chọn
-                newSelectedSeats.push(seat, partnerSeat);
             }
 
         } else {
-            if (isCurrentlySelected) {
-                newSelectedSeats = newSelectedSeats.filter(s => s.seatID !== seat.seatID);
-            } else {
-                newSelectedSeats.push(seat);
+            // CHỌN MỚI
+            newSelectedSeats.push(seat);
+
+            // Nếu là ghế đôi, tự động chọn ghế đối tác (để tô màu)
+            if (seat.type && seat.type.toUpperCase() === "COUPLE") {
+                const partnerSeat = findPartnerSeat(seat, allSeats);
+
+                if (partnerSeat) {
+                    // Kiểm tra ghế đối tác phải AVAILABLE và chưa được chọn trước
+                    if (partnerSeat.status === "AVAILABLE" && !newSelectedSeats.some(s => s.seatID === partnerSeat.seatID)) {
+                        newSelectedSeats.push(partnerSeat);
+                    } else if (partnerSeat.status !== "AVAILABLE") {
+                        toast.error(`Ghế đối tác ${partnerSeat.row}${partnerSeat.number} không khả dụng!`);
+                        return; // Chặn chọn nếu ghế đối tác đã bán/unavaiable
+                    }
+                }
             }
         }
 
@@ -236,7 +239,7 @@ const Seatmap = () => {
     };
 
     // =========================================================================
-    // 3. TÍNH TỔNG CỘNG
+    // 3. TÍNH TỔNG CỘNG (ĐÃ SỬA: CHỈ TÍNH TIỀN CHO GHẾ LẺ/START)
     // =========================================================================
     const calculateTotal = () => {
         let total = 0;
@@ -247,13 +250,18 @@ const Seatmap = () => {
             seatPriceMap.set(seat.seatID, finalPrice);
         });
 
+        // Chỉ tính tiền cho ghế lẻ (hoặc ghế đơn) để đảm bảo ghế đôi chỉ tính tiền 1 lần
         selectedSeats.forEach(seat => {
-            const price = seatPriceMap.get(seat.seatID);
-            if (price) {
-                total += price;
-            } else {
-                const fallbackPrice = SEAT_PRICE[seat.type.toUpperCase()] || SEAT_PRICE.STANDARD;
-                total += fallbackPrice;
+            const isCounted = !seat.type || seat.type.toUpperCase() !== "COUPLE" || seat.number % 2 !== 0;
+
+            if (isCounted) {
+                const price = seatPriceMap.get(seat.seatID);
+                if (price) {
+                    total += price;
+                } else {
+                    const fallbackPrice = SEAT_PRICE[seat.type.toUpperCase()] || SEAT_PRICE.STANDARD;
+                    total += fallbackPrice;
+                }
             }
         });
 
@@ -263,13 +271,15 @@ const Seatmap = () => {
 
     const totalPrice = calculateTotal();
 
+    // Sắp xếp và chỉ lấy ghế lẻ để hiển thị (ví dụ: H1, H3 thay vì H1, H2, H3, H4)
     const selectedSeatCodes = selectedSeats
+        .filter(s => s.type.toUpperCase() !== "COUPLE" || s.number % 2 !== 0)
         .map(s => `${s.row}${s.number}`)
         .sort((a, b) => a.localeCompare(b));
 
 
     // =========================================================================
-    // 4. LOGIC ĐẶT VÉ VÀ CHUYỂN HƯỚNG (ĐÃ SỬA LỖI LẤY BOOKING ID & CHUYỂN HƯỚNG)
+    // 4. LOGIC ĐẶT VÉ VÀ CHUYỂN HƯỚNG
     // =========================================================================
     const handleBooking = async () => {
         if (!CURRENT_USER_ID) {
@@ -283,36 +293,54 @@ const Seatmap = () => {
             return;
         }
 
-        const seatIDs = selectedSeats.map(s => s.seatID);
+        // ⭐ BƯỚC SỬA ĐỔI: Lọc chỉ lấy các seatID được tính tiền (Ghế đơn/VIP hoặc Ghế lẻ của cặp đôi)
+        const seatIDsForCalculation = selectedSeats
+            .filter(seat => {
+                // Ghế được tính tiền nếu:
+                // 1. Không phải ghế đôi HOẶC
+                // 2. Là ghế đôi VÀ số ghế là lẻ (ghế bắt đầu của cặp)
+                const isCounted = !seat.type || seat.type.toUpperCase() !== "COUPLE" || seat.number % 2 !== 0;
+                return isCounted;
+            })
+            .map(s => s.seatID);
 
+
+        // Kiểm tra nếu không có ghế nào được chọn để tính tiền (trường hợp không nên xảy ra)
+        if (seatIDsForCalculation.length === 0 && selectedSeats.length > 0) {
+            toast.error("Lỗi logic: Không tìm thấy ghế hợp lệ để tính tiền.");
+            return;
+        }
+
+        // Dữ liệu gửi lên API Booking: CHỈ GỬI ID GHẾ ĐÃ ĐƯỢC TÍNH TIỀN
+        // Giả định Backend sẽ tính tiền theo danh sách này VÀ tìm ghế đối tác
         const bookingData = {
             showtimeID: Number(showtimeId),
             userID: CURRENT_USER_ID,
-            seatIDs: seatIDs,
+            seatIDs: seatIDsForCalculation, // Gửi ID của H1, bỏ qua H2
             combos: [],
         };
+
+        console.log("Booking Data (Chỉ ID ghế được tính phí):", bookingData);
 
         try {
             setIsBooking(true);
             const response = await bookingApi.createBooking(bookingData);
 
-            // ✅ SỬA ĐỔI: Kiểm tra và lấy bookingID từ response
             const bookingID = response?.bookingID || response?.data?.bookingID || response?.id;
 
             if (!bookingID) {
                 throw new Error("Backend không trả về Booking ID hợp lệ.");
             }
 
+            // PayOS Link sẽ được tạo dựa trên tổng tiền Backend tính từ danh sách seatIDs mới
             const PaymentInfo = await paymentApi.createPaymentLink(bookingID);
             console.log("PaymentInfo:", PaymentInfo);
             toast.success("✅ Đặt vé thành công! Chuyển đến thanh toán.");
 
-            // 🚀 SỬA LỖI CHUYỂN HƯỚNG: Dùng window.location.href để chuyển hướng ra ngoài ứng dụng
             window.location.href = PaymentInfo.checkoutUrl;
 
         } catch (error) {
             console.error("Booking failed:", error.response?.data || error.message);
-            // Cải thiện thông báo lỗi
             const errorMessage = error.response?.data?.message || error.message || "Lỗi không xác định.";
             toast.error(`❌ Đặt vé thất bại. ${errorMessage}. Vui lòng kiểm tra console.`);
         } finally {
@@ -356,6 +384,9 @@ const Seatmap = () => {
         const isBookedOrUnavailable = isUnavailable || isSold;
 
         const isCouple = seat.type?.toLowerCase() === "couple";
+        // 🌟 LOGIC GHẾ ĐÔI: Thêm class cho ghế lẻ (bắt đầu) và ghế chẵn (ẩn)
+        const isCoupleStart = isCouple && seat.number % 2 === 1; // Ghế lẻ
+        const isCoupleEndHidden = isCouple && seat.number % 2 === 0; // Ghế chẵn
 
         let seatClass = "available";
         if (isSelected) {
@@ -369,9 +400,12 @@ const Seatmap = () => {
         return (
             <button
                 key={seat.seatID}
-                className={`seatmap-seat ${seatClass} ${seat.type?.toLowerCase() || 'standard'} ${isCouple ? 'couple-seat' : ''}`}
+                className={`seatmap-seat ${seatClass} ${seat.type?.toLowerCase() || 'standard'} ${isCouple ? 'couple-seat' : ''}
+                            ${isCoupleStart ? 'couple-start' : ''} 
+                            ${isCoupleEndHidden ? 'couple-end-hidden' : ''}`}
                 onClick={() => toggleSeat(seat)}
                 disabled={isBookedOrUnavailable}
+                data-seat-number={seat.number}
                 title={`Ghế ${seat.row}${seat.number} - ${seat.type} (${seat.status}) - ${seat.price ? seat.price.toLocaleString("vi-VN") + " đ" : "Giá không rõ"}`}
             >
                 {seat.number}

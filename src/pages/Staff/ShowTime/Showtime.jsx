@@ -5,8 +5,8 @@ import { movieApi } from "../../..//api/movieApi";
 import "./Showtime.css";
 
 const HOURS_START = 8;
-const HOURS_END = 24;
-const HOURS_RANGE = HOURS_END - HOURS_START;
+const HOURS_END = 25;
+const HOURS_RANGE = HOURS_END - HOURS_START + 1;
 
 const formatDate = (d) => {
     if (!d) return "";
@@ -58,6 +58,7 @@ const Showtime = () => {
     const [selectedDayIndex, setSelectedDayIndex] = useState(0);
     const days = Array.from({ length: 7 }, (_, i) => formatDate(addDays(startDate, i)));
     const activeDay = days[selectedDayIndex];
+    const [selectedMovieID, setSelectedMovieID] = useState(null);
 
     useEffect(() => {
         const fetchAll = async () => {
@@ -390,6 +391,7 @@ const Showtime = () => {
             {activeTab === "timeline" && (
                 <div className="staff-showtime-timeline-tab">
                     <div className="staff-showtime-timeline-controls">
+
                         <div>
                             <label>Ngày bắt đầu:</label>
                             <input
@@ -431,6 +433,15 @@ const Showtime = () => {
                                 </button>
                             ))}
                         </div>
+                        <div className="staff-showtime-left-controls">
+                            <button
+                                className="staff-showtime-btn-primary"
+                                onClick={openCreateModal}
+                            >
+                                ➕ Thêm suất chiếu
+                            </button>
+                        </div>
+
                         <div style={{ marginLeft: "auto" }}>
                             <button
                                 className="staff-showtime-btn-secondary"
@@ -458,11 +469,16 @@ const Showtime = () => {
                         <div className="staff-showtime-timeline-grid-header">
                             <div className="staff-showtime-col-movie">Rạp (ID)</div>
                             <div className="staff-showtime-col-hours">
-                                {Array.from({ length: HOURS_RANGE }, (_, i) => (
-                                    <div key={i} className="staff-showtime-hour-col">
-                                        {HOURS_START + i}:00
-                                    </div>
-                                ))}
+                                {Array.from({ length: HOURS_RANGE }, (_, i) => {
+                                    const hour = (HOURS_START + i) % 24;
+                                    const formatted = hour.toString().padStart(2, "0");
+                                    return (
+                                        <div key={i} className="staff-showtime-hour-col">
+                                            {formatted}:00
+                                        </div>
+                                    );
+                                })}
+
                             </div>
                         </div>
 
@@ -471,14 +487,10 @@ const Showtime = () => {
                                 <div className="staff-showtime-no-data">Không có rạp nào.</div>
                             ) : (
                                 theaters
-                                    // CHỈ lọc theo rạp được chọn (nếu có), không lọc theo suất chiếu
                                     .filter(t => !filterTheater || String(t) === String(filterTheater))
                                     .map((t) => {
-                                        // Lọc suất chiếu CHỈ cho rạp hiện tại và ngày đang chọn
                                         const theaterShowtimes = showtimes.filter(
-                                            (s) =>
-                                                s.theaterID === t &&
-                                                s.date === activeDay
+                                            (s) => s.theaterID === t && s.date === activeDay
                                         );
 
                                         return (
@@ -495,63 +507,45 @@ const Showtime = () => {
                                                                 Không có suất chiếu
                                                             </div>
                                                         ) : (
-                                                            theaterShowtimes
-                                                                .map((s) => {
-                                                                    const style =
-                                                                        computeStyleForShow(s);
-                                                                    const cls = (
-                                                                        s.approveStatus || ""
-                                                                    ).toLowerCase();
-                                                                    return (
-                                                                        <div
-                                                                            key={s.showtimeID}
-                                                                            className={`staff-showtime-show-block ${cls}`}
-                                                                            style={style}
-                                                                            title={`${getMovieName(
-                                                                                s.movieID
-                                                                            )} — Phòng ${s.theaterID}\n${s.startTime
-                                                                                } - ${s.endTime}\n${s.approveStatus
-                                                                                }`}
-                                                                            onClick={() => {
-                                                                                if (
-                                                                                    s.approveStatus ===
-                                                                                    "PENDING"
-                                                                                ) {
-                                                                                    if (
-                                                                                        window.confirm(
-                                                                                            "Mở form chỉnh sửa suất chiếu này?"
-                                                                                        )
-                                                                                    )
-                                                                                        openEditModal(
-                                                                                            s
-                                                                                        );
-                                                                                } else {
-                                                                                    alert(
-                                                                                        `${getMovieName(
-                                                                                            s.movieID
-                                                                                        )}\nPhòng ${s.theaterID
-                                                                                        }\n${s.startTime
-                                                                                        } - ${s.endTime
-                                                                                        }\n${s.approveStatus
-                                                                                        }`
-                                                                                    );
-                                                                                }
-                                                                            }}
-                                                                        >
-                                                                            <div className="staff-showtime-block-title">
-                                                                                {getMovieName(
-                                                                                    s.movieID
-                                                                                )}
-                                                                            </div>
-                                                                            <div className="staff-showtime-block-sub">
-                                                                                {
-                                                                                    s.startTime
-                                                                                }–
-                                                                                {s.endTime}
-                                                                            </div>
+                                                            theaterShowtimes.map((s) => {
+                                                                const cls = (s.approveStatus || "").toLowerCase();
+                                                                const isOtherMovie =
+                                                                    selectedMovieID && selectedMovieID !== s.movieID;
+
+                                                                return (
+                                                                    <div
+                                                                        key={s.showtimeID}
+                                                                        className={`staff-showtime-show-block ${cls}`}
+                                                                        style={{
+                                                                            ...computeStyleForShow(s),
+                                                                            opacity: isOtherMovie ? 0.3 : 1,
+                                                                            filter: isOtherMovie ? "grayscale(100%)" : "none",
+                                                                            transition: "all 0.3s ease",
+                                                                        }}
+                                                                        title={`${getMovieName(s.movieID)} — Phòng ${s.theaterID}\n${s.startTime} - ${s.endTime}\n${s.approveStatus}`}
+                                                                        onClick={() => {
+                                                                            // Toggle chọn phim
+                                                                            if (selectedMovieID === s.movieID) {
+                                                                                setSelectedMovieID(null); // Bỏ chọn → hiện lại tất cả
+                                                                            } else {
+                                                                                setSelectedMovieID(s.movieID); // Chọn phim này
+                                                                            }
+
+                                                                            // Nếu đang pending → mở modal chỉnh sửa
+                                                                            if (s.approveStatus === "PENDING") {
+                                                                                openEditModal(s);
+                                                                            }
+                                                                        }}
+                                                                    >
+                                                                        <div className="staff-showtime-block-title">
+                                                                            {getMovieName(s.movieID)}
                                                                         </div>
-                                                                    );
-                                                                })
+                                                                        <div className="staff-showtime-block-sub">
+                                                                            {s.startTime}–{s.endTime}
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            })
                                                         )}
                                                     </div>
                                                 </div>
@@ -560,6 +554,7 @@ const Showtime = () => {
                                     })
                             )}
                         </div>
+
                     </div>
                 </div>
             )}
@@ -577,22 +572,43 @@ const Showtime = () => {
                                 : "➕ Tạo Suất chiếu"}
                         </h3>
                         <form onSubmit={handleSave} className="staff-showtime-modal-form">
-                            <label>ID Rạp</label>
-                            <input
+                            {/* Dropdown chọn rạp */}
+                            <label>Chọn Rạp</label>
+                            <select
                                 name="theaterID"
-                                type="number"
                                 value={formData.theaterID}
                                 onChange={handleFormChange}
                                 required
-                            />
-                            <label>ID Phim</label>
+                            >
+                                <option value="">-- Chọn Rạp --</option>
+                                {theaters.map((t) => (
+                                    <option key={t} value={t}>
+                                        Rạp {t}
+                                    </option>
+                                ))}
+                            </select>
+
+                            {/* Input có gợi ý chọn phim */}
+                            <label>Chọn Phim</label>
                             <input
+                                list="movie-suggestions"
                                 name="movieID"
-                                type="number"
                                 value={formData.movieID}
                                 onChange={handleFormChange}
+                                placeholder="Nhập tên hoặc ID phim..."
                                 required
                             />
+                            <datalist id="movie-suggestions">
+                                {movies
+                                    .filter((m) => m.status === "Now Showing" && m.approveStatus === "APPROVE")
+                                    .map((m) => (
+                                        <option key={m.movieID} value={m.movieID}>
+                                            {m.movieName}
+                                        </option>
+                                    ))}
+                            </datalist>
+
+                            {/* Ngày chiếu */}
                             <label>Ngày chiếu</label>
                             <input
                                 name="date"
@@ -601,6 +617,8 @@ const Showtime = () => {
                                 onChange={handleFormChange}
                                 required
                             />
+
+                            {/* Giờ bắt đầu */}
                             <label>Giờ bắt đầu</label>
                             <input
                                 name="startTime"
@@ -609,6 +627,8 @@ const Showtime = () => {
                                 onChange={handleFormChange}
                                 required
                             />
+
+                            {/* Giờ kết thúc */}
                             <label>Giờ kết thúc</label>
                             <input
                                 name="endTime"
@@ -617,16 +637,13 @@ const Showtime = () => {
                                 onChange={handleFormChange}
                                 required
                             />
+
                             {errorMessage && (
-                                <div className="staff-showtime-error-box">
-                                    {errorMessage}
-                                </div>
+                                <div className="staff-showtime-error-box">{errorMessage}</div>
                             )}
 
                             <div className="staff-showtime-modal-actions">
-                                <button type="submit" className="staff-showtime-btn-primary">
-                                    Lưu
-                                </button>
+                                <button type="submit" className="staff-showtime-btn-primary">Lưu</button>
                                 <button
                                     type="button"
                                     className="staff-showtime-btn-secondary"
@@ -636,6 +653,8 @@ const Showtime = () => {
                                 </button>
                             </div>
                         </form>
+
+
                     </div>
                 </div>
             )}
@@ -657,12 +676,28 @@ const Showtime = () => {
                                         .filter((seat) => seat.row === row)
                                         .sort((a, b) => a.number - b.number);
 
-                                    // ✅ Xử lý riêng cho hàng H
                                     if (row === "H") {
-                                        // Ẩn H5 và H6
+                                        // Chỉ giữ lại các ghế 1, 3, 7, 9
                                         rowSeats = rowSeats.filter(
-                                            (s) => s.number !== 5 && s.number !== 6
+                                            (s) => [1, 3, 7, 9].includes(s.number)
                                         );
+
+                                        // Đánh dấu là ghế đôi
+                                        rowSeats = rowSeats.map((s) => ({
+                                            ...s,
+                                            type: "Couple"
+                                        }));
+
+                                        // Gán ghế đôi
+                                        rowSeats = rowSeats.map((s) => {
+                                            if (
+                                                (s.number === 1 || s.number === 2 || s.number === 3 || s.number === 4 ||
+                                                    s.number === 7 || s.number === 8 || s.number === 9 || s.number === 10)
+                                            ) {
+                                                return { ...s, type: "Couple" };
+                                            }
+                                            return s;
+                                        });
 
                                         // Gán ghế đôi
                                         rowSeats = rowSeats.map((s) => {

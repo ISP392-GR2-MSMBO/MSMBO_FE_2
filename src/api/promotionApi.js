@@ -32,6 +32,26 @@ export const promotionApi = {
             throw error;
         }
     },
+    getPromotionById: async (id) => {
+        const url = `${BASE_URL}/api/admin/promotions/${id}`;
 
-    // ... các hàm API khác ...
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+            });
+
+            if (!response.ok) {
+                if (response.status === 404) return null;
+                throw new Error(`Failed to fetch promotion ID ${id} (HTTP ${response.status})`);
+            }
+
+            const data = await response.json();
+            return data;
+
+        } catch (error) {
+            console.error(`Lỗi khi tải chi tiết ưu đãi ${id}:`, error);
+            return null; // Trả về null khi có lỗi
+        }
+    },
+
 };

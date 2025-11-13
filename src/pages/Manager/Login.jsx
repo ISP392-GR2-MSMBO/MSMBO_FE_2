@@ -7,10 +7,12 @@ import "../../index.css";
 
 const Login = () => {
     const history = useHistory();
+    // Khởi tạo message API từ Ant Design
     const [messageApi, contextHolder] = message.useMessage();
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
+    // Sử dụng hook để quản lý user trong Local Storage
     const [, setUser] = useLocalStorage("user", null);
 
     const handleLogin = async () => {
@@ -21,21 +23,44 @@ const Login = () => {
 
         setLoading(true);
         try {
+            // Gọi API đăng nhập
             const data = await authApi.login({ userName, password });
+
+            // Lưu thông tin người dùng vào Local Storage
             setUser({
                 token: data.token,
                 roleID: data.roleID,
                 userName: data.userName,
                 userID: data.userID,
             });
+
             messageApi.success(`Chào mừng ${data.userName}!`);
+
+            // Chuyển hướng theo role
             if (data.roleID === "MA") history.push("/manager");
             else if (data.roleID === "ST") history.push("/staff");
             else if (data.roleID === "AD") history.push("/admin");
             else history.push("/");
+
         } catch (err) {
             console.error("Login error:", err);
-            messageApi.error("Tên đăng nhập hoặc mật khẩu không đúng.");
+
+            let errorMessage = "Tên đăng nhập hoặc mật khẩu không đúng.";
+
+            // --- Logic kiểm tra mã lỗi ---
+            // Thử lấy mã lỗi từ response (phổ biến khi dùng Axios)
+            const errorCode = err?.response?.data?.code;
+
+            if (errorCode === 1012) {
+                // ✅ Hiển thị thông báo "Người dùng không tồn tại"
+                errorMessage = "Người dùng không tồn tại.";
+            }
+            // Có thể thêm các mã lỗi khác nếu cần (ví dụ: 1011 cho Mật khẩu không đúng)
+            else if (errorCode === 1004) {
+                errorMessage = "Mật khẩu không đúng.";
+            }
+
+            messageApi.error(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -71,7 +96,7 @@ const Login = () => {
                 </button>
             </form>
 
-            {/* ✅ Nút Quên mật khẩu */}
+            {/* Nút Quên mật khẩu */}
             <p style={{ marginTop: "10px" }}>
                 <Link to="/forgot-password" className="forgot-link">
                     Quên mật khẩu?

@@ -2,6 +2,15 @@
 /* PHẦN TỔNG THỂ VÀ LAYOUT                                                    */
 /* ========================================================================= */
 
+/* Khai báo biến cần thiết cho logic ghế đôi */
+:root {
+    --seat-base-size: 40px;
+    /* Base width/height của ghế đơn */
+    --seat-spacing: 0px;
+    /* Khoảng cách giữa các ghế (đã loại bỏ) */
+}
+
+
 .seatmap-page-dark {
     background-color: #000;
     color: #fff;
@@ -35,7 +44,6 @@
 .seatmap-screen-title {
     color: #ff8c00;
     font-size: 24px;
-    /* Giữ khoảng cách nhỏ với vạch ngay trên nó */
     margin-top: 5px;
     margin-bottom: 20px;
 }
@@ -45,9 +53,7 @@
     max-width: 600px;
     height: 4px;
     background: linear-gradient(90deg, #333, #ff8c00, #333);
-    /* 🔥 ĐIỀU CHỈNH CHÍNH: Thêm margin-top 20px để xích vạch xuống */
     margin: 20px auto 5px;
-    /* top 20px, left/right auto, bottom 5px */
     border-radius: 10px;
 }
 
@@ -64,7 +70,6 @@
     gap: 12px;
     align-items: center;
     padding: 0 20px;
-    /* Có thể cần giảm margin-bottom để hàng A gần Màn hình hơn */
     margin-bottom: 10px;
 }
 
@@ -74,6 +79,7 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
+    /* Khoảng cách giữa các nhóm ghế và lối đi */
     width: 100%;
 }
 
@@ -88,6 +94,7 @@
 /* Container bao các ghế */
 .seatmap-seats {
     display: flex;
+    /* BỎ GAP để ghế đôi dính nhau */
     gap: 0;
 }
 
@@ -106,23 +113,50 @@
 }
 
 /* ========================================================================= */
-/* CÁC LOẠI GHẾ                                                               */
+/* CÁC LOẠI GHẾ & TRẠNG THÁI                                                    */
 /* ========================================================================= */
 
 .seatmap-seat {
-    width: 40px;
-    height: 40px;
-    border-radius: 0;
+    width: var(--seat-base-size);
+    height: var(--seat-base-size);
+    border-radius: 8px;
+    /* Bo góc mặc định */
     border: 2px solid;
     font-weight: 600;
     cursor: pointer;
-    color: #fff;
     transition: all 0.2s ease;
     font-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #333;
+
+    /* 🌟 FIX & LOGIC: Ẩn nội dung gốc và thiết lập cho ::after */
+    color: transparent;
+    position: relative;
+}
+
+/* 🌟 BỔ SUNG: Hiển thị số ghế bằng ::after cho TẤT CẢ ghế */
+.seatmap-seat::after {
+    content: attr(data-seat-number);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    font-weight: 600;
+
+    /* Mặc định màu chữ là TRẮNG (theo yêu cầu code cũ) */
+    color: #fff;
+
+    display: block;
+    line-height: 1;
+    /* Sửa lỗi cắt chữ */
+    white-space: nowrap;
+}
+
+.seatmap-seat:hover {
+    background-color: #555;
+    transform: scale(1.05);
 }
 
 /* ------------------- LOẠI GHẾ (VIỀN) ------------------- */
@@ -138,19 +172,11 @@
     border-color: #ff69b4;
 }
 
-/* Sửa lại góc bo tròn cho ghế đôi ở hai đầu cặp */
-.seatmap-seat.couple:nth-child(even) {
-    border-radius: 0 8px 8px 0;
-}
-
-.seatmap-seat.couple:nth-child(odd) {
-    border-radius: 8px 0 0 8px;
-}
-
 /* ------------------- TRẠNG THÁI (NỀN) ------------------- */
 
 /* Ghế Khả dụng (AVAILABLE) */
 .seatmap-seat.available {
+    /* 🌟 KHÔI PHỤC: Nền ghế AVAILABLE là XÁM ĐẬM (#333) */
     background-color: #333;
 }
 
@@ -159,147 +185,71 @@
     transform: scale(1.05);
 }
 
+
 /* Ghế Đang chọn (SELECTED) */
 .seatmap-seat.selected {
     background-color: #ffcc00;
-    color: #000;
+    color: transparent;
     box-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
     transform: scale(1.05);
 }
 
-/* Ghế Vô hiệu hóa (UNAVAILABLE) - Màu xám đồng bộ với Manager */
+.seatmap-seat.selected::after {
+    /* Màu chữ đen khi chọn (để nổi bật trên nền vàng) */
+    color: #000;
+}
+
+
+/* Ghế Vô hiệu hóa (UNAVAILABLE) */
 .seatmap-seat.unavailable {
     background-color: #6c757d;
-    /* Màu xám đậm hơn một chút */
     border-color: #6c757d;
     cursor: not-allowed;
     opacity: 0.8;
-    /* Giúp dễ nhìn hơn */
-    color: #ccc;
     pointer-events: none;
-    /* NGĂN CHẶN CLICK */
+    color: transparent;
 }
 
-.seatmap-seat:disabled:hover {
-    transform: none;
-    cursor: not-allowed;
+.seatmap-seat.unavailable::after {
+    color: #ccc;
+    /* Màu chữ xám nhẹ */
 }
+
 
 /* Ghế Đã bán (SOLD) - MÀU HỒNG ĐẬM */
 .seatmap-seat.sold {
     background-color: #c71585;
     border-width: 2px;
-    color: white;
     cursor: not-allowed;
     opacity: 1;
     pointer-events: none;
+    color: transparent;
 }
 
-/* === BỔ SUNG: KHÔI PHỤC MÀU VIỀN DỰA TRÊN LOẠI GHẾ KHI Ở TRẠNG THÁI SOLD === */
-
-/* Ghế Thường SOLD */
-.seatmap-seat.sold.standard {
-    border-color: #3388ff;
-}
-
-/* Ghế VIP SOLD */
-.seatmap-seat.sold.vip {
-    border-color: #ff004c;
-}
-
-/* Ghế Đôi SOLD */
-.seatmap-seat.sold.couple {
-    border-color: #ff69b4;
-}
-
-/* ========================================================================= */
-/* PHẦN CHÚ THÍCH (LEGEND) - CHỈ GIỮ 3 TRẠNG THÁI CẦN THIẾT                  */
-/* ========================================================================= */
-
-.seatmap-legend {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px 25px;
-    margin-top: 30px;
-    font-size: 14px;
-    color: #ccc;
-    background-color: #222;
-    padding: 15px 25px;
-    border-radius: 12px;
-}
-
-.seatmap-legend span {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-    margin-right: 6px;
-    vertical-align: middle;
+.seatmap-seat.sold::after {
+    color: white;
+    /* Màu chữ trắng cho SOLD */
 }
 
 
-.seatmap-legend .selected {
-    background-color: #ffcc00;
-    /* Vàng (Giữ nguyên) */
-    border: 1px solid #ffcc00;
+/* === LOGIC GHẾ ĐÔI (MỘT Ô DUY NHẤT) === */
+
+/* 1. ẨN GHẾ CHẴN (GHẾ KẾT THÚC CỦA CẶP) */
+.seatmap-seat.couple-end-hidden {
+    display: none !important;
 }
 
-/* ĐÃ BÁN (SOLD) */
-.seatmap-legend .sold {
-    background-color: #c71585;
-    /* Hồng đậm */
-    border: 1px solid #000;
+/* 2. MỞ RỘNG GHẾ LẺ (GHẾ BẮT ĐẦU CỦA CẶP) */
+.seatmap-seat.couple-start {
+    /* Tính toán: 2 * 40px (size) + 2 * 2px (border) = 84px */
+    width: calc(2 * var(--seat-base-size) + 4px);
+    border-radius: 8px !important;
 }
 
-/* --- ĐỊNH NGHĨA MÀU VIỀN CHO LOẠI GHẾ (Cần có nền trong suốt) --- */
 
-.seatmap-legend .standard {
-    border: 2px solid #3388ff;
-    /* Xanh dương */
-    background: transparent;
-}
 
-.seatmap-legend .vip {
-    border: 2px solid #ff004c;
-    /* Đỏ/Hồng đậm */
-    background: transparent;
-}
-
-.seatmap-legend .couple {
-    border: 2px solid #ff69b4;
-    /* Hồng nhạt */
-    background: transparent;
-}
-
-/* --- BỔ SUNG CẤU TRÚC CHO LAYOUT 2 HÀNG --- */
-
-.seatmap-legend {
-    display: flex;
-    flex-direction: column;
-    /* Xếp thành cột */
-    align-items: center;
-    /* Căn giữa các nhóm */
-    gap: 10px;
-    /* Khoảng cách giữa các nhóm (hàng) */
-
-    flex-wrap: wrap;
-    margin-top: 30px;
-    font-size: 14px;
-    color: #ccc;
-    background-color: #222;
-    padding: 15px 25px;
-    border-radius: 12px;
-}
-
-/* STYLE CHO NHÓM */
-.legend-group {
-    display: flex;
-    justify-content: center;
-    /* Căn giữa các mục trong cùng một nhóm */
-    flex-wrap: wrap;
-    gap: 20px 25px;
-    /* Khoảng cách giữa các mục */
+.seatmap-seat.couple-start::after {
+    /* Màu chữ vẫn là trắng khi AVAILABLE (theo .seatmap-seat::after mặc định) */
     width: 100%;
 }
 
@@ -420,4 +370,68 @@
     background-color: #555;
     cursor: not-allowed;
     transform: none;
+}
+
+/* ========================================================================= */
+/* PHẦN CHÚ THÍCH (LEGEND)                                                    */
+/* ========================================================================= */
+
+.seatmap-legend {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+    font-size: 14px;
+    color: #ccc;
+    background-color: #222;
+    padding: 15px 25px;
+    border-radius: 12px;
+}
+
+.seatmap-legend span {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+
+.legend-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px 25px;
+    width: 100%;
+}
+
+.seatmap-legend .selected {
+    background-color: #ffcc00;
+    border: 1px solid #ffcc00;
+}
+
+/* ĐÃ BÁN (SOLD) */
+.seatmap-legend .sold {
+    background-color: #c71585;
+    border: 1px solid #000;
+}
+
+/* --- ĐỊNH NGHĨA MÀU VIỀN CHO LOẠI GHẾ (Cần có nền trong suốt) --- */
+
+.seatmap-legend .standard {
+    border: 2px solid #3388ff;
+    background: transparent;
+}
+
+.seatmap-legend .vip {
+    border: 2px solid #ff004c;
+    background: transparent;
+}
+
+.seatmap-legend .couple {
+    border: 2px solid #ff69b4;
+    background: transparent;
 }

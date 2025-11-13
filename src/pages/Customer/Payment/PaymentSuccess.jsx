@@ -5,8 +5,8 @@ import { useLocation, useHistory } from "react-router-dom";
 import { bookingApi } from "../../../api/bookingApi";
 import { toast } from "react-toastify";
 import {
-    Document, Packer, Paragraph, Table, TableRow, TableCell,
-    WidthType, TextRun, ShadingType
+    Document, Packer, Paragraph,
+    TextRun // Chỉ giữ lại các imports cần thiết cho cấu trúc Word KHÔNG BẢNG
 } from "docx";
 import { saveAs } from "file-saver";
 import "./PaymentSuccess.css";
@@ -18,7 +18,7 @@ const PaymentSuccess = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [apiError, setApiError] = useState(null);
 
-    // ✅ SỬA LỖI: LẤY GIÁ TRỊ TỪ ORDERCODE VÀ LÀM SẠCH (CHỈ GIỮ LẠI CHUỖI SỐ)
+    // ✅ LẤY GIÁ TRỊ TỪ ORDERCODE VÀ LÀM SẠCH (CHỈ GIỮ LẠI CHUỖI SỐ)
     const query = new URLSearchParams(location.search);
     const rawBookingId =
         query.get("bookingId") ||
@@ -91,20 +91,11 @@ const PaymentSuccess = () => {
         fetchBooking();
     }, [bookingId, history]);
 
-    // ================= Word Download Handler (CẬP NHẬT TÊN TRƯỜNG) =================
+    // ================= Word Download Handler (ĐÃ LOẠI BỎ BẢNG CHI TIẾT) =================
     const handleDownloadWord = () => {
         if (!booking) return;
 
-        const tableRows = booking.seats.map((s, i) =>
-            new TableRow({
-                children: [
-                    new TableCell({ children: [new Paragraph(String(i + 1))], width: { size: 10, type: WidthType.PERCENTAGE } }),
-                    new TableCell({ children: [new Paragraph(`${s.seatRow}${s.seatNumber}`)], width: { size: 20, type: WidthType.PERCENTAGE } }),
-                    new TableCell({ children: [new Paragraph("Ghế thường")], width: { size: 35, type: WidthType.PERCENTAGE } }), // Dùng tạm 'Ghế thường'
-                    new TableCell({ children: [new Paragraph(s.price.toLocaleString("vi-VN"))], width: { size: 35, type: WidthType.PERCENTAGE } }),
-                ]
-            })
-        );
+        // **Đã loại bỏ tableRows mapping và các imports không cần thiết.**
 
         const doc = new Document({
             sections: [{
@@ -122,20 +113,7 @@ const PaymentSuccess = () => {
                     new Paragraph({ children: [new TextRun({ text: `Ghế: ${booking.seats.map(s => `${s.seatRow}${s.seatNumber}`).join(", ")}` })] }),
                     new Paragraph({ children: [new TextRun({ text: `Tổng tiền: ${booking.totalPrice.toLocaleString("vi-VN")} đ`, bold: true })] }),
                     new Paragraph({ text: "" }),
-                    new Table({
-                        rows: [
-                            new TableRow({
-                                children: [
-                                    new TableCell({ children: [new Paragraph({ text: "STT", bold: true })], shading: { type: ShadingType.CLEAR, fill: "B0C4DE" } }),
-                                    new TableCell({ children: [new Paragraph({ text: "Ghế", bold: true })], shading: { type: ShadingType.CLEAR, fill: "B0C4DE" } }),
-                                    new TableCell({ children: [new Paragraph({ text: "Loại", bold: true })], shading: { type: ShadingType.CLEAR, fill: "B0C4DE" } }),
-                                    new TableCell({ children: [new Paragraph({ text: "Giá (VNĐ)", bold: true })], shading: { type: ShadingType.CLEAR, fill: "B0C4DE" } }),
-                                ]
-                            }),
-                            ...tableRows
-                        ],
-                        width: { size: 100, type: WidthType.PERCENTAGE }
-                    })
+                    // **ĐÃ LOẠI BỎ CẤU TRÚC new Table({...}) Ở ĐÂY**
                 ]
             }]
         });
@@ -174,6 +152,7 @@ const PaymentSuccess = () => {
                 <p>Thời gian: {booking.startTime} - {booking.showDate}</p>
                 <p>Ghế: {booking.seats.map(s => `${s.seatRow}${s.seatNumber}`).join(", ")}</p>
                 <p>Tổng tiền: <b>{booking.totalPrice.toLocaleString("vi-VN")} đ</b></p>
+                {/* LƯU Ý: Phần UI (HTML) này không có bảng, nếu bạn vẫn thấy bảng trên màn hình, nó nằm trong một file CSS/Component khác. */}
                 <button onClick={handleDownloadWord} className="download-btn">Tải hóa đơn (Word)</button>
                 <button onClick={() => history.push("/")} className="home-btn">Về trang chủ</button>
             </div>
